@@ -116,6 +116,18 @@ namespace MojCRM.ViewModels
     {
         public IList<ActivityLog> PersonalActivities { get; set; }
         public IEnumerable<ApplicationUser> Agents { get; set; }
+        [Display(Name = "Ukupno uspješnih poziva")]
+        public int SumSuccessfulCalls { get; set; }
+        [Display(Name = "Ukupno uspješnih kratkih poziva")]
+        public int SumShortSuccessfulCalls { get; set; }
+        [Display(Name = "Ukupno neuspješnih poziva")]
+        public int SumUnsuccessfulCalls { get; set; }
+        [Display(Name = "Ukupno poslanih e-mailova korisnicima")]
+        public int? SumSentMail { get; set; }
+        [Display(Name = "Ukupno ispravaka mailova")]
+        public int? SumMailchange { get; set; }
+        [Display(Name = "Ukupno ponovno poslanih obavijesti o dostavi")]
+        public int? SumResend { get; set; }
         public IList<SelectListItem> AgentList
         {
             get

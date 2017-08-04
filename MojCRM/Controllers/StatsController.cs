@@ -23,24 +23,78 @@ namespace MojCRM.Controllers
         // GET: Stats/PersonalDailyActivities
         public ActionResult PersonalDailyActivities(string Name, string Agent, string SearchDate)
         {
+
+
+            var SuccessfulCalls = (from a in db.ActivityLogs
+                                   where a.ActivityType == ActivityLog.ActivityTypeEnum.SUCCALL 
+                                   select a);
+            var ShortSuccessfulCalls = (from a in db.ActivityLogs
+                                   where a.ActivityType == ActivityLog.ActivityTypeEnum.SUCCALSHORT 
+                                   select a);
+            var UnsuccessfulCalls = (from a in db.ActivityLogs
+                                     where a.ActivityType == ActivityLog.ActivityTypeEnum.UNSUCCAL
+                                     select a);
+            var MailChange = (from a in db.ActivityLogs
+                              where a.ActivityType == ActivityLog.ActivityTypeEnum.MAILCHANGE
+                              select a);
+            var Resend = (from a in db.ActivityLogs
+                          where a.ActivityType == ActivityLog.ActivityTypeEnum.RESEND
+                          select a);
+            var DeliveryMail = (from a in db.ActivityLogs
+                                where a.ActivityType == ActivityLog.ActivityTypeEnum.EMAIL
+                                select a);
+
+            
+
             var ReferenceDate = DateTime.Today.AddDays(-1);
+           
             var _Agents = (from u in db.Users
                            select u).AsEnumerable();
+           
             var _Activities = (from a in db.ActivityLogs
                                select a).ToList();
+
+          
             var searchDate = Convert.ToDateTime(SearchDate);
+           
             var searchDatePlus = searchDate.AddDays(1);
 
-            _Activities = _Activities.Where(a => (a.User == Name) && (a.InsertDate >= ReferenceDate) && (a.InsertDate < DateTime.Today)).ToList();
             var _DistinctDepartments = (from a in db.ActivityLogs
                                         where (a.User == Name) && (a.InsertDate >= ReferenceDate) && (a.InsertDate < DateTime.Today)
                                         select a.Department).Distinct().Count();
-            ViewBag.DistinctDepartments = _DistinctDepartments;
-            ViewBag.Date = ReferenceDate.ToShortDateString();
 
+            if (String.IsNullOrEmpty(SearchDate))
+            {
+                _Activities = _Activities.Where(a => (a.User == Name) && /*(a.InsertDate >= ReferenceDate) && (a.InsertDate < DateTime.Today)*/ (a.InsertDate>= DateTime.Today)).ToList();
+
+                
+
+               
+                    SuccessfulCalls = SuccessfulCalls.Where(a => a.InsertDate >= DateTime.Today && a.User == Name);
+                ShortSuccessfulCalls = ShortSuccessfulCalls.Where(a => a.InsertDate >= DateTime.Today && a.User == Name);
+
+                UnsuccessfulCalls = UnsuccessfulCalls.Where(t => t.InsertDate >= DateTime.Today && t.User == Name);
+                MailChange = MailChange.Where(t => t.InsertDate >= DateTime.Today && t.User == Name);
+                Resend = Resend.Where(t => t.InsertDate >= DateTime.Today && t.User == Name);
+                DeliveryMail = DeliveryMail.Where(t => t.InsertDate >= DateTime.Today && t.User == Name);
+
+
+
+                ViewBag.DistinctDepartments = _DistinctDepartments;
+                ViewBag.Date = ReferenceDate.ToShortDateString();
+            }
             if (!String.IsNullOrEmpty(SearchDate))
             {
+
+                SuccessfulCalls = SuccessfulCalls.Where(a => ((a.InsertDate >= searchDate) && (a.InsertDate < searchDatePlus)) && a.User == Name);
+                ShortSuccessfulCalls = ShortSuccessfulCalls.Where(a => ((a.InsertDate >= searchDate) && (a.InsertDate < searchDatePlus)) && a.User == Name);
+
+                UnsuccessfulCalls = UnsuccessfulCalls.Where(t => ((t.InsertDate >= searchDate) && (t.InsertDate < searchDatePlus)) && t.User == Name);
+                MailChange = MailChange.Where(t => ((t.InsertDate >= searchDate) && (t.InsertDate < searchDatePlus)) && t.User == Name);
+                Resend = Resend.Where(t => ((t.InsertDate >= searchDate) && (t.InsertDate < searchDatePlus)) && t.User == Name);
+                DeliveryMail = DeliveryMail.Where(t => ((t.InsertDate >= searchDate) && (t.InsertDate < searchDatePlus)) && t.User == Name);
                 _Activities = _Activities.Where(a => (a.User == Name) && (a.InsertDate >= searchDate) && (a.InsertDate < searchDatePlus)).ToList();
+                
                 _DistinctDepartments = (from a in db.ActivityLogs
                                         where (a.User == Name) && (a.InsertDate >= searchDate) && (a.InsertDate < searchDatePlus)
                                         select a.Department).Distinct().Count();
@@ -49,6 +103,15 @@ namespace MojCRM.Controllers
             }
             if (!String.IsNullOrEmpty(SearchDate) && !String.IsNullOrEmpty(Agent))
             {
+
+                SuccessfulCalls = SuccessfulCalls.Where(a => ((a.InsertDate >= searchDate) && (a.InsertDate < searchDatePlus)) && a.User == Agent);
+                ShortSuccessfulCalls = ShortSuccessfulCalls.Where(a => ((a.InsertDate >= searchDate) && (a.InsertDate < searchDatePlus)) && a.User == Agent);
+
+                UnsuccessfulCalls = UnsuccessfulCalls.Where(t => ((t.InsertDate >= searchDate) && (t.InsertDate < searchDatePlus)) && t.User == Agent);
+                MailChange = MailChange.Where(t => ((t.InsertDate >= searchDate) && (t.InsertDate < searchDatePlus)) && t.User == Agent);
+                Resend = Resend.Where(t => ((t.InsertDate >= searchDate) && (t.InsertDate < searchDatePlus)) && t.User == Agent);
+                DeliveryMail = DeliveryMail.Where(t => ((t.InsertDate >= searchDate) && (t.InsertDate < searchDatePlus)) && t.User == Name);
+
                 _Activities = _Activities.Where(a => (a.User == Agent) && (a.InsertDate >= searchDate) && (a.InsertDate < searchDatePlus)).ToList();
                 _DistinctDepartments = (from a in db.ActivityLogs
                                         where (a.User == Agent) && (a.InsertDate >= searchDate) && (a.InsertDate < searchDatePlus)
@@ -69,8 +132,14 @@ namespace MojCRM.Controllers
             var PersonalActivities = new PersonalDailyActivitiesViewModel
             {
                 PersonalActivities = _Activities,
-                Agents = _Agents
-
+                Agents = _Agents,
+                SumSuccessfulCalls = SuccessfulCalls.Count(),
+                SumShortSuccessfulCalls = ShortSuccessfulCalls.Count(),
+                SumUnsuccessfulCalls = UnsuccessfulCalls.Count(),
+                SumMailchange = MailChange.Count(),
+                SumResend = Resend.Count(),
+                SumSentMail = DeliveryMail.Count(),
+               
             };
 
             return View(PersonalActivities);
@@ -114,6 +183,7 @@ namespace MojCRM.Controllers
                 MailChange = MailChange.Where(t => (t.InsertDate >= searchDate) && (t.InsertDate < searchDatePlus));
                 Resend = Resend.Where(t => (t.InsertDate >= searchDate) && (t.InsertDate < searchDatePlus));
                 DeliveryMail = DeliveryMail.Where(t => (t.InsertDate >= searchDate) && (t.InsertDate < searchDatePlus));
+
                 AgentActivities = (from a in db.ActivityLogs
                                    where (a.InsertDate >= searchDate) && (a.InsertDate < searchDatePlus)
                                    group a by a.User into ga
@@ -262,7 +332,7 @@ namespace MojCRM.Controllers
                         AssignedTo = Day.Key.AssignedTo
                     };
                     Deliveries.Add(dailyDelivery);
-                }
+                }  
             }
 
             var model = new DeliveryStatsViewModel
