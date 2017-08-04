@@ -15,6 +15,7 @@ namespace MojCRM.Models
         public int? ReferenceId { get; set; }
         public ActivityTypeEnum ActivityType { get; set; }
         public DepartmentEnum Department { get; set; }
+        public ModuleEnum? Module { get; set; }
         public DateTime InsertDate { get; set; }
         public DateTime? UpdateDate { get; set; }
         public enum ActivityTypeEnum
@@ -57,6 +58,20 @@ namespace MojCRM.Models
             [Description("Prodaja")]
             Sales
         }
+        public enum ModuleEnum
+        {
+            [Description("Moj-CRM")]
+            MojCRM,
+
+            [Description("Dostava")]
+            Delivery,
+
+            [Description("Prodajne prilike")]
+            Opportunities,
+
+            [Description("Leadovi")]
+            Leads
+        }
 
         public string ActivityTypeString
         {
@@ -89,6 +104,21 @@ namespace MojCRM.Models
                     case DepartmentEnum.Sales: return "Odjel prodaje";
                 }
                 return "Odjel";
+            }
+        }
+
+        public string ModuleEnumString
+        {
+            get
+            {
+                switch (Module)
+                {
+                    case ModuleEnum.MojCRM: return "Moj-CRM";
+                    case ModuleEnum.Delivery: return "Dostava eRačuna";
+                    case ModuleEnum.Opportunities: return "Prodajne prilike";
+                    case ModuleEnum.Leads: return "Leadovi";
+                }
+                return "Modul";
             }
         }
     }

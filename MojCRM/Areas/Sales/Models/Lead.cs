@@ -19,7 +19,9 @@ namespace MojCRM.Areas.Sales.Models
 
         public int? RelatedOrganizationId { get; set; }
         public LeadStatusEnum LeadStatus { get; set; }
+        public string StatusDescription { get; set; }
         public LeadRejectReasonEnum? RejectReason { get; set; }
+        public string RejectReasonDescription { get; set; }
         public QuoteTypeEnum? QuoteType { get; set; }
         public string CreatedBy { get; set; }
         public string AssignedTo { get; set; }
@@ -57,7 +59,10 @@ namespace MojCRM.Areas.Sales.Models
             QOUTESENT,
 
             [Description("Prihvaćena ponuda")]
-            ACCEPTED
+            ACCEPTED,
+
+            [Description("Dogovoren sastanak")]
+            MEETING
         }
 
         public enum LeadRejectReasonEnum
@@ -75,7 +80,16 @@ namespace MojCRM.Areas.Sales.Models
             QUOTE,
 
             [Description("Drugi pružatelj usluga")]
-            SERVICEPROVIDER
+            SERVICEPROVIDER,
+
+            [Description("Nedostatak vremena za pokretanje projekta")]
+            NOTIME,
+
+            [Description("Dio strane grupacije / Strano vlasništvo")]
+            FOREIGNCOMPANY,
+
+            [Description("Drugo / Ostalo")]
+            OTHER
         }
 
         public enum QuoteTypeEnum
@@ -117,6 +131,7 @@ namespace MojCRM.Areas.Sales.Models
                     case LeadStatusEnum.REJECTED: return "Odbijeno";
                     case LeadStatusEnum.QOUTESENT: return "Poslana ponuda";
                     case LeadStatusEnum.ACCEPTED: return "Ponuda prihvaćena";
+                    case LeadStatusEnum.MEETING: return "Dogovoren sastanak";
                 }
                 return "Status leada";
             }
@@ -133,6 +148,9 @@ namespace MojCRM.Areas.Sales.Models
                     case LeadRejectReasonEnum.PRICE: return "Previsoka cijena";
                     case LeadRejectReasonEnum.QUOTE: return "Neadekvatna ponuda";
                     case LeadRejectReasonEnum.SERVICEPROVIDER: return "Koristi drugog posrednika";
+                    case LeadRejectReasonEnum.NOTIME: return "Nedostatak vremena za pokretanje projekta";
+                    case LeadRejectReasonEnum.FOREIGNCOMPANY: return "Dio strane grupacije / Strano vlasništvo";
+                    case LeadRejectReasonEnum.OTHER: return "Drugo / Ostalo";
                 }
                 return "Nije odbijeno";
             }

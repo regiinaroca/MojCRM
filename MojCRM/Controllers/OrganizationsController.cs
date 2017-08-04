@@ -32,14 +32,18 @@ namespace MojCRM.Controllers
         }
 
         // GET: Organizations/GetOrganizations
-        public void GetOrganizations(string Name)
+        public void GetOrganizations()
         {
-            var MerUser = (from u in db.Users
-                           where u.UserName == Name
-                           select u.MerUserUsername).First();
-            var MerPass = (from u in db.Users
-                           where u.UserName == Name
-                           select u.MerUserPassword).First();
+            //var MerUser = (from u in db.Users
+            //               where u.UserName == Name
+            //               select u.MerUserUsername).First();
+            //var MerPass = (from u in db.Users
+            //               where u.UserName == Name
+            //               select u.MerUserPassword).First();
+
+            var Credentials = (from u in db.Users
+                               where u.UserName == User.Identity.Name
+                               select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
 
             var ReferencedId = (from o in db.Organizations
                                orderby o.MerId descending
@@ -56,8 +60,8 @@ namespace MojCRM.Controllers
                 {
                     MerApiGetSubjekt Request = new MerApiGetSubjekt()
                     {
-                        Id = MerUser.ToString(),
-                        Pass = MerPass.ToString(),
+                        Id = Credentials.MerUser,
+                        Pass = Credentials.MerPass,
                         Oib = "99999999927",
                         PJ = "",
                         SoftwareId = "MojCRM-001",
@@ -94,6 +98,11 @@ namespace MojCRM.Controllers
                                 MerId = Result.Id,
                                 TotalReceived = Result.TotalReceived
                             });
+                            db.OrganizationDetails.Add(new OrganizationDetail
+                            {
+                                MerId = Result.Id,
+                                OrganizationGroup = OrganizationGroupEnum.Nema
+                            });
                             db.SaveChanges();
                             Result = Response;
                         }
@@ -110,7 +119,7 @@ namespace MojCRM.Controllers
                     Message = @"Greška kod preuzimanja podataka o tvrtki",
                     InnerException = e.InnerException.ToString(),
                     Request = e.Source,
-                    User = Name,
+                    User = User.Identity.Name,
                     InsertDate = DateTime.Now
                 });
                 db.SaveChanges();

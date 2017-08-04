@@ -2,10 +2,10 @@
 
 @{
     ViewBag.Title = "Detalji kontakta";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 }
 
-<h2 style="text-align:center"><strong>Pregled kontakata za dostavu eRačuna</strong></h2>
+<h2 style="text-align:center"><strong>Detalji kontakta @Model.ContactFirstName @Model.ContactLastName</strong></h2>
 
 <div>
     <hr />
@@ -101,6 +101,6 @@
     </dl>
 </div>
 <p>
-    <a href="@Url.RouteUrl(new { action = "Edit", controller = "Contact", Model.ContactId })" class="btn btn-default btn-sm">Uređivanje kontakta</a>
-    <a href="@Url.RouteUrl(new { action = "Contacts", controller = "Delivery", area = ""})" class="btn btn-default btn-sm">Povratak na popis</a>
+    <a href="@Url.RouteUrl(new { action = "Edit", controller = "Contact", Model.ContactId })" class="btn btn-default btn-sm" title="Uređivanje kontakta"><i class="fa fa-edit"></i></a>
+    <a href="@Url.RouteUrl(new { action = "Index", controller = "Contact", area = ""})" class="btn btn-default btn-sm" title="Povratak na popis kontakata"><i class="fa fa-arrow-left"></i></a>
 </p>

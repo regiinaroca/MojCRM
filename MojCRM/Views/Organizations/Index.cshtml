@@ -3,7 +3,7 @@
 @model IEnumerable<MojCRM.Models.Organizations>
 @{
     ViewBag.Title = "Popis tvrtki";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 }
 
 <body>
@@ -33,7 +33,7 @@
 {
     columns.Add(m => m.VAT).Encoded(false).Sanitized(false).Titled("OIB tvrtke").Sortable(true);
     columns.Add(m => m.SubjectName).Encoded(false).Sanitized(false).Titled("Naziv tvrtke").Sortable(true);
-    columns.Add(m => m.Income).Encoded(false).Sanitized(false).Titled("Godišnji prihod").Sortable(true);
+    columns.Add(m => m.Income).Encoded(false).Sanitized(false).Titled("Godišnji prihod").Sortable(true).Format("{0:C}");
 }).WithPaging(20)
 </body>
 

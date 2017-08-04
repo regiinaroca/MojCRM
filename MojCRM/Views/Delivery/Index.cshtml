@@ -5,7 +5,7 @@
 
 @{
     ViewBag.Title = "Dostava eRačuna";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 }
 
 @{
@@ -51,6 +51,8 @@
             new ListItem{ Value = "Filip Karmazen", Text = "Filip Karmazen"},
             new ListItem{ Value = "Katarina Ceković", Text = "Katarina Ceković"},
             new ListItem{ Value = "Viktor Jajtić", Text = "Viktor Jajtić"},
+            new ListItem{ Value = "Filip Vučemilović Grgić", Text = "Filip Vučemilović Grgić"},
+            new ListItem{ Value = "Nikolina Ćosić", Text = "Nikolina Ćosić"}
         };
 
 }
@@ -352,7 +354,7 @@ columns.Add(m => m.MerDocumentTypeIdString).Encoded(false).Sanitized(false).Titl
         var email = "matej@moj-eracun.hr; alen.jedud@moj-eracun.hr";
         var subject = "Moj-CRM -- Dnevni izvještaj -- Odjel dostave";
         var body = "Poštovani," + "%0D%0A" + "%0D%0A" + "danas je kreirano @ViewBag.TicketsCreatedToday kartica, od toga @ViewBag.OpenTicketsAssigned za prvi puta." + "%0D%0A" + "%0D%0A" + "Uključujući stare kartice, ukupno se mora obraditi @ViewBag.TotalOpenedTickets kartica. Zbog toga će raspored na dostavi biti:" + "%0D%0A" + "%0D%0A"
-            + "Darko Glatki: " + "%0D%0A" + "Tomislav Ptiček: " + "%0D%0A" + "Filip Troskot: " + "%0D%0A" + "Filip Karmazen: " + "%0D%0A" + "Katarina Ceković: " + "%0D%0A" + "Viktor Jajtić: " + "%0D%0A" + "%0D%0A" + "Lijep pozdrav,";
+            + "Darko Glatki: " + "%0D%0A" + "Tomislav Ptiček: " + "%0D%0A" + "Filip Troskot: " + "%0D%0A" + "Filip Karmazen: " + "%0D%0A" + "Katarina Ceković: " + "%0D%0A" + "Filip Vučemilović Grgić: " + "%0D%0A" + "Nikolina Ćosić: " + "%0D%0A" + "%0D%0A" + "Lijep pozdrav,";
         window.location = 'mailto:' + email + '?subject=' + subject + '&body=' + body;
     });
     function Resend() {

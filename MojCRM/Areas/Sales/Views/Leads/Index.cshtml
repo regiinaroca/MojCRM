@@ -4,7 +4,7 @@
 
 @{
     ViewBag.Title = "Pregled leadova";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 }
 
 @{ 
@@ -83,9 +83,9 @@
     </div>
     <div class="col-md-3">
         <div class="form-group">
-            <label for="organization-search">Naziv tvrtke</label>
+            <label for="organization-search">Naziv ili OIB tvrtke</label>
             <div id="organization-search">
-                @Html.TextBox("Organization", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Naziv tvrtke" })
+                @Html.TextBox("Organization", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Naziv ili OIB tvrtke" })
             </div>
         </div>
     </div>
@@ -190,15 +190,14 @@
         if ((User.Identity.Name == m.AssignedTo) || (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
         {
             return @<div><span>
-        <a href="@Url.RouteUrl(new { action = "Details", controller = "Leads", area = "Sales", id = m.LeadId, returnUrl = Request.Url })" title="Detalji leada"><i class="fa fa-list"></i></a>
-        <a href="@Url.RouteUrl(new { action = "Edit", controller = "Leads", area = "Sales", id = m.LeadId, returnUrl = Request.Url })" title="Uređivanje leada"><i class="fa fa-edit"></i></a>
-        <a href="@Url.RouteUrl(new { action = "Delete", controller = "Leads", area = "Sales", id = m.LeadId, returnUrl = Request.Url })" title="Brisanje leada"><i class="fa fa-trash"></i></a>
+        <a href="@Url.RouteUrl(new { action = "Details", controller = "Leads", area = "Sales", id = m.LeadId })" title="Detalji leada"><i class="fa fa-list"></i></a>
+        @*<a href="@Url.RouteUrl(new { action = "Edit", controller = "Leads", area = "Sales", id = m.LeadId, returnUrl = Request.Url })" title="Uređivanje leada"><i class="fa fa-edit"></i></a>*@
     </span></div>;
         }
         if (User.IsInRole("Administrator") || User.IsInRole("Superadmin"))
         {
             return @<div><span>
-        <a href="@Url.RouteUrl(new { action = "Delete", controller = "Leads", area = "Sales", id = m.LeadId, returnUrl = Request.Url })" title="Brisanje leada"><i class="fa fa-trash"></i></a>
+        <a href="@Url.RouteUrl(new { action = "Delete", controller = "Leads", area = "Sales", id = m.LeadId })" title="Brisanje leada"><i class="fa fa-trash"></i></a>
     </span></div>;
         }
             return @<span></span>;

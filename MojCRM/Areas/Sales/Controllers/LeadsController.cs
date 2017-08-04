@@ -9,6 +9,8 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
+using static MojCRM.Models.ActivityLog;
 
 namespace MojCRM.Areas.Sales.Controllers
 {
@@ -17,13 +19,14 @@ namespace MojCRM.Areas.Sales.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Sales/Leads
+        [Authorize]
         public ActionResult Index(LeadSearchHelper Model)
         {
             var leads = from l in db.Leads
                                 select l;
             if (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Board") || User.IsInRole("Superadmin"))
             {
-                //Search Engine
+                //Search Engine -- Admin
                 if (!String.IsNullOrEmpty(Model.Campaign))
                 {
                     leads = leads.Where(l => l.RelatedCampaign.CampaignName.Contains(Model.Campaign));
@@ -38,7 +41,7 @@ namespace MojCRM.Areas.Sales.Controllers
                 }
                 if (!String.IsNullOrEmpty(Model.Organization))
                 {
-                    leads = leads.Where(l => l.RelatedOrganization.SubjectName.Contains(Model.Organization));
+                    leads = leads.Where(l => l.RelatedOrganization.SubjectName.Contains(Model.Organization) || l.RelatedOrganization.VAT.Contains(Model.Organization));
                     ViewBag.SearchResults = leads.Count();
                     ViewBag.SearchResultsAssigned = leads.Where(l => l.IsAssigned == true).Count();
                 }
@@ -79,6 +82,37 @@ namespace MojCRM.Areas.Sales.Controllers
             else
             {
                 leads = leads.Where(op => op.AssignedTo == User.Identity.Name);
+                //Search Engine -- User
+                if (!String.IsNullOrEmpty(Model.Campaign))
+                {
+                    leads = leads.Where(l => l.RelatedCampaign.CampaignName.Contains(Model.Campaign));
+                    ViewBag.SearchResults = leads.Count();
+                    ViewBag.SearchResultsAssigned = leads.Where(l => l.IsAssigned == true).Count();
+                }
+                if (!String.IsNullOrEmpty(Model.Lead))
+                {
+                    leads = leads.Where(l => l.LeadTitle.Contains(Model.Organization) || l.RelatedOrganization.VAT.Contains(Model.Organization));
+                    ViewBag.SearchResults = leads.Count();
+                    ViewBag.SearchResultsAssigned = leads.Where(l => l.IsAssigned == true).Count();
+                }
+                if (!String.IsNullOrEmpty(Model.Organization))
+                {
+                    leads = leads.Where(l => l.RelatedOrganization.SubjectName.Contains(Model.Organization));
+                    ViewBag.SearchResults = leads.Count();
+                    ViewBag.SearchResultsAssigned = leads.Where(l => l.IsAssigned == true).Count();
+                }
+                if (!String.IsNullOrEmpty(Model.LeadStatus.ToString()))
+                {
+                    leads = leads.Where(l => l.LeadStatus == Model.LeadStatus);
+                    ViewBag.SearchResults = leads.Count();
+                    ViewBag.SearchResultsAssigned = leads.Where(l => l.IsAssigned == true).Count();
+                }
+                if (!String.IsNullOrEmpty(Model.RejectReason.ToString()))
+                {
+                    leads = leads.Where(l => l.RejectReason == Model.RejectReason);
+                    ViewBag.SearchResults = leads.Count();
+                    ViewBag.SearchResultsAssigned = leads.Where(l => l.IsAssigned == true).Count();
+                }
             }
 
             ViewBag.SearchResults = leads.Count();
@@ -91,7 +125,14 @@ namespace MojCRM.Areas.Sales.Controllers
             ViewBag.QuoteSent = leads.Where(l => l.AssignedTo == User.Identity.Name && l.LeadStatus == Lead.LeadStatusEnum.QOUTESENT).Count();
             ViewBag.QuoteAccepted = leads.Where(l => l.AssignedTo == User.Identity.Name && l.LeadStatus == Lead.LeadStatusEnum.ACCEPTED).Count();
 
-            return View(leads.ToList().OrderByDescending(op => op.InsertDate));
+            if (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Board") || User.IsInRole("Superadmin"))
+            {
+                return View(leads.ToList().OrderByDescending(l => l.InsertDate));
+            }
+            else
+            {
+                return View(leads.Where(l => l.LeadStatus != Lead.LeadStatusEnum.REJECTED || l.LeadStatus != Lead.LeadStatusEnum.ACCEPTED).ToList().OrderByDescending(l => l.InsertDate));
+            }
         }
 
         // GET: Sales/Leads/Details/5
@@ -114,7 +155,7 @@ namespace MojCRM.Areas.Sales.Controllers
                                      where n.RelatedLeadId == lead.LeadId
                                      select n).OrderByDescending(n => n.InsertDate).AsEnumerable();
             var _RelatedLeadActivities = (from a in db.ActivityLogs
-                                          where a.ReferenceId == lead.LeadId
+                                          where a.ReferenceId == lead.LeadId && a.Module == ModuleEnum.Leads
                                           select a).OrderByDescending(a => a.InsertDate).AsEnumerable();
             var _RelatedOrganization = (from o in db.Organizations
                                         where o.MerId == lead.RelatedOrganizationId
@@ -127,13 +168,49 @@ namespace MojCRM.Areas.Sales.Controllers
                                     select c).First();
             var _Users = (from u in db.Users
                           select u).AsEnumerable();
+            //var _LastLeadNote = (from n in db.LeadNotes
+            //                     where n.RelatedLeadId == lead.LeadId
+            //                     select n).OrderByDescending(n => n.InsertDate).Select(n => n.Note).First().ToString();
+
+            var salesNoteTemplates = new List<ListItem>
+                {
+                    new ListItem{ Value = "razloženo funkcioniranje servisa (opis onoga što se dogodi nakon što korisnik klikne pošalji eRačun)", Text = "razloženo funkcioniranje servisa (opis onoga što se dogodi nakon što korisnik klikne pošalji eRačun)" },
+                    new ListItem{ Value = "argumentirana korisnička podrška -- ažuriranje mailova (90% uspješnost), slanje tipske obavijesti, zvanje za preuzimanje (97% uspješnost)", Text = "argumentirana korisnička podrška -- ažuriranje mailova (90% uspješnost), slanje tipske obavijesti, zvanje za preuzimanje (97% uspješnost)" },
+                    new ListItem{ Value = "objašnjena tehnička pozadina s ERPom", Text = "objašnjena tehnička pozadina s ERPom" },
+                    new ListItem{ Value = "objašnjena tehnička pozadina s eRa aplikacijom", Text = "objašnjena tehnička pozadina s eRa aplikacijom" },
+                    new ListItem{ Value = "razložena potvrda primitka, pretraživanje i arhiviranje", Text = "razložena potvrda primitka, pretraživanje i arhiviranje" },
+                    new ListItem{ Value = "istaknuta jednostavnost uvođenja (kod izgovora nemamo vremena, prostora, u restrukturiranju smo)", Text = "istaknuta jednostavnost uvođenja (kod izgovora nemamo vremena, prostora, u restrukturiranju smo)" },
+                    new ListItem{ Value = "osvježen kontakt i iznesene novosti", Text = "osvježen kontakt i iznesene novosti" },
+                    new ListItem{ Value = "izvršen kvalitetan presing", Text = "izvršen kvalitetan presing" },
+                    new ListItem{ Value = "izvršen salesforce (isticanje benefita uz forzu)", Text = "izvršen salesforce (isticanje benefita uz forzu)" },
+                    new ListItem{ Value = "poslan mail ps (prijedlog suradnje)", Text = "poslan mail ps (prijedlog suradnje)" },
+                    new ListItem{ Value = "kreirati i odaslati PND", Text = "kreirati i odaslati PND" },
+                    new ListItem{ Value = "kreirati i odaslati UO", Text = "kreirati i odaslati UO" },
+                    new ListItem{ Value = "održan sastanak, poslan FU", Text = "održan sastanak, poslan FU" },
+                    new ListItem{ Value = "objašnjena zakonska pozadina i pravovaljanost eRačuna", Text = "objašnjena zakonska pozadina i pravovaljanost eRačuna" },
+                    new ListItem{ Value = "kontaktirani za uvođenje zaprimanja", Text = "kontaktirani za uvođenje zaprimanja" },
+                    new ListItem{ Value = "obrazložio slanje privitaka", Text = "obrazložio slanje privitaka" },
+                    new ListItem{ Value = "obrazložio procesnu pokrivenost primatelja te odagnao brige i strahove u vezi preuzimanja od strane njihovih kupaca", Text = "obrazložio procesnu pokrivenost primatelja te odagnao brige i strahove u vezi preuzimanja od strane njihovih kupaca" }
+                };
+
+            var rejectReasonList = new List<ListItem>
+            {
+                new ListItem{ Value= "0", Text = "Ne želi navesti"},
+                new ListItem{ Value= "1", Text = "Nema interesa za uslugu"},
+                new ListItem{ Value= "2", Text = "Previsoka cijena"},
+                new ListItem{ Value= "3", Text = "Neadekvatna ponuda"},
+                new ListItem{ Value= "4", Text = "Koristi drugog posrednika"},
+                new ListItem{ Value= "5", Text = "Nedostatak vremena za pokretanje projekta"},
+                new ListItem{ Value= "6", Text = "Dio strane grupacije / Strano vlasništvo"},
+                new ListItem{ Value= "7", Text = "Drugo / Ostalo"},
+            };
 
             var LeadDetails = new LeadDetailViewModel()
             {
                 LeadId = id,
                 LeadDescription = lead.LeadDescription,
                 LeadStatus = lead.LeadStatusString,
-                RejectReasson = lead.LeadRejectReasonString,
+                RejectReason = lead.LeadRejectReasonString,
                 OrganizationId = lead.RelatedOrganizationId,
                 OrganizationName = _RelatedOrganization.SubjectName,
                 OrganizationVAT = _RelatedOrganization.VAT,
@@ -152,7 +229,9 @@ namespace MojCRM.Areas.Sales.Controllers
                 RelatedSalesContacts = _RelatedSalesContacts,
                 RelatedLeadNotes = _RelatedLeadNotes,
                 RelatedLeadActivities = _RelatedLeadActivities,
-                Users = _Users
+                Users = _Users,
+                SalesNoteTemplates = salesNoteTemplates,
+                RejectReasons = rejectReasonList
             };
 
             return View(LeadDetails);
@@ -200,48 +279,56 @@ namespace MojCRM.Areas.Sales.Controllers
                 db.SaveChanges();
             }
 
-
-            switch (Model.Identifier)
+            if (Model.IsActivity == false)
             {
-                case 1:
-                    db.ActivityLogs.Add(new ActivityLog
-                    {
-                        Description = User.Identity.Name + " je obavio uspješan poziv vezan za prodajnu priliku: " + lead.LeadTitle,
-                        User = User.Identity.Name,
-                        ReferenceId = Model.RelatedLeadId,
-                        ActivityType = ActivityLog.ActivityTypeEnum.SUCCALL,
-                        Department = ActivityLog.DepartmentEnum.Sales,
-                        InsertDate = DateTime.Now
-                    });
-                    db.SaveChanges();
-                    break;
-                case 2:
-                    db.ActivityLogs.Add(new ActivityLog
-                    {
-                        Description = User.Identity.Name + " je obavio kraći informativni poziv vezano za prodajnu priliku: " + lead.LeadTitle,
-                        User = User.Identity.Name,
-                        ReferenceId = Model.RelatedLeadId,
-                        ActivityType = ActivityLog.ActivityTypeEnum.SUCCALSHORT,
-                        Department = ActivityLog.DepartmentEnum.Sales,
-                        InsertDate = DateTime.Now,
-                    });
-                    db.SaveChanges();
-                    break;
-                case 3:
-                    db.ActivityLogs.Add(new ActivityLog
-                    {
-                        Description = User.Identity.Name + " je pokušao obaviti telefonski poziv vezano za prodajnu priliku: " + lead.LeadTitle,
-                        User = User.Identity.Name,
-                        ReferenceId = Model.RelatedLeadId,
-                        ActivityType = ActivityLog.ActivityTypeEnum.UNSUCCAL,
-                        Department = ActivityLog.DepartmentEnum.Sales,
-                        InsertDate = DateTime.Now,
-                    });
-                    db.SaveChanges();
-                    break;
+                return RedirectToAction("Details", new { id = Model.RelatedLeadId });
             }
-
-            return RedirectToAction("Details", new { id = Model.RelatedLeadId });
+            else
+            {
+                switch (Model.Identifier)
+                {
+                    case 1:
+                        db.ActivityLogs.Add(new ActivityLog
+                        {
+                            Description = User.Identity.Name + " je obavio uspješan poziv vezan uz lead: " + lead.LeadTitle,
+                            User = User.Identity.Name,
+                            ReferenceId = Model.RelatedLeadId,
+                            ActivityType = ActivityLog.ActivityTypeEnum.SUCCALL,
+                            Department = ActivityLog.DepartmentEnum.Sales,
+                            Module = ModuleEnum.Leads,
+                            InsertDate = DateTime.Now
+                        });
+                        db.SaveChanges();
+                        break;
+                    case 2:
+                        db.ActivityLogs.Add(new ActivityLog
+                        {
+                            Description = User.Identity.Name + " je obavio kraći informativni poziv vezan uz lead: " + lead.LeadTitle,
+                            User = User.Identity.Name,
+                            ReferenceId = Model.RelatedLeadId,
+                            ActivityType = ActivityLog.ActivityTypeEnum.SUCCALSHORT,
+                            Department = ActivityLog.DepartmentEnum.Sales,
+                            Module = ModuleEnum.Leads,
+                            InsertDate = DateTime.Now,
+                        });
+                        db.SaveChanges();
+                        break;
+                    case 3:
+                        db.ActivityLogs.Add(new ActivityLog
+                        {
+                            Description = User.Identity.Name + " je pokušao obaviti telefonski poziv vezanvezan uz lead: " + lead.LeadTitle,
+                            User = User.Identity.Name,
+                            ReferenceId = Model.RelatedLeadId,
+                            ActivityType = ActivityLog.ActivityTypeEnum.UNSUCCAL,
+                            Department = ActivityLog.DepartmentEnum.Sales,
+                            Module = ModuleEnum.Leads,
+                            InsertDate = DateTime.Now,
+                        });
+                        db.SaveChanges();
+                        break;
+                }
+                return RedirectToAction("Details", new { id = Model.RelatedLeadId });
+            }
         }
 
         // POST: Sales/Leads/EditNote
@@ -288,6 +375,7 @@ namespace MojCRM.Areas.Sales.Controllers
                 ReferenceId = Model.RelatedLeadId,
                 ActivityType = ActivityLog.ActivityTypeEnum.EMAIL,
                 Department = ActivityLog.DepartmentEnum.Sales,
+                Module = ModuleEnum.Leads,
                 InsertDate = DateTime.Now,
             });
             db.SaveChanges();

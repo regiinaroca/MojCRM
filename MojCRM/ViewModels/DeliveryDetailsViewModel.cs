@@ -92,6 +92,9 @@ namespace MojCRM.ViewModels
         [Display(Name = "Dodijeljeno agentu")]
         public string AssignedTo { get; set; }
 
+        [Display(Name = "Zadnja bilješka")]
+        public string LastDeliveryDetail { get; set; }
+
         [Display(Name = "Tip dokumenta:")]
         public string MerDocumentTypeIdString
         {

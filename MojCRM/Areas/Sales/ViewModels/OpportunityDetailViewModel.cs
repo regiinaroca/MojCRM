@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace MojCRM.Areas.Sales.ViewModels
 {
@@ -67,6 +68,9 @@ namespace MojCRM.Areas.Sales.ViewModels
         [Display(Name = "Zadnje kontaktirao")]
         public string LastContactedBy { get; set; }
 
+        [Display(Name = "Zadnja bilješka")]
+        public string LastOpportunityNote { get; set; }
+
         public IEnumerable<Contact> RelatedSalesContacts { get; set; }
         public IEnumerable<OpportunityNote> RelatedOpportunityNotes { get; set; }
         public IEnumerable<ActivityLog> RelatedOpportunityActivities { get; set; }
@@ -82,6 +86,21 @@ namespace MojCRM.Areas.Sales.ViewModels
                             {
                                 Text = t.ContactFirstName + " " + t.ContactLastName,
                                 Value = t.ContactFirstName + " " + t.ContactLastName
+                            }).ToList();
+                return list;
+            }
+            set { }
+        }
+
+        public IList<SelectListItem> RelatedSalesContactsId
+        {
+            get
+            {
+                var list = (from t in RelatedSalesContacts
+                            select new SelectListItem()
+                            {
+                                Text = t.ContactFirstName + " " + t.ContactLastName,
+                                Value = t.ContactId.ToString()
                             }).ToList();
                 return list;
             }
@@ -117,5 +136,8 @@ namespace MojCRM.Areas.Sales.ViewModels
             }
             set { }
         }
+
+        public IList<ListItem> SalesNoteTemplates { get; set; }
+        public IList<ListItem> RejectReasons { get; set; }
     }
 }

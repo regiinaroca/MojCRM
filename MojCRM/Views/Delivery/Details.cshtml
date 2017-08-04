@@ -4,7 +4,7 @@
 
 @{
     ViewBag.Title = "Detalji";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 }
 
 @{ 
@@ -15,7 +15,8 @@
             new ListItem{ Value = "Filip Troskot", Text = "Filip Troskot"},
             new ListItem{ Value = "Filip Karmazen", Text = "Filip Karmazen"},
             new ListItem{ Value = "Katarina Ceković", Text = "Katarina Ceković"},
-            new ListItem{ Value = "Viktor Jajtić", Text = "Viktor Jajtić"}
+            new ListItem{ Value = "Viktor Jajtić", Text = "Viktor Jajtić"},
+            new ListItem{ Value = "Nikolina Ćosić", Text = "Nikolina Ćosić"}
         };
 }
 
@@ -477,7 +478,7 @@
 }
 <!--Modal - Document History-->
 <div class="modal fade" id="DocumentHistory" tabindex="-1" role="dialog" aria-labelledby="DocumentHistory">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg" role="document" style="width: 800px">
         <div class="modal-content" style="overflow:hidden">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -897,7 +898,7 @@
             <div class="btn-group" role="group">
                 <a href="@Url.RouteUrl(new { action = "UpdateStatusDetails", controller = "Delivery", area = "", Model.TicketId, Model.MerElectronicId, Model.ReceiverId, returnUrl = Request.Url })" class="btn btn-sm btn-primary" title="Osvježavanje statusa dokumenta - @Model.MerDocumentTypeIdString - @Model.InvoiceNumber"><i class="glyphicon glyphicon-refresh"></i> @*Osvježi status*@</a>
                 <a href="@Url.RouteUrl(new { action = "Resend", controller = "Delivery", area = "", Model.TicketId, Model.MerElectronicId, Model.ReceiverId, User.Identity.Name, returnUrl = Request.Url })" class="btn btn-sm btn-primary" title="Ponovno slanje obavijesti o dostavi eRačuna"><i class="glyphicon glyphicon-share-alt"></i> @*Ponovi slanje*@</a>
-                <button type="button" title="Promjena e-mail adrese za dostavu eRačuna" class="btn btn-primary btn-sm" data-toggle="modal" href="#ChangeEmail"><i class="glyphicon glyphicon-envelope"></i> @*Izmjena e-maila*@</button>
+                <button type="button" title="Promjena e-mail adrese za dostavu eRačuna" class="btn btn-primary btn-sm" data-toggle="modal" href="#ChangeEmail"><i class="glyphicon glyphicon-envelope"></i></button>
                 <button type="button" title="Pregled povijesti razmjene eDokumenata putem servisa Moj-eRačun" class="btn btn-primary btn-sm" data-toggle="modal" href="#DocumentHistory"><i class="fa fa-history"></i></button>
             </div>
             <div class="btn-group" role="group">
@@ -963,6 +964,13 @@
         </div>
         <div class="col-md-2">
             <button type="button" data-toggle="modal" href="#EditImportantComment" data-target="#EditImportantComment" title="Uredi napomenu za dostavu za ovog primatelja" class="btn btn-default btn-sm"><i class="fa fa-pencil"></i></button>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-12">
+            <strong>@Html.DisplayNameFor(model => model.LastDeliveryDetail)</strong>
+            @Model.LastDeliveryDetail
         </div>
     </div>
     <hr />

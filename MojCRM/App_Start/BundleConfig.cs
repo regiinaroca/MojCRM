@@ -41,7 +41,8 @@ namespace MojCRM
                 "~/Scripts/bootstrap.js",
                 "~/Scripts/bootstrap.min.js",
                 "~/Scripts/respond.js",
-                "~/Scripts/bootstrap-datepicker.min.js"));
+                "~/Scripts/bootstrap-datepicker.min.js",
+                "~/Scripts/bootstrap-tour.custom.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                  "~/Content/bootstrap.css",
@@ -49,10 +50,28 @@ namespace MojCRM
                  "~/Content/Site.css",
                  "~/Content/bootstrap-datepicker3.min.css",
                  "~/Content/font-awesome.css",
-                 "~/Content/font-awesome.min.css"));
+                 "~/Content/font-awesome.min.css",
+                 "~/Content/main.css",
+                 "~/Content/my-custom-styles.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/scripts").Include(
-                "~/Scripts/merscripts.js"));
+                "~/Scripts/merscripts.js",
+                "~/Scripts/king-common.js",
+                "~/Scripts/jquery.slimscroll.min.js",
+                "~/Scripts/jquery.easypiechart.min.js",
+                "~/Scripts/raphael-2.1.0.min.js",
+                "~/Scripts/raphael-2.1.0.min.js",
+                "~/Scripts/jquery.flot.min.js",
+                "~/Scripts/jquery.flot.pie.min.js",
+                "~/Scripts/jquery.flot.resize.min.js",
+                "~/Scripts/jquery.flot.time.min.js",
+                "~/Scripts/jquery.flot.tooltip.min.js",
+                "~/Scripts/jquery.sparkline.min.js",
+                //"~/Scripts/dataTables.bootstrap.js",
+                "~/Scripts/jquery.mapael.js",
+                "~/Scripts/king-chart-stat.js",
+                "~/Scripts/king-components.js"/*,
+                "~/Scripts/king-table.js"*/));
         }
     }
 }

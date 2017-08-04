@@ -33,9 +33,9 @@
             </div>
         </div>
 
-        <div id="opportunityStatus" class="form-group">
+        <div class="form-group">
             @Html.LabelFor(model => model.OpportunityStatus, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10" id="opportunityStatus">
                 @Html.EnumDropDownListFor(model => model.OpportunityStatus, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.OpportunityStatus, "", new { @class = "text-danger" })
             </div>
@@ -89,13 +89,27 @@
         </div>
     </div>
 }
-<script>
-    $('#opportunityStatus').on('change', function () {
-        if ($(this).val() === "3") {
-            $('#rejectReason').show()
+<script type="text/javascript">
+    status = document.getElementById('opportunityStatus');
+    if (status) {
+        reason = document.getElementById('rejectReason');
+        if (status.value != 3) reason.style.display = 'none';
+
+        status.onchange = function () {
+            if (this.value == 3) {
+                reason.show();
+            }
+            else {
+                reason.style.display = 'none'
+            }
         }
-        else {
-            $('#rejectReason').hide()
-        }
-    });
+    }
+    //$('#opportunityStatus').on('change', function () {
+    //    if ($(this).val() === 3) {
+    //        $('#rejectReason').show()
+    //    }
+    //    else {
+    //        $('#rejectReason').hide()
+    //    }
+    //});
 </script>

@@ -4,10 +4,10 @@
 @model IEnumerable<MojCRM.Models.Contact>
 @{
     ViewBag.Title = "Kontakti dostave";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 }
 <body>
-    <h2 style="text-align:center"><strong>Pregled kontakata za dostavu eRačuna</strong></h2>
+    <h2 style="text-align:center"><strong>Pregled kontakata za dostavu</strong></h2>
     <hr />
     @using (Html.BeginForm("Contacts", "Delivery", FormMethod.Get))
     {
@@ -45,7 +45,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
+        <br />
+        <div class="col-md-12">
             <div class="form-group" style="margin-bottom:0">
                 <input id="Search" type="submit" class="btn btn-primary btn-sm" value="Traži" />
                 <input id="btn-reset" type="reset" class="btn btn-warning btn-sm" value="Poništi" />
@@ -64,11 +65,11 @@
     columns.Add().Encoded(false).Sanitized(false).RenderValueAs(m =>
     {
         return @<span>
-        <a href="@Url.RouteUrl(new { action = "Details", controller = "Contact", area = "", m.ContactId, returnUrl = Request.Url })"><i class="glyphicon glyphicon-option-horizontal"></i></a> |
+        <a href="@Url.RouteUrl(new { action = "Details", controller = "Contact", area = "", m.ContactId })"><i class="fa fa fa-list"></i></a>
         @*<a href="#AddDetail" data-toggle="modal"><i style="color: forestgreen" class="glyphicon glyphicon-phone-alt"></i></a>*@
-        <a data-receiver-id="@Html.Raw(m.OrganizationId)" data-agent="@User.Identity.Name" data-contact="" data-detail-template="Informativni poziv" data-detail-note="" data-identifier-short="2" href="#" class="add-successfull-call-short"><i style="color: lightgreen" class="glyphicon glyphicon-phone-alt"></i></a> |
-        <a data-receiver-id="@Html.Raw(m.OrganizationId)" data-agent="@User.Identity.Name" data-contact="" data-detail-template="Nisu se javili" data-detail-note="" data-identifier="3" href="#" class="add-unsuccessfull-call"><i style="color: gold" class="glyphicon glyphicon-phone-alt"></i></a> |
-        <a href="@Url.RouteUrl(new { action = "Delete", controller = "Contact", area = "", m.ContactId, returnUrl = Request.Url })"><i class="glyphicon glyphicon-trash" style="color:gray"></i></a>
+        <a data-receiver-id="@Html.Raw(m.OrganizationId)" data-agent="@User.Identity.Name" data-contact="" data-detail-template="Informativni poziv" data-detail-note="" data-identifier-short="2" href="#" class="add-successfull-call-short"><i style="color: lightgreen" class="fa fa-phone-square"></i></a>
+        <a data-receiver-id="@Html.Raw(m.OrganizationId)" data-agent="@User.Identity.Name" data-contact="" data-detail-template="Nisu se javili" data-detail-note="" data-identifier="3" href="#" class="add-unsuccessfull-call"><i style="color: gold" class="fa fa-phone-square"></i></a>
+        <a href="@Url.RouteUrl(new { action = "Delete", controller = "Contact", area = "", m.ContactId, returnUrl = Request.Url })"><i class="fa fa-trash" style="color:gray"></i></a>
         </span>;
     });
 }).WithPaging(20)

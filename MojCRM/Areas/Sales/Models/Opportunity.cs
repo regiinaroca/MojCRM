@@ -1,9 +1,12 @@
 ﻿using MojCRM.Areas.Campaigns.Models;
 using MojCRM.Models;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace MojCRM.Areas.Sales.Models
 {
@@ -22,9 +25,11 @@ namespace MojCRM.Areas.Sales.Models
 
         [Display(Name = "Status")]
         public OpportunityStatusEnum OpportunityStatus { get; set; }
+        public string StatusDescription { get; set; }
 
         [Display(Name = "Razlog odbijanja")]
         public OpportunityRejectReasonEnum? RejectReason { get; set; }
+        public string RejectReasonDescription { get; set; }
 
         [Display(Name = "Kreirao")]
         public string CreatedBy { get; set; }
@@ -65,7 +70,10 @@ namespace MojCRM.Areas.Sales.Models
             LEAD,
 
             [Description("Odbijeno")]
-            REJECTED
+            REJECTED,
+
+            [Description("Potrebno dogovoriti sastanak")]
+            ARRANGEMEETING
         }
 
         public enum OpportunityRejectReasonEnum
@@ -83,7 +91,16 @@ namespace MojCRM.Areas.Sales.Models
             QUOTE,
 
             [Description("Drugi pružatelj usluga")]
-            SERVICEPROVIDER
+            SERVICEPROVIDER,
+
+            [Description("Nedostatak vremena za pokretanje projekta")]
+            NOTIME,
+
+            [Description("Dio strane grupacije / Strano vlasništvo")]
+            FOREIGNCOMPANY,
+
+            [Description("Drugo / Ostalo")]
+            OTHER
         }
 
         public string OpportunityStatusString
@@ -96,6 +113,7 @@ namespace MojCRM.Areas.Sales.Models
                     case OpportunityStatusEnum.INCONTACT: return "U kontaktu";
                     case OpportunityStatusEnum.LEAD: return "Kreiran lead";
                     case OpportunityStatusEnum.REJECTED: return "Odbijeno";
+                    case OpportunityStatusEnum.ARRANGEMEETING: return "Potrebno dogovoriti sastanak";
                 }
                 return "Status prodajne prilike";
             }
@@ -112,6 +130,9 @@ namespace MojCRM.Areas.Sales.Models
                     case OpportunityRejectReasonEnum.PRICE: return "Previsoka cijena";
                     case OpportunityRejectReasonEnum.QUOTE: return "Neadekvatna ponuda";
                     case OpportunityRejectReasonEnum.SERVICEPROVIDER: return "Koristi drugog posrednika";
+                    case OpportunityRejectReasonEnum.NOTIME: return "Nedostatak vremena za pokretanje projekta";
+                    case OpportunityRejectReasonEnum.FOREIGNCOMPANY: return "Dio strane grupacije / Strano vlasništvo";
+                    case OpportunityRejectReasonEnum.OTHER: return "Drugo / Ostalo";
                 }
                 return "Nije odbijeno";
             }

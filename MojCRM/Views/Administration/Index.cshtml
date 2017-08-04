@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "Administracija sustava";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 }
 
 <h2 style="text-align:center"><strong>Administracija sustava</strong></h2>
@@ -18,7 +18,7 @@
 <h4><i class="fa fa-industry"></i> Tvrtke</h4>
 <div class="row">
     <div class="col-md-3">
-        <a href="@Url.RouteUrl(new { action = "GetOrganizations", controller = "Organizations", area = "", Name = User.Identity.Name })" class="btn btn-default btn-sm">
+        <a href="@Url.RouteUrl(new { action = "GetOrganizations", controller = "Organizations", area = "" })" class="btn btn-default btn-sm">
             Kreiranje novih tvrtki iz Moj-eRačun
         </a>
     </div>
@@ -32,10 +32,10 @@
 <h4><i class="fa fa-ticket"></i> Dostava</h4>
 <div class="row">
     <div class="col-md-3">
-        <a class="btn btn-default btn-sm" href="@Url.RouteUrl(new { action = "CreateTicketsFirstTime", controller = "Delivery", area = "", User.Identity.Name })">Kreiranje kartica za prvi put</a>
+        <a class="btn btn-default btn-sm" href="@Url.RouteUrl(new { action = "CreateTicketsFirstTime", controller = "Delivery", area = "" })">Kreiranje kartica za prvi put</a>
     </div>
     <div class="col-md-3">
-        <a class="btn btn-default btn-sm" href="@Url.RouteUrl(new { action = "CreateTickets", controller = "Delivery", area = "", User.Identity.Name })">Kreiranje kartica za preuzimanje</a>
+        <a class="btn btn-default btn-sm" href="@Url.RouteUrl(new { action = "CreateTickets", controller = "Delivery", area = "" })">Kreiranje kartica za preuzimanje</a>
     </div>
 </div>
 <hr />

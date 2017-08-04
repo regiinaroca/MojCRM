@@ -186,19 +186,23 @@ namespace MojCRM.Controllers
         // GET: Delivery/CreateTicketsFirstTime
         // Kreiranje kartica za prvo preuzimanje
         [Authorize(Roles = "Superadmin")]
-        public void CreateTicketsFirstTime(string Name)
+        public void CreateTicketsFirstTime()
         {
-            var MerUser = (from u in db.Users
-                           where u.UserName == Name
-                           select u.MerUserUsername).First();
-            var MerPass = (from u in db.Users
-                           where u.UserName == Name
-                           select u.MerUserPassword).First();
+            //var MerUser = (from u in db.Users
+            //               where u.UserName == Name
+            //               select u.MerUserUsername).First();
+            //var MerPass = (from u in db.Users
+            //               where u.UserName == Name
+            //               select u.MerUserPassword).First();
+
+            var Credentials = (from u in db.Users
+                               where u.UserName == User.Identity.Name
+                               select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
 
             MerApiGetNondeliveredDocuments RequestFirstTime = new MerApiGetNondeliveredDocuments()
             {
-                Id = MerUser,
-                Pass = MerPass,
+                Id = Credentials.MerUser,
+                Pass = Credentials.MerPass,
                 Oib = "99999999927",
                 PJ = "",
                 SoftwareId = "MojCRM-001",
@@ -237,19 +241,23 @@ namespace MojCRM.Controllers
         // GET: Delivery/CreateTickets
         // Kreiranje kartica za redovito preuzimanje
         [Authorize(Roles = "Superadmin")]
-        public void CreateTickets(string Name)
+        public void CreateTickets()
         {
-            var MerUser = (from u in db.Users
-                           where u.UserName == Name
-                           select u.MerUserUsername).First();
-            var MerPass = (from u in db.Users
-                           where u.UserName == Name
-                           select u.MerUserPassword).First();
+            //var MerUser = (from u in db.Users
+            //               where u.UserName == Name
+            //               select u.MerUserUsername).First();
+            //var MerPass = (from u in db.Users
+            //               where u.UserName == Name
+            //               select u.MerUserPassword).First();
+
+            var Credentials = (from u in db.Users
+                               where u.UserName == User.Identity.Name
+                               select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
 
             MerApiGetNondeliveredDocuments RequestRegularDelivery = new MerApiGetNondeliveredDocuments()
             {
-                Id = MerUser,
-                Pass = MerPass,
+                Id = Credentials.MerUser,
+                Pass = Credentials.MerPass,
                 Oib = "99999999927",
                 PJ = "",
                 SoftwareId = "MojCRM-001",

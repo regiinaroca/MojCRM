@@ -16,6 +16,7 @@ namespace MojCRM.Areas.Sales.Helpers
         public int? NoteId { get; set; }
         public string Email { get; set; }
         public int Identifier { get; set; }
+        public bool IsActivity { get; set; }
     }
 
     public class LeadContactHelper

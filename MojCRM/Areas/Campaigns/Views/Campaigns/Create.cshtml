@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Kreiraj kampanju";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 }
 
 <h2 style="text-align:center"><strong>Kreiraj kampanju</strong></h2>
@@ -68,9 +68,9 @@
     </div>
     <br />
     <div class="col-md-12">
-        <div class="form-group">
-            <input id="Search" type="submit" class="btn btn-primary btn-sm" value="Kreiraj" />
-            <input id="btn-reset" type="reset" class="btn btn-warning btn-sm" value="Poništi" />
+        <div class="btn-group" role="group">
+            <button type="submit" class="btn btn-sm btn-default" title="Kreiraj kampanju"><i class="fa fa-plus"></i></button>
+            <button id="btn-reset" type="reset" class="btn btn-sm btn-default" title="Poništi upisani sadržaj"><i class="fa fa-times text-warning"></i></button>
             <a href="@Url.RouteUrl(new { action = "Index", controller = "Campaigns", area = "Campaigns", returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Povratak na popis kampanja"><i class="fa fa-arrow-left"></i></a>
         </div>
     </div>

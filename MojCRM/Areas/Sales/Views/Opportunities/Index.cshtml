@@ -4,7 +4,7 @@
 
 @{
     ViewBag.Title = "Pregled prodajnih prilika";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 }
 
 @{ 
@@ -82,9 +82,9 @@
     </div>
     <div class="col-md-3">
         <div class="form-group">
-            <label for="organization-search">Naziv tvrtke</label>
+            <label for="organization-search">Naziv ili OIB tvrtke</label>
             <div id="organization-search">
-                @Html.TextBox("Organization", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Naziv tvrtke" })
+                @Html.TextBox("Organization", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Naziv ili OIB tvrtke" })
             </div>
         </div>
     </div>
@@ -185,15 +185,14 @@
         if ((User.Identity.Name == m.AssignedTo) || (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
         {
             return @<div><span>
-        <a href="@Url.RouteUrl(new { action = "Details", controller = "Opportunities", area = "Sales", id = m.OpportunityId, returnUrl = Request.Url })" title="Detalji prodajne prilike"><i class="fa fa-list"></i></a>
-        <a href="@Url.RouteUrl(new { action = "Edit", controller = "Opportunities", area = "Sales", id = m.OpportunityId, returnUrl = Request.Url })" title="Uređivanje prodajne prilike"><i class="fa fa-edit"></i></a>
-        <a href="@Url.RouteUrl(new { action = "Delete", controller = "Opportunities", area = "Sales", id = m.OpportunityId, returnUrl = Request.Url })" title="Brisanje prodajne prilike"><i class="fa fa-trash"></i></a>
+        <a href="@Url.RouteUrl(new { action = "Details", controller = "Opportunities", area = "Sales", id = m.OpportunityId })" title="Detalji prodajne prilike"><i class="fa fa-list"></i></a>
+        @*<a href="@Url.RouteUrl(new { action = "Edit", controller = "Opportunities", area = "Sales", id = m.OpportunityId, returnUrl = Request.Url })" title="Uređivanje prodajne prilike"><i class="fa fa-edit"></i></a>*@
     </span></div>;
         }
         if (User.IsInRole("Administrator") || User.IsInRole("Superadmin"))
         {
             return @<div><span>
-        <a href="@Url.RouteUrl(new { action = "Delete", controller = "Opportunities", area = "Sales", id = m.OpportunityId, returnUrl = Request.Url })" title="Brisanje kampanje"><i class="fa fa-trash"></i></a>
+        <a href="@Url.RouteUrl(new { action = "Delete", controller = "Opportunities", area = "Sales", id = m.OpportunityId })" title="Brisanje kampanje"><i class="fa fa-trash"></i></a>
     </span></div>;
         }
             return @<span></span>;

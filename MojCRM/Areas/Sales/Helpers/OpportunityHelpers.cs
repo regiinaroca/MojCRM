@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.UI.WebControls;
 using static MojCRM.Areas.Sales.Models.Opportunity;
 
 namespace MojCRM.Areas.Sales.Helpers
@@ -16,17 +17,18 @@ namespace MojCRM.Areas.Sales.Helpers
         public int? NoteId { get; set; }
         public string Email { get; set; }
         public int Identifier { get; set; }
+        public bool IsActivity { get; set; }
     }
 
-    public class OpportunityContactHelper
+    public class SalesContactHelper
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Telephone { get; set; }
         public string Mobile { get; set; }
         public string Email { get; set; }
-        public string Title { get; set; }
-        public int? RelatedOpportunityId { get; set; }
+        public string TitleFunction { get; set; }
+        public int? RelatedEntityId { get; set; }
         public string ContactId { get; set; }
     }
 

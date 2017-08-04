@@ -14,6 +14,8 @@ using Excel = Microsoft.Office.Interop.Excel;
 using MojCRM.Areas.Sales.ViewModels;
 using MojCRM.Areas.Sales.Helpers;
 using System.Text;
+using System.Web.UI.WebControls;
+using static MojCRM.Models.ActivityLog;
 
 namespace MojCRM.Areas.Sales.Controllers
 {
@@ -22,13 +24,14 @@ namespace MojCRM.Areas.Sales.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Sales/Opportunities
+        [Authorize]
         public ActionResult Index(OpportunitySearchHelper Model)
         {
             var opportunities = from o in db.Opportunities
                                 select o;
             if (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Board") || User.IsInRole("Superadmin"))
             {
-                //Search Engine
+                //Search Engine -- Admin
                 if (!String.IsNullOrEmpty(Model.Campaign))
                 {
                     opportunities = opportunities.Where(op => op.RelatedCampaign.CampaignName.Contains(Model.Campaign));
@@ -43,7 +46,7 @@ namespace MojCRM.Areas.Sales.Controllers
                 }
                 if (!String.IsNullOrEmpty(Model.Organization))
                 {
-                    opportunities = opportunities.Where(op => op.RelatedOrganization.SubjectName.Contains(Model.Organization));
+                    opportunities = opportunities.Where(op => op.RelatedOrganization.SubjectName.Contains(Model.Organization) || op.RelatedOrganization.VAT.Contains(Model.Organization));
                     ViewBag.SearchResults = opportunities.Count();
                     ViewBag.SearchResultsAssigned = opportunities.Where(op => op.IsAssigned == true).Count();
                 }
@@ -84,6 +87,37 @@ namespace MojCRM.Areas.Sales.Controllers
             else
             {
                 opportunities = opportunities.Where(op => op.AssignedTo == User.Identity.Name);
+                //Search Engine -- User
+                if (!String.IsNullOrEmpty(Model.Campaign))
+                {
+                    opportunities = opportunities.Where(op => op.RelatedCampaign.CampaignName.Contains(Model.Campaign));
+                    ViewBag.SearchResults = opportunities.Count();
+                    ViewBag.SearchResultsAssigned = opportunities.Where(op => op.IsAssigned == true).Count();
+                }
+                if (!String.IsNullOrEmpty(Model.Opportunity))
+                {
+                    opportunities = opportunities.Where(op => op.OpportunityTitle.Contains(Model.Opportunity));
+                    ViewBag.SearchResults = opportunities.Count();
+                    ViewBag.SearchResultsAssigned = opportunities.Where(op => op.IsAssigned == true).Count();
+                }
+                if (!String.IsNullOrEmpty(Model.Organization))
+                {
+                    opportunities = opportunities.Where(op => op.RelatedOrganization.SubjectName.Contains(Model.Organization) || op.RelatedOrganization.VAT.Contains(Model.Organization));
+                    ViewBag.SearchResults = opportunities.Count();
+                    ViewBag.SearchResultsAssigned = opportunities.Where(op => op.IsAssigned == true).Count();
+                }
+                if (!String.IsNullOrEmpty(Model.OpportunityStatus.ToString()))
+                {
+                    opportunities = opportunities.Where(op => op.OpportunityStatus == Model.OpportunityStatus);
+                    ViewBag.SearchResults = opportunities.Count();
+                    ViewBag.SearchResultsAssigned = opportunities.Where(op => op.IsAssigned == true).Count();
+                }
+                if (!String.IsNullOrEmpty(Model.RejectReason.ToString()))
+                {
+                    opportunities = opportunities.Where(op => op.RejectReason == Model.RejectReason);
+                    ViewBag.SearchResults = opportunities.Count();
+                    ViewBag.SearchResultsAssigned = opportunities.Where(op => op.IsAssigned == true).Count();
+                }
             }
 
             ViewBag.SearchResults = opportunities.Count();
@@ -95,7 +129,14 @@ namespace MojCRM.Areas.Sales.Controllers
             ViewBag.UsersLead = opportunities.Where(op => op.AssignedTo == User.Identity.Name && op.OpportunityStatus == Opportunity.OpportunityStatusEnum.LEAD).Count();
             ViewBag.UsersRejected = opportunities.Where(op => op.AssignedTo == User.Identity.Name && op.OpportunityStatus == Opportunity.OpportunityStatusEnum.REJECTED).Count();
 
-            return View(opportunities.ToList().OrderByDescending(op => op.InsertDate));
+            if (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Board") || User.IsInRole("Superadmin"))
+            {
+                return View(opportunities.ToList().OrderByDescending(op => op.InsertDate));
+            }
+            else
+            {
+                return View(opportunities.Where(op => op.OpportunityStatus != Opportunity.OpportunityStatusEnum.LEAD || op.OpportunityStatus != Opportunity.OpportunityStatusEnum.REJECTED).ToList().OrderByDescending(op => op.InsertDate));
+            }
         }
 
         // GET: Sales/Opportunities/Details/5
@@ -118,7 +159,7 @@ namespace MojCRM.Areas.Sales.Controllers
                                             where n.RelatedOpportunityId == opportunity.OpportunityId
                                             select n).OrderByDescending(n => n.InsertDate).AsEnumerable();
             var _RelatedOpportunityActivities = (from a in db.ActivityLogs
-                                                 where a.ReferenceId == id
+                                                 where a.ReferenceId == id && a.Module == ModuleEnum.Opportunities
                                                  select a).OrderByDescending(a => a.InsertDate).AsEnumerable();
             var _RelatedOrganization = (from o in db.Organizations
                                         where o.MerId == opportunity.RelatedOrganizationId
@@ -131,6 +172,42 @@ namespace MojCRM.Areas.Sales.Controllers
                                     select c).First();
             var _Users = (from u in db.Users
                           select u).AsEnumerable();
+            //var _LastOpportunityNote = (from n in db.OpportunityNotes
+            //                            where n.RelatedOpportunityId == opportunity.OpportunityId
+            //                            select n).OrderByDescending(n => n.InsertDate).Select(n => n.Note).First().ToString();
+
+            var salesNoteTemplates = new List<ListItem>
+                {
+                    new ListItem{ Value = "razloženo funkcioniranje servisa (opis onoga što se dogodi nakon što korisnik klikne pošalji eRačun)", Text = "razloženo funkcioniranje servisa (opis onoga što se dogodi nakon što korisnik klikne pošalji eRačun)" },
+                    new ListItem{ Value = "argumentirana korisnička podrška -- ažuriranje mailova (90% uspješnost), slanje tipske obavijesti, zvanje za preuzimanje (97% uspješnost)", Text = "argumentirana korisnička podrška -- ažuriranje mailova (90% uspješnost), slanje tipske obavijesti, zvanje za preuzimanje (97% uspješnost)" },
+                    new ListItem{ Value = "objašnjena tehnička pozadina s ERPom", Text = "objašnjena tehnička pozadina s ERPom" },
+                    new ListItem{ Value = "objašnjena tehnička pozadina s eRa aplikacijom", Text = "objašnjena tehnička pozadina s eRa aplikacijom" },
+                    new ListItem{ Value = "razložena potvrda primitka, pretraživanje i arhiviranje", Text = "razložena potvrda primitka, pretraživanje i arhiviranje" },
+                    new ListItem{ Value = "istaknuta jednostavnost uvođenja (kod izgovora nemamo vremena, prostora, u restrukturiranju smo)", Text = "istaknuta jednostavnost uvođenja (kod izgovora nemamo vremena, prostora, u restrukturiranju smo)" },
+                    new ListItem{ Value = "osvježen kontakt i iznesene novosti", Text = "osvježen kontakt i iznesene novosti" },
+                    new ListItem{ Value = "izvršen kvalitetan presing", Text = "izvršen kvalitetan presing" },
+                    new ListItem{ Value = "izvršen salesforce (isticanje benefita uz forzu)", Text = "izvršen salesforce (isticanje benefita uz forzu)" },
+                    new ListItem{ Value = "poslan mail ps (prijedlog suradnje)", Text = "poslan mail ps (prijedlog suradnje)" },
+                    new ListItem{ Value = "kreirati i odaslati PND", Text = "kreirati i odaslati PND" },
+                    new ListItem{ Value = "kreirati i odaslati UO", Text = "kreirati i odaslati UO" },
+                    new ListItem{ Value = "održan sastanak, poslan FU", Text = "održan sastanak, poslan FU" },
+                    new ListItem{ Value = "objašnjena zakonska pozadina i pravovaljanost eRačuna", Text = "objašnjena zakonska pozadina i pravovaljanost eRačuna" },
+                    new ListItem{ Value = "kontaktirani za uvođenje zaprimanja", Text = "kontaktirani za uvođenje zaprimanja" },
+                    new ListItem{ Value = "obrazložio slanje privitaka", Text = "obrazložio slanje privitaka" },
+                    new ListItem{ Value = "obrazložio procesnu pokrivenost primatelja te odagnao brige i strahove u vezi preuzimanja od strane njihovih kupaca", Text = "obrazložio procesnu pokrivenost primatelja te odagnao brige i strahove u vezi preuzimanja od strane njihovih kupaca" }
+                };
+
+            var rejectReasonList = new List<ListItem>
+            {
+                new ListItem{ Value= "0", Text = "Ne želi navesti"},
+                new ListItem{ Value= "1", Text = "Nema interesa za uslugu"},
+                new ListItem{ Value= "2", Text = "Previsoka cijena"},
+                new ListItem{ Value= "3", Text = "Neadekvatna ponuda"},
+                new ListItem{ Value= "4", Text = "Koristi drugog posrednika"},
+                new ListItem{ Value= "5", Text = "Nedostatak vremena za pokretanje projekta"},
+                new ListItem{ Value= "6", Text = "Dio strane grupacije / Strano vlasništvo"},
+                new ListItem{ Value= "7", Text = "Drugo / Ostalo"},
+            };
 
             var OpportunityDetails = new OpportunityDetailViewModel()
             {
@@ -156,7 +233,9 @@ namespace MojCRM.Areas.Sales.Controllers
                 RelatedSalesContacts = _RelatedSalesContacts,
                 RelatedOpportunityNotes = _RelatedOpportunityNotes,
                 RelatedOpportunityActivities = _RelatedOpportunityActivities,
-                Users = _Users
+                Users = _Users,
+                SalesNoteTemplates = salesNoteTemplates,
+                RejectReasons = rejectReasonList
             };
 
             return View(OpportunityDetails);
@@ -203,49 +282,58 @@ namespace MojCRM.Areas.Sales.Controllers
                 });
                 db.SaveChanges();
             }
-            
 
-            switch (Model.Identifier)
+            if (Model.IsActivity == false)
             {
-                case 1:
-                    db.ActivityLogs.Add(new ActivityLog
-                    {
-                        Description = User.Identity.Name + " je obavio uspješan poziv vezan za prodajnu priliku: " + _RelatedOpportunity.OpportunityTitle,
-                        User = User.Identity.Name,
-                        ReferenceId = Model.RelatedOpportunityId,
-                        ActivityType = ActivityLog.ActivityTypeEnum.SUCCALL,
-                        Department = ActivityLog.DepartmentEnum.Sales,
-                        InsertDate = DateTime.Now
-                    });
-                    db.SaveChanges();
-                    break;
-                case 2:
-                    db.ActivityLogs.Add(new ActivityLog
-                    {
-                        Description = User.Identity.Name + " je obavio kraći informativni poziv vezano za prodajnu priliku: " + _RelatedOpportunity.OpportunityTitle,
-                        User = User.Identity.Name,
-                        ReferenceId = Model.RelatedOpportunityId,
-                        ActivityType = ActivityLog.ActivityTypeEnum.SUCCALSHORT,
-                        Department = ActivityLog.DepartmentEnum.Sales,
-                        InsertDate = DateTime.Now,
-                    });
-                    db.SaveChanges();
-                    break;
-                case 3:
-                    db.ActivityLogs.Add(new ActivityLog
-                    {
-                        Description = Model.User + " je pokušao obaviti telefonski poziv vezano za prodajnu priliku: " + _RelatedOpportunity.OpportunityTitle,
-                        User = Model.User,
-                        ReferenceId = Model.RelatedOpportunityId,
-                        ActivityType = ActivityLog.ActivityTypeEnum.UNSUCCAL,
-                        Department = ActivityLog.DepartmentEnum.Sales,
-                        InsertDate = DateTime.Now,
-                    });
-                    db.SaveChanges();
-                    break;
+                return RedirectToAction("Details", new { id = Model.RelatedOpportunityId });
             }
+            else
+            {
+                switch (Model.Identifier)
+                {
+                    case 1:
+                        db.ActivityLogs.Add(new ActivityLog
+                        {
+                            Description = User.Identity.Name + " je obavio uspješan poziv vezan za prodajnu priliku: " + _RelatedOpportunity.OpportunityTitle,
+                            User = User.Identity.Name,
+                            ReferenceId = Model.RelatedOpportunityId,
+                            ActivityType = ActivityLog.ActivityTypeEnum.SUCCALL,
+                            Department = ActivityLog.DepartmentEnum.Sales,
+                            Module = ModuleEnum.Opportunities,
+                            InsertDate = DateTime.Now
+                        });
+                        db.SaveChanges();
+                        break;
+                    case 2:
+                        db.ActivityLogs.Add(new ActivityLog
+                        {
+                            Description = User.Identity.Name + " je obavio kraći informativni poziv vezano za prodajnu priliku: " + _RelatedOpportunity.OpportunityTitle,
+                            User = User.Identity.Name,
+                            ReferenceId = Model.RelatedOpportunityId,
+                            ActivityType = ActivityLog.ActivityTypeEnum.SUCCALSHORT,
+                            Department = ActivityLog.DepartmentEnum.Sales,
+                            Module = ModuleEnum.Opportunities,
+                            InsertDate = DateTime.Now,
+                        });
+                        db.SaveChanges();
+                        break;
+                    case 3:
+                        db.ActivityLogs.Add(new ActivityLog
+                        {
+                            Description = Model.User + " je pokušao obaviti telefonski poziv vezano za prodajnu priliku: " + _RelatedOpportunity.OpportunityTitle,
+                            User = Model.User,
+                            ReferenceId = Model.RelatedOpportunityId,
+                            ActivityType = ActivityLog.ActivityTypeEnum.UNSUCCAL,
+                            Department = ActivityLog.DepartmentEnum.Sales,
+                            Module = ModuleEnum.Opportunities,
+                            InsertDate = DateTime.Now,
+                        });
+                        db.SaveChanges();
+                        break;
+                }
 
-            return RedirectToAction("Details", new { id = Model.RelatedOpportunityId });
+                return RedirectToAction("Details", new { id = Model.RelatedOpportunityId });
+            }
         }
 
         // POST: Sales/Opportunities/EditNote
@@ -292,6 +380,7 @@ namespace MojCRM.Areas.Sales.Controllers
                 ReferenceId = Model.RelatedOpportunityId,
                 ActivityType = ActivityLog.ActivityTypeEnum.EMAIL,
                 Department = ActivityLog.DepartmentEnum.Sales,
+                Module = ModuleEnum.Opportunities,
                 InsertDate = DateTime.Now,
             });
             db.SaveChanges();
@@ -394,6 +483,7 @@ namespace MojCRM.Areas.Sales.Controllers
                 ReferenceId = Model.OpportunityId,
                 ActivityType = ActivityLog.ActivityTypeEnum.CREATEDLEAD,
                 Department = ActivityLog.DepartmentEnum.Sales,
+                Module = ModuleEnum.Opportunities,
                 InsertDate = DateTime.Now
             });
             var opportunity = db.Opportunities.Find(Model.OpportunityId);

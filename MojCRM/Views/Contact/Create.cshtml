@@ -3,7 +3,7 @@
 
 @{
     ViewBag.Title = "Kreiraj kontakt";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 }
 
 <h2 style="text-align:center"><strong>Kreiraj kontakt</strong></h2>
@@ -103,7 +103,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Kreiraj" class="btn btn-default" />
+                <button type="submit" class="btn btn-sm btn-default" title="Kreiraj kontakt"><i class="fa fa-plus"></i></button>
             </div>
         </div>
     </div>
@@ -111,13 +111,8 @@
 
 <div class="row">
     <div class="col-md-4">
-        <a href="@Url.Action("Index", "Contact")" class="btn btn-default">
-            Povratak na administraciju kontakata
-        </a>
-    </div>
-    <div class="col-md-4">
-        <a href="@Url.Action("List", "Delivery")" class="btn btn-default">
-            Popis kontakata
+        <a href="@Url.Action("Index", "Delivery")" class="btn btn-sm btn-default" title="Povratak na popis kontakata">
+            <i class="fa fa-arrow-left"></i>
         </a>
     </div>
 </div>

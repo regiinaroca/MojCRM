@@ -1,20 +1,30 @@
-﻿@{
+﻿@using GridMvc.Html
+@model IEnumerable<MojCRM.Models.Contact>
+@{
     ViewBag.Title = "Kontakti";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 }
 
 <h2 style="text-align:center"><strong>Kontakti</strong></h2>
 
 <hr />
 
-<h4>Administracija kontakata</h4>
-
-<div class="row">
-    <div class="col-md-3">
-        <a class="btn btn-default" id="create-user" href="@Url.Action("Create", "Contact")">
-            <i class="fa fa-plus"></i>
-            Kreiraj kontakt
-        </a>
+<div>
+    <div class="row" style="text-align:center">
+        <div class="col-md-12">
+            <div class="btn btn-group" role="group">
+                <a href="@Url.Action("Create", "Contact")" class="btn btn-default btn-sm" title="Dodaj kontakt">
+                    <i class="fa fa-plus"></i>
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 <hr />
+
+@Html.Grid(Model).Named("PopisKontakata").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
+{
+    columns.Add(m => m.ContactFirstName).Encoded(false).Sanitized(false).Titled("Ime kontakta").Sortable(true);
+    columns.Add(m => m.ContactLastName).Encoded(false).Sanitized(false).Titled("Prezime kontakta").Sortable(true);
+    columns.Add(m => m.User).Encoded(false).Sanitized(false).Titled("Kontakt agenta").Sortable(true);
+}).WithPaging(20)
