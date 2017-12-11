@@ -97,6 +97,8 @@ namespace MojCRM.ViewModels
         public IQueryable<Delivery> TicketsAsSender { get; set; }
         public int TicketsAsSenderCount { get; set; }
         public IQueryable<OrganizationAttribute> Attributes { get; set; }
+        public IQueryable<ActivityLog> Activities { get; set; }
+        public int ActivitiesCount { get; set; }
 
         public string LegalFormString
         {

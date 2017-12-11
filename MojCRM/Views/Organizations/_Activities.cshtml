@@ -1,0 +1,33 @@
+﻿@model MojCRM.ViewModels.OrganizationDetailsViewModel
+@{
+    Layout = null;
+}
+<div class="col-md-3">
+
+</div>
+<div class="col-md-9">
+    @if (Model.Activities.Count() != 0)
+    {
+        <table class="table">
+            <tr>
+                <th>Opis aktivnosti</th>
+                <th>Aktivnost odradio</th>
+                <th>Datum i vrijeme aktivnosti</th>
+            </tr>
+            @foreach (var activity in Model.Activities)
+            {
+                <tr>
+                    <td>@activity.Description</td>
+                    <td>@activity.User</td>
+                    <td>@activity.InsertDate</td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <p>Za ovu tvrtku nema kreiranih aktivnosti</p>
+    }
+</div>
+
+

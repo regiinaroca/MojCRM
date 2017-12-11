@@ -62,6 +62,7 @@
                 <li><a href="#mer-delivery-data" data-toggle="tab"><img src="~/Content/ikona-preglednik.ico" style="height: 21px; width: 21px"/> Podaci za dostavu</a></li>
                 <li><a href="#tickets-as-receiver" data-toggle="tab"><i class="fa fa-ticket"></i> Kartice dostave (primatelj) <span class="badge element-bg-color-blue">@Model.TicketsAsReceiverCount</span></a></li>
                 <li><a href="#tickets-as-sender" data-toggle="tab"><i class="fa fa-ticket"></i> Kartice dostave (pošiljatelj) <span class="badge element-bg-color-blue">@Model.TicketsAsSenderCount</span></a></li>
+                <li><a href="#activities" data-toggle="tab"><i class="fa fa-history"></i> Aktivnosti <span class="badge element-bg-color-blue">@Model.ActivitiesCount</span></a></li>
             </ul>
             <div class="tab-content clearfix">
                 <div class="tab-pane fade in active" id="general-info">
@@ -103,6 +104,10 @@
                 <div class="tab-pane fade" id="tickets-as-sender">
                     <h5>Pregled kartica za dostavu (kao pošiljatelj)</h5>
                     @Html.Partial("_TicketsAsSender", Model)
+                </div>
+                <div class="tab-pane fade" id="activities">
+                    <h5>Pregled aktivnosti</h5>
+                    @Html.Partial("_Activities", Model)
                 </div>
             </div>
         </div>

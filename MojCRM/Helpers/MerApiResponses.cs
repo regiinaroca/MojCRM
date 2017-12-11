@@ -46,7 +46,7 @@ namespace MojCRM.Helpers
         public string PrimateljOib { get; set; }
         public string PrimateljNaziv { get; set; }
         public string EmailPrimatelja { get; set; }
-        public int TotalReceived { get; set; } // No. of total documents with DocumentStatus = 40
+        public int? TotalReceived { get; set; } // No. of total documents with DocumentStatus = 40
     }
 
     //DocumentHistory
