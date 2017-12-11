@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MojCRM.Areas.Sales.Models;
 
 namespace MojCRM.Areas.Campaigns.Models
 {
@@ -49,6 +50,7 @@ namespace MojCRM.Areas.Campaigns.Models
         public DateTime? UpdateDate { get; set; }
 
         public virtual ICollection<AcquireEmail> AcquireEmails { get; set; }
+        public virtual ICollection<Quote> Quotes { get; set; }
 
         public enum CampaignTypeEnum
         {

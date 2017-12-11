@@ -369,6 +369,10 @@
     <Compile Include="Areas\Sales\Models\LeadNote.cs" />
     <Compile Include="Areas\Sales\Models\Opportunity.cs" />
     <Compile Include="Areas\Sales\Models\OpportunityNote.cs" />
+    <Compile Include="Areas\Sales\Models\Quote.cs" />
+    <Compile Include="Areas\Sales\Models\QuoteLine.cs" />
+    <Compile Include="Areas\Sales\Models\QuoteMember.cs" />
+    <Compile Include="Areas\Sales\Models\Service.cs" />
     <Compile Include="Areas\Sales\SalesAreaRegistration.cs" />
     <Compile Include="Areas\Sales\ViewModels\LeadDetailViewModel.cs" />
     <Compile Include="Areas\Sales\ViewModels\OpportunityDetailViewModel.cs" />
@@ -570,6 +574,10 @@
     <Compile Include="Migrations\201711232224594_Nov23Update.cs" />
     <Compile Include="Migrations\201711232224594_Nov23Update.Designer.cs">
       <DependentUpon>201711232224594_Nov23Update.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712112041186_Dec11Update.cs" />
+    <Compile Include="Migrations\201712112041186_Dec11Update.Designer.cs">
+      <DependentUpon>201712112041186_Dec11Update.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -1051,6 +1059,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711232224594_Nov23Update.resx">
       <DependentUpon>201711232224594_Nov23Update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712112041186_Dec11Update.resx">
+      <DependentUpon>201712112041186_Dec11Update.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -22,7 +22,7 @@ namespace MojCRM.Areas.Sales.Models
         public string StatusDescription { get; set; }
         public LeadRejectReasonEnum? RejectReason { get; set; }
         public string RejectReasonDescription { get; set; }
-        public QuoteTypeEnum? QuoteType { get; set; }
+        public QuoteTypeLeadEnum? QuoteType { get; set; }
         public string CreatedBy { get; set; }
         public string AssignedTo { get; set; }
 
@@ -95,7 +95,7 @@ namespace MojCRM.Areas.Sales.Models
             Other
         }
 
-        public enum QuoteTypeEnum
+        public enum QuoteTypeLeadEnum
         {
             [Description("PrePaid paket (Moj-eRačun)")]
             AdvanceeR,
