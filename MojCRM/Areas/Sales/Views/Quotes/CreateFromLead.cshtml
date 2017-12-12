@@ -1,0 +1,55 @@
+﻿@using System.Web.UI.WebControls
+@model MojCRM.Areas.Sales.ViewModels.CreateFromLeadViewModel
+
+@{
+    ViewBag.Title = "Kreiraj ponudu iz leada";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+}
+
+<h2>Kreiraj ponudu iz leada</h2>
+<br/>
+<div class="alert alert-info">
+    <p style="text-align: justify">
+        Molimo definirajte niže tražene parametre.<br/>
+        Nakon definiranja traženih parametara, kreirat će se ponuda u Moj-CRM sustavu. Nakon kreiranja ponude moći ćete nastaviti sa obradom ponude.<br/>
+        Ako imate problema s kreiranjem ponude, molimo obratite se administratoru.
+    </p>
+</div>
+<hr/>
+@using (Html.BeginForm("Create", "Quotes", new { area = "Sales" }, FormMethod.Post))
+{
+    <div class="hidden">
+        <div>
+            @Html.TextBox("OrganizationId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = @Model.OrganizationId })
+        </div>
+        <div>
+            @Html.TextBox("CampaignId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = @Model.CampaignId })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div>
+                @Html.TextBox("StartDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Datum početka važenja", @type = "text" })
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div>
+                @Html.TextBox("EndDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Datum završetka važenja", @type = "text" })
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div id="legal-form">
+                @Html.DropDownList("QuoteType", Model.QuoteTypeList, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="col-md-3" style="margin-top:22px">
+            <div class="form-group">
+                <div>
+                    <input id="Search" type="submit" class="btn btn-primary btn-sm" value="Kreiraj" />
+                    <input id="btn-reset" type="reset" class="btn btn-warning btn-sm" value="Poništi" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

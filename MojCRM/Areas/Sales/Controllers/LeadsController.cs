@@ -16,13 +16,13 @@ namespace MojCRM.Areas.Sales.Controllers
 {
     public class LeadsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
         // GET: Sales/Leads
         [Authorize]
         public ActionResult Index(LeadSearchHelper Model)
         {
-            var leads = from l in db.Leads
+            var leads = from l in _db.Leads
                                 select l;
             if (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Board") || User.IsInRole("Superadmin"))
             {
@@ -142,31 +142,31 @@ namespace MojCRM.Areas.Sales.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Lead lead = db.Leads.Find(id);
+            Lead lead = _db.Leads.Find(id);
             if (lead == null)
             {
                 return HttpNotFound();
             }
 
-            var _RelatedSalesContacts = (from c in db.Contacts
+            var _RelatedSalesContacts = (from c in _db.Contacts
                                          where c.Organization.MerId == lead.RelatedOrganizationId && c.ContactType == Contact.ContactTypeEnum.SALES
                                          select c);
-            var _RelatedLeadNotes = (from n in db.LeadNotes
+            var _RelatedLeadNotes = (from n in _db.LeadNotes
                                      where n.RelatedLeadId == lead.LeadId
                                      select n).OrderByDescending(n => n.InsertDate);
-            var _RelatedLeadActivities = (from a in db.ActivityLogs
+            var _RelatedLeadActivities = (from a in _db.ActivityLogs
                                           where a.ReferenceId == lead.LeadId && a.Module == ModuleEnum.Leads
                                           select a).OrderByDescending(a => a.InsertDate);
-            var _RelatedOrganization = (from o in db.Organizations
+            var _RelatedOrganization = (from o in _db.Organizations
                                         where o.MerId == lead.RelatedOrganizationId
                                         select o).First();
-            var _RelatedOrganizationDetail = (from od in db.OrganizationDetails
+            var _RelatedOrganizationDetail = (from od in _db.OrganizationDetails
                                               where od.MerId == lead.RelatedOrganizationId
                                               select od).First();
-            var _RelatedCampaign = (from c in db.Campaigns
+            var _RelatedCampaign = (from c in _db.Campaigns
                                     where c.CampaignId == lead.RelatedCampaignId
                                     select c).First();
-            var _Users = (from u in db.Users
+            var _Users = (from u in _db.Users
                           select u);
             //var _LastLeadNote = (from n in db.LeadNotes
             //                     where n.RelatedLeadId == lead.LeadId
@@ -241,7 +241,7 @@ namespace MojCRM.Areas.Sales.Controllers
         [HttpPost]
         public ActionResult AddNote(LeadNoteHelper Model)
         {
-            var lead = (from l in db.Leads
+            var lead = (from l in _db.Leads
                         where l.LeadId == Model.RelatedLeadId
                         select l).First();
             var _NoteString = new StringBuilder();
@@ -251,7 +251,7 @@ namespace MojCRM.Areas.Sales.Controllers
 
             if (Model.NoteTemplates == null)
             {
-                db.LeadNotes.Add(new LeadNote
+                _db.LeadNotes.Add(new LeadNote
                 {
                     RelatedLeadId = Model.RelatedLeadId,
                     User = User.Identity.Name,
@@ -259,7 +259,7 @@ namespace MojCRM.Areas.Sales.Controllers
                     InsertDate = DateTime.Now,
                     Contact = Model.Contact
                 });
-                db.SaveChanges();
+                _db.SaveChanges();
             }
             else
             {
@@ -268,7 +268,7 @@ namespace MojCRM.Areas.Sales.Controllers
                     _NoteString.AppendLine(Template);
                 }
 
-                db.LeadNotes.Add(new LeadNote
+                _db.LeadNotes.Add(new LeadNote
                 {
                     RelatedLeadId = Model.RelatedLeadId,
                     User = User.Identity.Name,
@@ -276,7 +276,7 @@ namespace MojCRM.Areas.Sales.Controllers
                     InsertDate = DateTime.Now,
                     Contact = Model.Contact
                 });
-                db.SaveChanges();
+                _db.SaveChanges();
             }
 
             if (Model.IsActivity == false)
@@ -288,7 +288,7 @@ namespace MojCRM.Areas.Sales.Controllers
                 switch (Model.Identifier)
                 {
                     case 1:
-                        db.ActivityLogs.Add(new ActivityLog
+                        _db.ActivityLogs.Add(new ActivityLog
                         {
                             Description = User.Identity.Name + " je obavio uspješan poziv vezan uz lead: " + lead.LeadTitle,
                             User = User.Identity.Name,
@@ -298,10 +298,10 @@ namespace MojCRM.Areas.Sales.Controllers
                             Module = ModuleEnum.Leads,
                             InsertDate = DateTime.Now
                         });
-                        db.SaveChanges();
+                        _db.SaveChanges();
                         break;
                     case 2:
-                        db.ActivityLogs.Add(new ActivityLog
+                        _db.ActivityLogs.Add(new ActivityLog
                         {
                             Description = User.Identity.Name + " je obavio kraći informativni poziv vezan uz lead: " + lead.LeadTitle,
                             User = User.Identity.Name,
@@ -311,10 +311,10 @@ namespace MojCRM.Areas.Sales.Controllers
                             Module = ModuleEnum.Leads,
                             InsertDate = DateTime.Now,
                         });
-                        db.SaveChanges();
+                        _db.SaveChanges();
                         break;
                     case 3:
-                        db.ActivityLogs.Add(new ActivityLog
+                        _db.ActivityLogs.Add(new ActivityLog
                         {
                             Description = User.Identity.Name + " je pokušao obaviti telefonski poziv vezanvezan uz lead: " + lead.LeadTitle,
                             User = User.Identity.Name,
@@ -324,7 +324,7 @@ namespace MojCRM.Areas.Sales.Controllers
                             Module = ModuleEnum.Leads,
                             InsertDate = DateTime.Now,
                         });
-                        db.SaveChanges();
+                        _db.SaveChanges();
                         break;
                 }
                 return RedirectToAction("Details", new { id = Model.RelatedLeadId });
@@ -336,14 +336,14 @@ namespace MojCRM.Areas.Sales.Controllers
         [Authorize]
         public ActionResult EditNote(LeadNoteHelper Model)
         {
-            var NoteForEdit = (from n in db.LeadNotes
+            var NoteForEdit = (from n in _db.LeadNotes
                                where n.Id == Model.NoteId
                                select n).First();
 
             NoteForEdit.Note = Model.Note;
             NoteForEdit.Contact = Model.Contact;
             NoteForEdit.UpdateDate = DateTime.Now;
-            db.SaveChanges();
+            _db.SaveChanges();
 
             return RedirectToAction("Details", new { id = Model.RelatedLeadId });
         }
@@ -354,21 +354,21 @@ namespace MojCRM.Areas.Sales.Controllers
         [Authorize(Roles = "Superadmin")]
         public ActionResult DeleteNote(LeadNoteHelper Model)
         {
-            LeadNote leadNote = db.LeadNotes.Find(Model.NoteId);
-            db.LeadNotes.Remove(leadNote);
-            db.SaveChanges();
+            LeadNote leadNote = _db.LeadNotes.Find(Model.NoteId);
+            _db.LeadNotes.Remove(leadNote);
+            _db.SaveChanges();
             return RedirectToAction("Details", new { id = Model.RelatedLeadId });
         }
 
         public void LogEmail(LeadNoteHelper Model)
         {
-            var lead = (from l in db.Leads
+            var lead = (from l in _db.Leads
                         where l.LeadId == Model.RelatedLeadId
                         select l).First();
 
             lead.LastContactDate = DateTime.Now;
             lead.LastContactedBy = Model.User;
-            db.ActivityLogs.Add(new ActivityLog
+            _db.ActivityLogs.Add(new ActivityLog
             {
                 Description = User.Identity.Name + " je poslao e-mail na adresu: " + Model.Email + " na temu prezentacije usluge u sklopu prodajne prilike: " + lead.LeadTitle,
                 User = User.Identity.Name,
@@ -378,36 +378,36 @@ namespace MojCRM.Areas.Sales.Controllers
                 Module = ModuleEnum.Leads,
                 InsertDate = DateTime.Now,
             });
-            db.SaveChanges();
+            _db.SaveChanges();
         }
 
         public ActionResult Assign(LeadAssignHelper Model)
         {
-            var lead = (from o in db.Leads
+            var lead = (from o in _db.Leads
                         where o.LeadId == Model.RelatedLeadId
                         select o).First();
             lead.IsAssigned = true;
             lead.AssignedTo = Model.AssignedTo;
-            db.SaveChanges();
+            _db.SaveChanges();
 
             return Redirect(Request.UrlReferrer.ToString());
         }
 
         public ActionResult Reassign(LeadAssignHelper Model)
         {
-            var lead = (from o in db.Leads
+            var lead = (from o in _db.Leads
                         where o.LeadId == Model.RelatedLeadId
                         select o).First();
             if (Model.Unassign == true)
             {
                 lead.IsAssigned = false;
                 lead.AssignedTo = String.Empty;
-                db.SaveChanges();
+                _db.SaveChanges();
             }
             else
             {
                 lead.AssignedTo = Model.AssignedTo;
-                db.SaveChanges();
+                _db.SaveChanges();
             }
 
             return Redirect(Request.UrlReferrer.ToString());
@@ -420,7 +420,7 @@ namespace MojCRM.Areas.Sales.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Lead lead = db.Leads.Find(id);
+            Lead lead = _db.Leads.Find(id);
             if (lead == null)
             {
                 return HttpNotFound();
@@ -449,7 +449,7 @@ namespace MojCRM.Areas.Sales.Controllers
                 _lead.RejectReason = Model.RejectReason;
                 _lead.UpdateDate = DateTime.Now;
                 _lead.LastUpdatedBy = User.Identity.Name;
-                db.SaveChanges();
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(Model);
@@ -457,24 +457,24 @@ namespace MojCRM.Areas.Sales.Controllers
 
         public ActionResult ChangeStatus(LeadChangeStatusHelper Model)
         {
-            var lead = db.Leads.Find(Model.RelatedLeadId);
+            var lead = _db.Leads.Find(Model.RelatedLeadId);
             lead.LeadStatus = Model.NewStatus;
             lead.StatusDescription = Model.StatusDescription;
             lead.UpdateDate = DateTime.Now;
             lead.LastUpdatedBy = User.Identity.Name;
-            db.SaveChanges();
+            _db.SaveChanges();
 
             return Redirect(Request.UrlReferrer.ToString());
         }
 
         public ActionResult MarkRejected(LeadMarkRejectedHelper Model)
         {
-            var lead = db.Leads.Find(Model.RelatedLeadId);
+            var lead = _db.Leads.Find(Model.RelatedLeadId);
             lead.LeadStatus = Lead.LeadStatusEnum.Rejected;
             lead.RejectReason = Model.RejectReason;
             lead.UpdateDate = DateTime.Now;
             lead.LastUpdatedBy = User.Identity.Name;
-            db.SaveChanges();
+            _db.SaveChanges();
 
             return Redirect(Request.UrlReferrer.ToString());
         }
