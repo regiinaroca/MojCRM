@@ -447,7 +447,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
 
         public ActionResult AdminAssignEntities(int campaignId, int number, string agent)
         {
-            var entites = _db.AcquireEmails.Where(c => c.RelatedCampaignId == campaignId && c.IsAssigned == false).Take(number);
+            var entites = _db.AcquireEmails.Where(c => c.RelatedCampaignId == campaignId && c.AcquireEmailStatus == AcquireEmailStatusEnum.Created && c.IsAssigned == false).Take(number);
 
             foreach (var entity in entites)
             {

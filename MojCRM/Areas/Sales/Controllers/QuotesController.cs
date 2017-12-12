@@ -44,15 +44,17 @@ namespace MojCRM.Areas.Sales.Controllers
             return View(returnModel);
         }
 
-        // POST: Sales/CreateFromLead
-        [HttpPost]
-        public ActionResult CreateFromLead(CreateFromLeadViewQuoteHelper model)
+        // GET: Sales/CreateFromLead
+        public ActionResult CreateFromLead(int relatedCampaignId, int organizationId)
         {
             var returnModel = new CreateFromLeadViewModel
             {
-                OrganizationId = model.RelatedOrganizationId,
-                CampaignId = model.RelatedCampaignId,
-                AssignedTo = User.Identity.Name
+                OrganizationId = organizationId,
+                CampaignId = relatedCampaignId,
+                AssignedTo = User.Identity.Name,
+                StartDate = null,
+                EndDate = null,
+                QuoteType = null
             };
             return View(returnModel);
         }
