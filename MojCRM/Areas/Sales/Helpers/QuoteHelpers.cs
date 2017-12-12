@@ -13,6 +13,7 @@ namespace MojCRM.Areas.Sales.Helpers
     {
         public int OrganizationId { get; set; }
         public int? CampaignId { get; set; }
+        public int? LeadId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public Quote.QuoteTypeEnum QuoteType { get; set; }

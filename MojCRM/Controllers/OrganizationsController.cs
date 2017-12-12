@@ -91,7 +91,7 @@ namespace MojCRM.Controllers
                 TicketsAsSender = _db.DeliveryTicketModels.Where(t => t.SenderId == id).OrderByDescending(t => t.SentDate),
                 TicketsAsSenderCount = _db.DeliveryTicketModels.Where(t => t.SenderId == id).OrderByDescending(t => t.SentDate).Count(),
                 Attributes = _db.OrganizationAttributes.Where(a => a.OrganizationId == id).OrderBy(a => a.AttributeClass),
-                Activities = _db.ActivityLogs.Where(al => al.Module == ActivityLog.ModuleEnum.Organizations && al.ReferenceId == id),
+                Activities = _db.ActivityLogs.Where(al => al.Module == ActivityLog.ModuleEnum.Organizations && al.ReferenceId == id).OrderByDescending(al => al.InsertDate),
                 ActivitiesCount = _db.ActivityLogs.Count(al => al.Module == ActivityLog.ModuleEnum.Organizations && al.ReferenceId == id)
             };
 

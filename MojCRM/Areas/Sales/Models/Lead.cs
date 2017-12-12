@@ -1,6 +1,7 @@
 ﻿using MojCRM.Areas.Campaigns.Models;
 using MojCRM.Models;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -43,6 +44,7 @@ namespace MojCRM.Areas.Sales.Models
         public virtual Opportunity RelatedOpportunity { get; set; }
         [ForeignKey("RelatedOrganizationId")]
         public virtual Organizations RelatedOrganization { get; set; }
+        public virtual ICollection<Quote> RelatedQuotes { get; set; }
 
         public enum LeadStatusEnum
         {

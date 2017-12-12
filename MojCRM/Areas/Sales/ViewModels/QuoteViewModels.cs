@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using MojCRM.Areas.Campaigns.Models;
 using MojCRM.Areas.Sales.Models;
-using MojCRM.Models;
 
 namespace MojCRM.Areas.Sales.ViewModels
 {
@@ -13,6 +10,7 @@ namespace MojCRM.Areas.Sales.ViewModels
     {
         public int OrganizationId { get; set; }
         public int? CampaignId { get; set; }
+        public int? LeadId { get; set; }
         public string AssignedTo { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
@@ -32,5 +30,12 @@ namespace MojCRM.Areas.Sales.ViewModels
                 return quoteTypeList;
             }
         }
+    }
+
+    public class QuoteDetailsViewModel
+    {
+        public Quote Quote { get; set; }
+        public IQueryable<QuoteLine> QuoteLines { get; set; }
+        public IQueryable<QuoteMember> QuoteMembers { get; set; }
     }
 }

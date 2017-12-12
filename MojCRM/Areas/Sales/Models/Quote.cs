@@ -12,7 +12,10 @@ namespace MojCRM.Areas.Sales.Models
     {
         [Key]
         public int Id { get; set; }
+
+        [DisplayName("Broj ponude")]
         public string QuoteNumber { get; set; }
+
         public int RelatedOrganizationId { get; set; }
 
         [ForeignKey("RelatedOrganizationId")]
@@ -23,14 +26,36 @@ namespace MojCRM.Areas.Sales.Models
         [ForeignKey("RelatedCampaignId")]
         public virtual Campaign Campaign { get; set; }
 
+        public int? RelatedLeadId { get; set; }
+
+        [ForeignKey("RelatedLeadId")]
+        public virtual Lead Lead { get; set; }
+
+        [DisplayName("Vlasnik ponude")]
         public string AssignedTo { get; set; }
+
+        [DisplayName("Datum početka važenja")]
         public DateTime StartDate { get; set; }
+
+        [DisplayName("Datum završetka važenja")]
         public DateTime EndDate { get; set; }
+
         public QuoteTypeEnum QuoteType { get; set; }
         public QuoteStatusEnum QuoteStatus { get; set; }
+
+        [Display(Name = "Ukupan iznos ponude (bez PDV-a)")]
+        [DisplayFormat(DataFormatString = "{0:C0}")]
+        [DataType(DataType.Currency)]
         public decimal QuoteSum { get; set; }
+
+        [Display(Name = "Ukupan iznos ponude (s PDV-om)")]
+        [DisplayFormat(DataFormatString = "{0:C0}")]
+        [DataType(DataType.Currency)]
         public decimal QuoteSumTotal { get; set; }
+
+        [DisplayName("Datum i vrijeme kreiranja")]
         public DateTime InsertDate { get; set; }
+
         public string CreatedBy { get; set; }
         public DateTime? UpdateDate { get; set; }
         public string UpdatedBy { get; set; }
@@ -52,6 +77,7 @@ namespace MojCRM.Areas.Sales.Models
             AdvancePayment
         }
 
+        [DisplayName("Tip ponude")]
         public string QuoteTypeString
         {
             get
@@ -90,6 +116,7 @@ namespace MojCRM.Areas.Sales.Models
             Recalled
         }
 
+        [DisplayName("Status ponude")]
         public string QuoteStatusString
         {
             get

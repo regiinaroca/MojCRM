@@ -720,7 +720,7 @@
                 <button type="button" title="Pregled aktivnosti vezanih uz ovaj lead" class="btn btn-sm btn-default" data-toggle="modal" href="#RelatedActivities"><i class="fa fa-history"></i></button>
                 <button type="button" title="Pregled bilješki vezanih uz ovaj lead" class="btn btn-sm btn-default" data-toggle="modal" href="#LeadNotes"><i class="fa fa-sticky-note"></i></button>
                 <button type="button" title="Pregled kontakata za prodaju" class="btn btn-sm btn-default" data-toggle="modal" href="#SalesContacts"><i class="fa fa-address-book"></i></button>
-                <a title="Dodaj ponudu" class="btn btn-sm btn-default" href="@Url.RouteUrl(new { action = "CreateFromLead", controller = "Quotes", area = "Sales", relatedCampaignId = Model.RelatedCampaignId, organizationId = Model.OrganizationId })"><i class="fa fa-plus"></i> <i class="fa fa-book"></i></a>
+                <a title="Dodaj ponudu" class="btn btn-sm btn-default" href="@Url.RouteUrl(new { action = "CreateFromLead", controller = "Quotes", area = "Sales", relatedCampaignId = Model.RelatedCampaignId, organizationId = Model.OrganizationId, leadID = Model.LeadId })"><i class="fa fa-plus"></i> <i class="fa fa-book"></i></a>
                 @if (!Model.IsAssigned && (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
                 {
                     <button type="button" title="Dodijeli lead" class="btn btn-sm btn-default" data-toggle="modal" data-target="#Assign" href="#Assign"><i class="fa fa-mail-reply-all"></i></button>

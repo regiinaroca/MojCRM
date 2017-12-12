@@ -1,0 +1,79 @@
+﻿@model MojCRM.Areas.Sales.ViewModels.QuoteDetailsViewModel
+@{
+    ViewBag.Title = "Detalji ponude";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+}
+
+<h2>Detalji ponude</h2>
+<br />
+<div class="alert alert-info">
+    <p style="text-align: justify">
+        Ovaj pregled prikazuje detaljne podatke o kreiranoj ponudi.<br />
+        Koristeći ovaj pregled možete napraviti sljedeće akcije:<br/>
+        <ul>
+            <li>dodavnje stavki ponude,</li>
+            <li>dodavanje poveznih osoba uz ponudu (u slučaju dijeljenja prodaje)</li>
+        </ul>
+        <br/>
+        Ukupna vrijednost ponude se ažurira automatski dodavanjem pojedinih stavki ponudi.
+    </p>
+</div>
+<hr />
+<div>
+    <h4>Opći podaci</h4>
+    <div class="row">
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.Quote.QuoteNumber)</strong>
+            @Html.DisplayFor(model => model.Quote.QuoteNumber)
+        </div>
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.Quote.Organization.SubjectName)</strong>
+            <a href="@Url.RouteUrl(new {action = "Details", controller = "Organizations", area = "", Id = Model.Quote.RelatedOrganizationId})">@Model.Quote.Organization.SubjectName (@Model.Quote.Organization.VAT)</a>
+        </div>
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.Quote.AssignedTo)</strong>
+            @Html.DisplayFor(model => model.Quote.AssignedTo)
+        </div>
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.Quote.InsertDate)</strong>
+            @Html.DisplayFor(model => model.Quote.InsertDate)
+        </div>
+    </div>
+    <br />
+    <h4>Podaci o trajanju i povezanoj kampanji</h4>
+    <div class="row">
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.Quote.StartDate)</strong>
+            @Model.Quote.StartDate.ToShortDateString()
+        </div>
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.Quote.EndDate)</strong>
+            @Model.Quote.EndDate.ToShortDateString()
+        </div>
+        <div class="col-md-6">
+            <strong>@Html.DisplayNameFor(model => model.Quote.Campaign.CampaignName)</strong>
+            @Html.DisplayFor(model => model.Quote.Campaign.CampaignName)
+        </div>
+    </div>
+    <br />
+    <h4>Komercijalni podaci ponude</h4>
+    <div class="row">
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.Quote.QuoteTypeString)</strong>
+            @Html.DisplayFor(model => model.Quote.QuoteTypeString)
+        </div>
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.Quote.QuoteStatusString)</strong>
+            @Html.DisplayFor(model => model.Quote.QuoteStatusString)
+        </div>
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.Quote.QuoteSum)</strong>
+            @Html.DisplayFor(model => model.Quote.QuoteSum)
+        </div>
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.Quote.QuoteSumTotal)</strong>
+            @Html.DisplayFor(model => model.Quote.QuoteSumTotal)
+        </div>
+    </div>
+</div>
+

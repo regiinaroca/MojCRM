@@ -1,5 +1,4 @@
-﻿@using System.Web.UI.WebControls
-@model MojCRM.Areas.Sales.ViewModels.CreateFromLeadViewModel
+﻿@model MojCRM.Areas.Sales.ViewModels.CreateFromLeadViewModel
 
 @{
     ViewBag.Title = "Kreiraj ponudu iz leada";
@@ -10,7 +9,13 @@
 <br/>
 <div class="alert alert-info">
     <p style="text-align: justify">
-        Molimo definirajte niže tražene parametre.<br/>
+        Molimo definirajte niže tražene parametre:<br/>
+        <ul>
+            <li><strong>Datum početka važenja</strong> označava datum od kojeg važi ponuda</li>
+            <li><strong>Datum završetka važenja</strong> označava datum do kojeg važi ponuda</li>
+            <li><strong>Tip ponude</strong> označava tip ponude ovisno o vrsti komercijalnih odnosa</li>
+        </ul>
+        <br/>
         Nakon definiranja traženih parametara, kreirat će se ponuda u Moj-CRM sustavu. Nakon kreiranja ponude moći ćete nastaviti sa obradom ponude.<br/>
         Ako imate problema s kreiranjem ponude, molimo obratite se administratoru.
     </p>
@@ -20,21 +25,24 @@
 {
     <div class="hidden">
         <div>
-            @Html.TextBox("OrganizationId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = @Model.OrganizationId })
+            @Html.TextBox("OrganizationId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.OrganizationId })
         </div>
         <div>
-            @Html.TextBox("CampaignId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = @Model.CampaignId })
+            @Html.TextBox("CampaignId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.CampaignId })
+        </div>
+        <div>
+            @Html.TextBox("LeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.LeadId })
         </div>
     </div>
     <div class="row">
         <div class="col-md-3">
             <div>
-                @Html.TextBox("StartDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Datum početka važenja", @type = "text" })
+                @Html.TextBox("StartDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", placeholder = "Datum početka važenja", type = "text" })
             </div>
         </div>
         <div class="col-md-3">
             <div>
-                @Html.TextBox("EndDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Datum završetka važenja", @type = "text" })
+                @Html.TextBox("EndDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", placeholder = "Datum završetka važenja", type = "text" })
             </div>
         </div>
         <div class="col-md-3">

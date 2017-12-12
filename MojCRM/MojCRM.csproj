@@ -582,6 +582,10 @@
     <Compile Include="Migrations\201712112041186_Dec11Update.Designer.cs">
       <DependentUpon>201712112041186_Dec11Update.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201712122018508_Dec12Update.cs" />
+    <Compile Include="Migrations\201712122018508_Dec12Update.Designer.cs">
+      <DependentUpon>201712122018508_Dec12Update.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ActivityLog.cs" />
@@ -751,6 +755,9 @@
     <Content Include="Areas\HelpDesk\Views\AcquireEmail\ErrorOldExcel.cshtml" />
     <Content Include="Areas\HelpDesk\Views\AcquireEmail\AcquireEmailsAssignedStats.cshtml" />
     <Content Include="Areas\Sales\Views\Quotes\CreateFromLead.cshtml" />
+    <Content Include="Areas\Sales\Views\Quotes\Create.cshtml" />
+    <Content Include="Areas\Sales\Views\Quotes\Index.cshtml" />
+    <Content Include="Areas\Sales\Views\Quotes\Details.cshtml" />
     <None Include="Scripts\jquery-3.2.1-vsdoc.js" />
     <Content Include="Scripts\daterangepicker.js" />
     <Content Include="Scripts\jquery-3.2.1.js" />
@@ -1066,6 +1073,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201712112041186_Dec11Update.resx">
       <DependentUpon>201712112041186_Dec11Update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712122018508_Dec12Update.resx">
+      <DependentUpon>201712122018508_Dec12Update.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
