@@ -59,6 +59,7 @@
                 <li><a href="#campaigns" data-toggle="tab"><i class="fa fa-phone"></i> Kampanje</a></li>
                 <li><a href="#opportunities" data-toggle="tab"><i class="fa fa-money"></i> Prodajne prilike <span class="badge element-bg-color-blue">@Model.OpportunitiesCount</span></a></li>
                 <li><a href="#leads" data-toggle="tab"><i class="fa fa-money"></i> Leadovi <span class="badge element-bg-color-blue">@Model.LeadsCount</span></a></li>
+                <li><a href="#quotes" data-toggle="tab"><i class="fa fa-book"></i> Ponude</a></li>
                 <li><a href="#mer-delivery-data" data-toggle="tab"><img src="~/Content/ikona-preglednik.ico" style="height: 21px; width: 21px"/> Podaci za dostavu</a></li>
                 <li><a href="#tickets-as-receiver" data-toggle="tab"><i class="fa fa-ticket"></i> Kartice dostave (primatelj) <span class="badge element-bg-color-blue">@Model.TicketsAsReceiverCount</span></a></li>
                 <li><a href="#tickets-as-sender" data-toggle="tab"><i class="fa fa-ticket"></i> Kartice dostave (pošiljatelj) <span class="badge element-bg-color-blue">@Model.TicketsAsSenderCount</span></a></li>
@@ -92,6 +93,10 @@
                 <div class="tab-pane fade" id="leads">
                     <h5>Leadovi</h5>
                     @Html.Partial("_Leads", Model)
+                </div>
+                <div class="tab-pane fade" id="quotes">
+                    <h5>Ponude</h5>
+                    @Html.Partial("_Quotes", Model)
                 </div>
                 <div class="tab-pane fade" id="mer-delivery-data">
                     <h5>Podaci za dostavu eDokumenata</h5>

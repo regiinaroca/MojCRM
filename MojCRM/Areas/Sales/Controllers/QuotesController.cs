@@ -11,6 +11,7 @@ namespace MojCRM.Areas.Sales.Controllers
     public class QuotesController : Controller
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        private readonly QuoteHelperMethods _quoteHelper = new QuoteHelperMethods();
         // GET: Sales/Quotes
         public ActionResult Index()
         {
@@ -76,6 +77,52 @@ namespace MojCRM.Areas.Sales.Controllers
                 QuoteType = null
             };
             return View(returnModel);
+        }
+
+        [HttpPost]
+        public ActionResult AddMember(string agent, QuoteMember.QuoteMemberRoleEnum role, int quote)
+        {
+            _db.QuoteMembers.Add(new QuoteMember
+            {
+                RelatedQuoteId = quote,
+                MemberName = agent,
+                QuoteMemberRole = role,
+                InsertDate = DateTime.Now
+            });
+            _db.SaveChanges();
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
+        [HttpPost]
+        public ActionResult AddQuoteLine(AddQuoteLineHelper model)
+        {
+            var lines = _db.QuoteLines.Count(q => q.RelatedQuoteId == model.RelatedQuoteId);
+            var linesCount = 1;
+            if (lines != 0)
+            {
+                lines++;
+                linesCount = lines;
+            }
+
+            var service = _db.Services.First(s => s.ServiceId == model.RelatedServiceId);
+
+            _db.QuoteLines.Add(new QuoteLine
+            {
+                RelatedQuoteId = model.RelatedQuoteId,
+                LineNumber = linesCount,
+                RelatedServiceId = model.RelatedServiceId,
+                LineText = service.ServiceName,
+                Quantity = model.Quantity,
+                BaseAmount = service.BasePrice,
+                Price = model.Price,
+                LineTotal = model.Quantity * model.Price,
+                InsertDate = DateTime.Now
+            });
+            _db.SaveChanges();
+
+            _quoteHelper.UpdateQuoteSum(model.RelatedQuoteId);
+
+            return Redirect(Request.UrlReferrer?.ToString());
         }
     }
 }

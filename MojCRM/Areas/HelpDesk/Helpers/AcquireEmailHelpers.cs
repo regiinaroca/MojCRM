@@ -16,11 +16,12 @@ namespace MojCRM.Areas.HelpDesk.Helpers
 
     public class AcquireEmailExportModel
     {
+        public AcquireEmail Entity { get; set; }
         public string CampaignName { get; set; }
         public string VAT { get; set; }
         public string SubjectName { get; set; }
         public string AcquiredReceivingInformation { get; set; }
-        public string AcquiredEmailEntityStatus { get; set; }
+        public AcquireEmail.AcquireEmailEntityStatusEnum? AcquiredEmailEntityStatus { get; set; }
     }
 
     public class AcquireEmailExportForEmailNotificationModel
@@ -49,8 +50,10 @@ namespace MojCRM.Areas.HelpDesk.Helpers
     public class AcquireEmailStatsPerAgentAndCampaign
     {
         public string Agent { get; set; }
+        public int CampaignId { get; set; }
         public string CampaignName { get; set; }
         public int NumberOfEntitiesForProcessing { get; set; }
+        public int NumberOfEntitiesWithoutPhoneNumber { get; set; }
     }
 
     public class AcquireEmailMethodHelpers

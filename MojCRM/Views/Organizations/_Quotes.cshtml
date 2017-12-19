@@ -1,0 +1,182 @@
+﻿@using MojCRM.Areas.Sales.Models
+@model MojCRM.ViewModels.OrganizationDetailsViewModel
+@{
+    Layout = null;
+}
+<div class="col-md-3">
+
+</div>
+<div class="col-md-9">
+    @if (Model.Quotes.Count() != 0)
+    {
+        foreach (var quote in Model.Quotes)
+        {
+            if (quote.QuoteStatus == Quote.QuoteStatusEnum.Created || quote.QuoteStatus == Quote.QuoteStatusEnum.Recalled || quote.QuoteStatus == Quote.QuoteStatusEnum.Reviewed)
+            {
+                <div class="alert alert-info" title="Status ponude: @quote.QuoteStatusString">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Broj ponude:</strong> @quote.QuoteNumber
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Vlasnik ponude:</strong> @quote.AssignedTo
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Datum i vrijeme kreiranja ponude:</strong> @quote.InsertDate.ToShortDateString()
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Početak važenja ponude:</strong> @quote.StartDate.ToShortDateString()
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Završetak važenja ponude:</strong> @quote.EndDate.ToShortDateString()
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Povezana kampanja:</strong> @quote.Campaign.CampaignName
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Tip ponude:</strong> @quote.QuoteTypeString
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Iznos ponude (bez PDV-a): @quote.QuoteSum</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Iznos ponude (s PDV-om):</strong> @quote.QuoteSumTotal
+                        </div>
+                    </div>
+                </div>
+            }
+            if (quote.QuoteStatus == Quote.QuoteStatusEnum.Accepted || quote.QuoteStatus == Quote.QuoteStatusEnum.AcceptedAfterReview)
+            {
+                <div class="alert alert-success" title="Status ponude: @quote.QuoteStatusString">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Broj ponude:</strong> @quote.QuoteNumber
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Vlasnik ponude:</strong> @quote.AssignedTo
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Datum i vrijeme kreiranja ponude:</strong> @quote.InsertDate.ToShortDateString()
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Početak važenja ponude:</strong> @quote.StartDate.ToShortDateString()
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Završetak važenja ponude:</strong> @quote.EndDate.ToShortDateString()
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Povezana kampanja:</strong> @quote.Campaign.CampaignName
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Tip ponude:</strong> @quote.QuoteTypeString
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Iznos ponude (bez PDV-a): @quote.QuoteSum</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Iznos ponude (s PDV-om):</strong> @quote.QuoteSumTotal
+                        </div>
+                    </div>
+                </div>
+            }
+            if (quote.QuoteStatus == Quote.QuoteStatusEnum.Rejected)
+            {
+                <div class="alert alert-danger" title="Status ponude: @quote.QuoteStatusString">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Broj ponude:</strong> @quote.QuoteNumber
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Vlasnik ponude:</strong> @quote.AssignedTo
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Datum i vrijeme kreiranja ponude:</strong> @quote.InsertDate.ToShortDateString()
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Početak važenja ponude:</strong> @quote.StartDate.ToShortDateString()
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Završetak važenja ponude:</strong> @quote.EndDate.ToShortDateString()
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Povezana kampanja:</strong> @quote.Campaign.CampaignName
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Tip ponude:</strong> @quote.QuoteTypeString
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Iznos ponude (bez PDV-a): @quote.QuoteSum</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Iznos ponude (s PDV-om):</strong> @quote.QuoteSumTotal
+                        </div>
+                    </div>
+                </div>
+            }
+            if (quote.QuoteStatus == Quote.QuoteStatusEnum.Sent)
+            {
+                <div class="alert alert-warning" title="Status ponude: @quote.QuoteStatusString">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Broj ponude:</strong> @quote.QuoteNumber
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Vlasnik ponude:</strong> @quote.AssignedTo
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Datum i vrijeme kreiranja ponude:</strong> @quote.InsertDate.ToShortDateString()
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Početak važenja ponude:</strong> @quote.StartDate.ToShortDateString()
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Završetak važenja ponude:</strong> @quote.EndDate.ToShortDateString()
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Povezana kampanja:</strong> @quote.Campaign.CampaignName
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Tip ponude:</strong> @quote.QuoteTypeString
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Iznos ponude (bez PDV-a): @quote.QuoteSum</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Iznos ponude (s PDV-om):</strong> @quote.QuoteSumTotal
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    }
+    else
+    {
+        <p>Za ovu tvrtku nema kreiranih ponuda</p>
+    }
+</div>
+
+

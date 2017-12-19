@@ -92,6 +92,7 @@ namespace MojCRM.ViewModels
         public int OpportunitiesCount { get; set; }
         public IQueryable<Lead> Leads { get; set; }
         public int LeadsCount { get; set; }
+        public IQueryable<Quote> Quotes { get; set; }
         public IQueryable<Delivery> TicketsAsReceiver { get; set; }
         public int TicketsAsReceiverCount { get; set; }
         public IQueryable<Delivery> TicketsAsSender { get; set; }

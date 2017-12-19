@@ -4,6 +4,128 @@
     Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 }
 
+<!--Modal - Add Quote Member-->
+@using (Html.BeginForm("AddMember", "Quotes", new { area = "Sales" }, FormMethod.Post))
+{
+    <div class="modal fade" id="AddQuoteMember" tabindex="-1" role="dialog" aria-labelledby="AddQuoteMember">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content" style="overflow:hidden">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4>Dodijeli djelatnika ponudi</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-12">
+                                Molimo odaberite djelatnika i njegovu ulogu u ponudi.
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="agent">Djelatnik</label>
+                                <div id="agent">
+                                    @Html.DropDownList("agent", Model.AgentList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="status">Uloga</label>
+                                <div id="status">
+                                    @Html.DropDownList("role", Model.MemberRoleList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <br />
+                            <div class="hidden">
+                                <div id="ticketid">
+                                    @Html.TextBox("quote", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Quote.Id })
+                                </div>
+                            </div>
+                        </div>
+                        @if (Model.QuoteMembers.Count() != 0)
+                        {
+                            <br />
+                            <div>
+                                <div class="row">
+                                    <label>Povezani djelatnici</label>
+                                    <table class="table">
+                                        <tr>
+                                            <th>Djelatnik</th>
+                                            <th>Uloga</th>
+                                        </tr>
+                                        @foreach (var agent in Model.QuoteMembers)
+                                        {
+                                            <tr>
+                                                <td>@agent.MemberName</td>
+                                                <td>@agent.QuoteMemberRoleString</td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Predaj dodjelu</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Prekini</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!--Modal - Add Quote Line-->
+@using (Html.BeginForm("AddQuoteLine", "Quotes", new { area = "Sales" }, FormMethod.Post))
+{
+    <div class="modal fade" id="AddQuoteLine" tabindex="-1" role="dialog" aria-labelledby="AddQuoteLine">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content" style="overflow:hidden">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4>Dodaj stavku ponudi</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row" style="text-align: center">
+                            <div class="col-md-12">
+                                <label for="service">Proizvod</label>
+                                <div id="service">
+                                    @Html.DropDownList("RelatedServiceId", Model.ServicesList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <br />
+                            <div class="hidden">
+                                <div id="ticketid">
+                                    @Html.TextBox("RelatedQuoteId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Quote.Id })
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="quantity">Količina</label>
+                                <div id="quantity">
+                                    @Html.TextBox("Quantity", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Količina" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="amount">Cijena</label>
+                                <div id="amount">
+                                    @Html.TextBox("Price", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Cijena" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Dodaj stavku</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Prekini</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 <h2>Detalji ponude</h2>
 <br />
 <div class="alert alert-info">
@@ -17,6 +139,15 @@
         <br/>
         Ukupna vrijednost ponude se ažurira automatski dodavanjem pojedinih stavki ponudi.
     </p>
+</div>
+<hr />
+<div>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" title="Dodaj stavku na ponudu" class="btn btn-sm btn-default" data-toggle="modal" href="#AddQuoteLine"><i class="fa fa-plus"></i> <i class="fa fa-bars"></i></button>
+            <button type="button" title="Dodaj djelatnika uz ponudu" class="btn btn-sm btn-default" data-toggle="modal" href="#AddQuoteMember"><i class="fa fa-plus"></i> <i class="fa fa-user"></i></button>
+        </div>
+    </div>
 </div>
 <hr />
 <div>
@@ -72,8 +203,34 @@
         </div>
         <div class="col-md-3">
             <strong>@Html.DisplayNameFor(model => model.Quote.QuoteSumTotal)</strong>
-            @Html.DisplayFor(model => model.Quote.QuoteSumTotal)
+            @Html.DisplayFor(model => model.Quote.QuoteSumTotal).ToString()
         </div>
     </div>
 </div>
+<hr />
+@if (Model.QuoteLines.Count() != 0)
+{
+    <h4>Stavke ponude</h4>
+    <table class="table">
+        <tr>
+            <th>Redni broj</th>
+            <th>Naziv proizvoda</th>
+            <th>Količina</th>
+            <th>Osnovna cijena</th>
+            <th>Određena cijena</th>
+            <th>Iznos stavke (bez PDV-a)</th>
+        </tr>
+        @foreach (var line in Model.QuoteLines)
+        {
+            <tr>
+                <td>@line.LineNumber</td>
+                <td>@line.Service.ServiceName</td>
+                <td>@line.Quantity</td>
+                <td>@line.BaseAmount</td>
+                <td>@line.Price</td>
+                <td><strong>@line.LineTotal</strong></td>
+            </tr>
+        }
+    </table>
+}
 

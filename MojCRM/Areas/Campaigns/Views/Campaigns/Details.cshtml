@@ -173,6 +173,11 @@
                                 Preostali broj predmeta za dodjelu: <strong>@Model.NumberOfUnassignedEntities</strong>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12" style="text-align: center">
+                                Preostali broj predmeta za dodjelu bez broja telefona: <strong>@Model.NumberOfUnassignedEntitiesWithoutTelephone</strong>
+                            </div>
+                        </div>
                         <hr />
                         <div class="row">
                             <div class="col-md-6">
@@ -250,6 +255,7 @@
                              <a href="@Url.RouteUrl(new {action = "ExportEntities", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId, identifier = 1 })" class="btn btn-sm btn-default" title="Preuzmi sve rezultate"><i class="fa fa-file-excel-o" style="color: lightgreen"></i></a>
                              <a href="@Url.RouteUrl(new {action = "ExportEntities", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId, identifier = 2 })" class="btn btn-sm btn-default" title="Preuzmi samo revidirane rezultate"><i class="fa fa-file-excel-o" style="color: blue"></i></a>
                              <a href="@Url.RouteUrl(new {action = "ExportEntitiesForEmailNotification", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId })" class="btn btn-sm btn-default" title="Preuzmi rezultate formirane za tipsku obavijest"><i class="fa fa-file-excel-o" style="color: yellow"></i></a>
+                            <a href="@Url.RouteUrl(new {action = "Index", controller = "AcquireEmail", area = "HelpDesk", CampaignName = Model.Campaign.CampaignName ,returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Pregled predmeta za ovu kampanju"><i class="fa fa-bars"></i> <i class="fa fa-arrow-right"></i></a>
                         }
                         <a href="@Url.RouteUrl(new {action = "Index", controller = "Campaigns", area = "Campaigns", returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Povratak na popis kampanja"><i class="fa fa-arrow-left"></i></a>   
                     }

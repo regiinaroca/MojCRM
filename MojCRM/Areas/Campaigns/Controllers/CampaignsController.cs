@@ -29,6 +29,11 @@ namespace MojCRM.Areas.Campaigns.Controllers
             {
                 campaigns = campaigns.Where(x => x.CampaignName.Contains(model.CampaignName));
             }
+            if (model.CampaignStatus != null)
+            {
+                var tempStatus = (Campaign.CampaignStatusEnum)model.CampaignStatus;
+                campaigns = campaigns.Where(x => x.CampaignStatus == tempStatus);
+            }
 
             return View(campaigns.OrderByDescending(c => c.InsertDate));
         }
@@ -55,6 +60,7 @@ namespace MojCRM.Areas.Campaigns.Controllers
                         EmailBasesStats = campaignBasesStats.GetModel(id),
                         SalesStats = null,
                         NumberOfUnassignedEntities = model.GetUnassignedEntities(id),
+                        NumberOfUnassignedEntitiesWithoutTelephone = model.GetUnassignedEntitiesWithoutTelephone(id),
                         AssignedMembers = list,
                         AssignedAgents = model.GetAssignedAgentsInfo(id),
                         EmailsBasesEntityStatusStats = model.GetEmailBasesEntityStats(id),
@@ -70,6 +76,7 @@ namespace MojCRM.Areas.Campaigns.Controllers
                         EmailBasesStats = null,
                         SalesStats = campaignSalesStats.GetModel(id),
                         NumberOfUnassignedEntities = model.GetUnassignedEntities(id),
+                        NumberOfUnassignedEntitiesWithoutTelephone = model.GetUnassignedEntitiesWithoutTelephone(id),
                         AssignedMembers = list,
                         AssignedAgents = model.GetAssignedAgentsInfo(id),
                         EmailsBasesEntityStatusStats = null,

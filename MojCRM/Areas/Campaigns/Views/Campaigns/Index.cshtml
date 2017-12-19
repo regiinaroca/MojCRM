@@ -1,9 +1,19 @@
-﻿@using GridMvc.Html
+﻿@using System.Web.UI.WebControls
+@using GridMvc.Html
 @model IQueryable<MojCRM.Areas.Campaigns.Models.Campaign>
 
 @{
     ViewBag.Title = "Pregled kampanja";
     Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+
+    var statusList = new List<ListItem>
+    {
+        new ListItem{ Value= @"0", Text = @"Pokrenuto"},
+        new ListItem{ Value= @"1", Text = @"U tijeku"},
+        new ListItem{ Value= @"2", Text = @"Privremeno zaustavljeno"},
+        new ListItem{ Value= @"3", Text = @"Prekinuto"},
+        new ListItem{ Value= @"4", Text = @"Završeno"}
+    };
 }
 
 <h2 style="text-align:center"><strong>Pregled kampanja</strong></h2>
@@ -41,6 +51,14 @@
                     <label for="campaign-name">Naziv kampanje</label>
                     <div id="campaign-name">
                         @Html.TextBox("CampaignName", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Naziv kampanje" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="campaign-status">Status</label>
+                    <div id="campaign-status">
+                        @Html.DropDownList("CampaignStatus", new SelectList(statusList, "Value", "Text"), "-- Svi statusi --", new { @class = "form-control" })
                     </div>
                 </div>
             </div>

@@ -758,6 +758,7 @@
     <Content Include="Areas\Sales\Views\Quotes\Create.cshtml" />
     <Content Include="Areas\Sales\Views\Quotes\Index.cshtml" />
     <Content Include="Areas\Sales\Views\Quotes\Details.cshtml" />
+    <Content Include="Areas\HelpDesk\Views\AcquireEmail\IndexTemp.cshtml" />
     <None Include="Scripts\jquery-3.2.1-vsdoc.js" />
     <Content Include="Scripts\daterangepicker.js" />
     <Content Include="Scripts\jquery-3.2.1.js" />
@@ -914,6 +915,8 @@
     <Content Include="Scripts\jquery-3.2.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.2.1.min.map" />
     <Content Include="Views\Organizations\_Activities.cshtml" />
+    <Content Include="Views\Organizations\_Quotes.cshtml" />
+    <Content Include="Views\Shared\ErrorWrongInputFormat.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

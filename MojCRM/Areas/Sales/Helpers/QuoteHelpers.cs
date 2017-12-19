@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using MojCRM.Areas.Sales.Models;
+using MojCRM.Models;
 
 namespace MojCRM.Areas.Sales.Helpers
 {
@@ -17,5 +19,28 @@ namespace MojCRM.Areas.Sales.Helpers
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public Quote.QuoteTypeEnum QuoteType { get; set; }
+    }
+
+    public class AddQuoteLineHelper
+    {
+        public int RelatedQuoteId { get; set; }
+        public int RelatedServiceId { get; set; }
+        public int Quantity { get; set; }
+        public decimal Price { get; set; }
+    }
+
+    public class QuoteHelperMethods
+    {
+        private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        public void UpdateQuoteSum(int quoteId)
+        {
+            var quote = _db.Quotes.First(q => q.Id == quoteId);
+            var lines = _db.QuoteLines.Where(ql => ql.RelatedQuoteId == quoteId).Sum(ql => ql.LineTotal);
+
+            quote.QuoteSum = lines;
+            quote.QuoteSumTotal = lines * (decimal)1.25;
+            quote.UpdateDate = DateTime.Now;
+            _db.SaveChanges();
+        }
     }
 }

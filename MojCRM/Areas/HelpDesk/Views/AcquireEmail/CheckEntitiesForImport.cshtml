@@ -6,11 +6,11 @@
 
 <h2>Unos predmeta za ažuriranje baza korisnika</h2>
 
-@*<div class="row">
+<div class="row">
     <div class="col-md-12">
-        <button type="button" title="Pokreni kreiranje predmeta za ažuriranje baza podataka korisnika" class="btn btn-sm btn-default" id="create-entities" onclick="Import()"><i class="fa fa-check"></i></button>
+        <a href="@Url.RouteUrl(new { action = "Details", controller = "Campaigns", area = "Campaigns", id = Model.CampaignId })" title="Nastavi na detalje kampanje"><i class="fa fa-arrow-right"></i></a>
     </div>
-</div>*@
+</div>
 <br/>
 <div class="row">
     <div class="col-md-6">
@@ -52,7 +52,7 @@
 {
     <div class="row">
         <div class="col-md-12">
-            <p style="color: red">Broj imporiranih predmeta: @Model.ImportedEntities</p>
+            <p style="color: red">Broj importiranih predmeta: @Model.ImportedEntities</p>
         </div>
     </div>   
 }

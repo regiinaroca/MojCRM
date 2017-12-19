@@ -72,30 +72,38 @@ namespace MojCRM.Controllers
         // GET: Organizations/Details/5
         public ActionResult Details(int id)
         {
-            var organization = _db.Organizations.Find(id);
-            var model = new OrganizationDetailsViewModel()
+            try
             {
-                Organization = organization,
-                OrganizationDetails = _db.OrganizationDetails.First(od => od.MerId == id),
-                MerDeliveryDetails = _db.MerDeliveryDetails.First(mdd => mdd.MerId == id),
-                OrganizationBusinessUnits = _db.Organizations.Where(o => o.VAT == organization.VAT && o.SubjectBusinessUnit != ""),
-                Contacts = _db.Contacts.Where(c => c.OrganizationId == id),
-                CampaignsFor = _db.Campaigns.Where(c => c.RelatedCompanyId == id),
-                AcquireEmails = _db.AcquireEmails.Where(a => a.RelatedOrganizationId == id),
-                Opportunities = _db.Opportunities.Where(op => op.RelatedOrganizationId == id),
-                OpportunitiesCount = _db.Opportunities.Count(op => op.RelatedOrganizationId == id),
-                Leads = _db.Leads.Where(l => l.RelatedOrganizationId == id),
-                LeadsCount = _db.Leads.Count(l => l.RelatedOrganizationId == id),
-                TicketsAsReceiver = _db.DeliveryTicketModels.Where(t => t.ReceiverId == id).OrderByDescending(t => t.SentDate),
-                TicketsAsReceiverCount = _db.DeliveryTicketModels.Where(t => t.ReceiverId == id).OrderByDescending(t => t.SentDate).Count(),
-                TicketsAsSender = _db.DeliveryTicketModels.Where(t => t.SenderId == id).OrderByDescending(t => t.SentDate),
-                TicketsAsSenderCount = _db.DeliveryTicketModels.Where(t => t.SenderId == id).OrderByDescending(t => t.SentDate).Count(),
-                Attributes = _db.OrganizationAttributes.Where(a => a.OrganizationId == id).OrderBy(a => a.AttributeClass),
-                Activities = _db.ActivityLogs.Where(al => al.Module == ActivityLog.ModuleEnum.Organizations && al.ReferenceId == id).OrderByDescending(al => al.InsertDate),
-                ActivitiesCount = _db.ActivityLogs.Count(al => al.Module == ActivityLog.ModuleEnum.Organizations && al.ReferenceId == id)
-            };
+                var organization = _db.Organizations.Find(id);
+                var model = new OrganizationDetailsViewModel()
+                {
+                    Organization = organization,
+                    OrganizationDetails = _db.OrganizationDetails.First(od => od.MerId == id),
+                    MerDeliveryDetails = _db.MerDeliveryDetails.First(mdd => mdd.MerId == id),
+                    OrganizationBusinessUnits = _db.Organizations.Where(o => o.VAT == organization.VAT && o.SubjectBusinessUnit != ""),
+                    Contacts = _db.Contacts.Where(c => c.OrganizationId == id),
+                    CampaignsFor = _db.Campaigns.Where(c => c.RelatedCompanyId == id),
+                    AcquireEmails = _db.AcquireEmails.Where(a => a.RelatedOrganizationId == id),
+                    Opportunities = _db.Opportunities.Where(op => op.RelatedOrganizationId == id),
+                    OpportunitiesCount = _db.Opportunities.Count(op => op.RelatedOrganizationId == id),
+                    Leads = _db.Leads.Where(l => l.RelatedOrganizationId == id),
+                    LeadsCount = _db.Leads.Count(l => l.RelatedOrganizationId == id),
+                    Quotes = _db.Quotes.Where(q => q.RelatedOrganizationId == id),
+                    TicketsAsReceiver = _db.DeliveryTicketModels.Where(t => t.ReceiverId == id).OrderByDescending(t => t.SentDate),
+                    TicketsAsReceiverCount = _db.DeliveryTicketModels.Where(t => t.ReceiverId == id).OrderByDescending(t => t.SentDate).Count(),
+                    TicketsAsSender = _db.DeliveryTicketModels.Where(t => t.SenderId == id).OrderByDescending(t => t.SentDate),
+                    TicketsAsSenderCount = _db.DeliveryTicketModels.Where(t => t.SenderId == id).OrderByDescending(t => t.SentDate).Count(),
+                    Attributes = _db.OrganizationAttributes.Where(a => a.OrganizationId == id).OrderBy(a => a.AttributeClass),
+                    Activities = _db.ActivityLogs.Where(al => al.Module == ActivityLog.ModuleEnum.Organizations && al.ReferenceId == id).OrderByDescending(al => al.InsertDate),
+                    ActivitiesCount = _db.ActivityLogs.Count(al => al.Module == ActivityLog.ModuleEnum.Organizations && al.ReferenceId == id)
+                };
 
-            return View(model);
+                return View(model);
+            }
+            catch (FormatException)
+            {
+                return View("ErrorWrongInputFormat");
+            }
         }
 
         // GET: Organizations/GetOrganizations

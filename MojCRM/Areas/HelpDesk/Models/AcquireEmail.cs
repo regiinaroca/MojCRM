@@ -81,7 +81,22 @@ namespace MojCRM.Areas.HelpDesk.Models
             WrittenConfirmationRequired,
 
             [Description("Neispravan kontakt broj")]
-            WrongTelephoneNumber
+            WrongTelephoneNumber,
+
+            [Description("Poslovna Hrvatska")]
+            PoslovnaHrvatska,
+
+            [Description("Ne postoji ispravan kontakt broj")]
+            NoTelehoneNumber,
+
+            [Description("Subjekt u stečaju / likvidaciji")]
+            Bankruptcy,
+
+            [Description("Subjekt nema žiro račun")]
+            NoFinancialAccount,
+
+            [Description("Najava brisanja subjekta")]
+            ToBeClosed
         }
 
         public string AcquireEmailEntityStatusString
@@ -98,6 +113,11 @@ namespace MojCRM.Areas.HelpDesk.Models
                     case AcquireEmailEntityStatusEnum.PartnerWillContactUser: return "Partner će se javiti korisniku samostalno";
                     case AcquireEmailEntityStatusEnum.WrittenConfirmationRequired: return "Potrebno poslati pisanu suglasnost";
                     case AcquireEmailEntityStatusEnum.WrongTelephoneNumber: return "Neispravan kontakt broj";
+                    case AcquireEmailEntityStatusEnum.PoslovnaHrvatska: return "Kontakt u bazi";
+                    case AcquireEmailEntityStatusEnum.NoTelehoneNumber: return "Ne postoji ispravan kontakt broj";
+                    case AcquireEmailEntityStatusEnum.Bankruptcy: return "Subjekt u stečaju / likvidaciji";
+                    case AcquireEmailEntityStatusEnum.NoFinancialAccount: return "Subjekt nema žiro račun";
+                    case AcquireEmailEntityStatusEnum.ToBeClosed: return "Najava brisanja subjekta";
                 }
                 return "Status unosa";
             }

@@ -5,16 +5,16 @@
     ViewBag.Title = "Detalji";
     Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 }
-@{ 
+@{
     var leadStatusList = new List<ListItem>
         {
-            new ListItem{ Value= @"0", Text = @"Kreirano"},
-            new ListItem{ Value= @"1", Text = @"U kontaktu"},
-            new ListItem{ Value= @"6", Text = @"Procesne poteškoće"},
-            new ListItem{ Value= @"2", Text = @"Odbijeno"},
-            new ListItem{ Value= @"3", Text = @"Poslana ponuda"},
-            new ListItem{ Value= @"4", Text = @"Prihvaćena ponuda"},
-            new ListItem{ Value= @"5", Text = @"Dogovoren sastanak"}
+            new ListItem{ Value= "0", Text = "Kreirano"},
+            new ListItem{ Value= "1", Text = "U kontaktu"},
+            new ListItem{ Value= "6", Text = "Procesne poteškoće"},
+            new ListItem{ Value= "2", Text = "Odbijeno"},
+            new ListItem{ Value= "3", Text = "Poslana ponuda"},
+            new ListItem{ Value= "4", Text = "Prihvaćena ponuda"},
+            new ListItem{ Value= "5", Text = "Dogovoren sastanak"}
         };
 }
 
@@ -29,18 +29,18 @@
             <div class="modal-body" style="overflow-y:auto; max-height:400px">
                 <div class="row">
                     <div class="col-md-12">
-                        <label for="contact-for-note">Kontakt osoba</label>
-                        <div id="contact-for-note">
-                            @Html.DropDownList("Contact", Model.RelatedSalesContactsForDetails, new { @class = "form-control col-md-10", id = "contact-for-note" })
+                        <label for="note-contact">Kontakt osoba</label>
+                        <div id="note-contact">
+                            @Html.DropDownList("Contact", Model.RelatedSalesContactsForDetails, new { @class = "form-control col-md-10", @id = "contact-for-note" })
                         </div>
                     </div>
                 </div>
                 <br />
                 <div class="row">
                     <div class="col-md-12">
-                        <label for="note-for-note">Osobna napomena</label>
-                        <div id="note-for-note">
-                            @Html.TextArea("Note", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Napomena", id = "note-for-note" })
+                        <label for="note">Osobna napomena</label>
+                        <div id="note">
+                            @Html.TextArea("Note", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Napomena", @id = "note-for-note" })
                         </div>
                     </div>
                 </div>
@@ -51,11 +51,11 @@
                         <th></th>
                         <th>Napomena</th>
                     </tr>
-                    @foreach (var template in Model.SalesNoteTemplates)
+                    @foreach (var Template in Model.SalesNoteTemplates)
                     {
                         <tr>
-                            <td>@Html.CheckBox("checked", false, new { template.Value, @class = "checked", id = "checkbox", template = template.Value })</td>
-                            <td>@template.Text</td>
+                            <td>@Html.CheckBox("checked", false, new { Template.Value, @class = "checked", @id = "checkbox", @template = Template.Value })</td>
+                            <td>@Template.Text</td>
                         </tr>
                     }
                 </table>
@@ -82,16 +82,16 @@
                     <div class="col-md-12">
                         <label for="note-contact">Kontakt osoba</label>
                         <div id="note-contact">
-                            @Html.DropDownList("Contact", Model.RelatedSalesContactsForDetails, new { @class = "form-control", id = "contact-for-note" })
+                            @Html.DropDownList("Contact", Model.RelatedSalesContactsForDetails, new { @class = "form-control", @id = "contact-for-note" })
                         </div>
                     </div>
                 </div>
                 <br />
                 <div class="row">
                     <div class="col-md-12">
-                        <label for="info-note">Osobna napomena</label>
-                        <div id="info-note">
-                            @Html.TextArea("Note", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Napomena", id = "info-note" })
+                        <label for="note">Osobna napomena</label>
+                        <div id="note">
+                            @Html.TextArea("Note", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Napomena", @id = "info-note" })
                         </div>
                     </div>
                 </div>
@@ -119,20 +119,20 @@
                         <div class="row">
                             <div class="hidden">
                                 <div id="opportunity-id">
-                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.LeadId })
+                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <label for="user">Agent</label>
                                 <div id="user">
-                                    @Html.TextBox("User", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = User.Identity.Name, disabled = true })
+                                    @Html.TextBox("User", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = @User.Identity.Name, @disabled = true })
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <label for="delivery-detail-contact">Kontakt osoba</label>
-                                <div id="delivery-detail-contact">
+                                <div id="contact">
                                     @Html.DropDownList("Contact", Model.RelatedSalesContactsForDetails, new { @class = "form-control" })
                                 </div>
                             </div>
@@ -150,7 +150,7 @@
                             <div class="col-md-12">
                                 <label for="note">Nova bilješka</label>
                                 <div id="note">
-                                    @Html.TextArea("Note", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Napomena" })
+                                    @Html.TextArea("Note", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Napomena" })
                                 </div>
                             </div>
                         </div>
@@ -191,7 +191,7 @@
                 </div>
                 <div class="hidden">
                     <div id="opportunity-id">
-                        @Html.TextBox("RelatedOpportunityId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.LeadId })
+                        @Html.TextBox("RelatedOpportunityId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -204,7 +204,7 @@
 }
 
 <!--Modal - Create Contact-->
-@using (Html.BeginForm("CreateFromSalesLead", "Contact", new { area = ""}, FormMethod.Post))
+@using (Html.BeginForm("CreateFromSalesLead", "Contact", new { area = "" }, FormMethod.Post))
 {
     <div class="modal fade" id="CreateContact" tabindex="-1" role="dialog" aria-labelledby="CreateContact">
         <div class="modal-dialog modal-lg" role="document">
@@ -219,19 +219,19 @@
                             <div class="col-md-4">
                                 <label for="sales-contact-first-name">Ime kontakta</label>
                                 <div id="sales-contact-first-name">
-                                    @Html.TextBox("FirstName", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Ime kontakta" })
+                                    @Html.TextBox("FirstName", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Ime kontakta" })
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <label for="sales-contact-last-name">Prezime kontakta</label>
                                 <div id="sales-contact-last-name">
-                                    @Html.TextBox("LastName", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Prezime kontakta" })
+                                    @Html.TextBox("LastName", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Prezime kontakta" })
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <label for="sales-contact-telephone">Broj telefona kontakta</label>
                                 <div id="sales-contact-telephone">
-                                    @Html.TextBox("Telephone", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Broj telefona kontakta" })
+                                    @Html.TextBox("Telephone", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Broj telefona kontakta" })
                                 </div>
                             </div>
                         </div>
@@ -240,24 +240,24 @@
                             <div class="col-md-4">
                                 <label for="sales-contact-mobile">Broj mobitela kontakta</label>
                                 <div id="sales-contact-mobile">
-                                    @Html.TextBox("Mobile", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Broj mobitela kontakta" })
+                                    @Html.TextBox("Mobile", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Broj mobitela kontakta" })
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <label for="sales-contact-email">E-mail adresa kontakta</label>
                                 <div id="sales-contact-email">
-                                    @Html.TextBox("ContactEmail", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "E-mail adresa kontakta" })
+                                    @Html.TextBox("ContactEmail", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "E-mail adresa kontakta" })
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <label for="sales-contact-title">Titula / Funkcija</label>
                                 <div id="sales-contact-title">
-                                    @Html.TextBox("TitleFunction", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Titula / funkcija kontakta" })
+                                    @Html.TextBox("TitleFunction", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Titula / funkcija kontakta" })
                                 </div>
                             </div>
                             <div class="hidden">
                                 <div id="delivery-contact-documentid">
-                                    @Html.TextBox("RelatedEntityId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.LeadId })
+                                    @Html.TextBox("RelatedEntityId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
                                 </div>
                             </div>
                         </div>
@@ -296,19 +296,19 @@
                             <div class="col-md-4">
                                 <label for="sales-contact-first-name">Ime kontakta</label>
                                 <div id="sales-contact-first-name">
-                                    @Html.TextBox("FirstName", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Ime kontakta" })
+                                    @Html.TextBox("FirstName", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Ime kontakta" })
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <label for="sales-contact-last-name">Prezime kontakta</label>
                                 <div id="sales-contact-last-name">
-                                    @Html.TextBox("LastName", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Prezime kontakta" })
+                                    @Html.TextBox("LastName", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Prezime kontakta" })
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <label for="sales-contact-telephone">Broj telefona</label>
                                 <div id="sales-contact-telephone">
-                                    @Html.TextBox("Telephone", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Broj telefona kontakta" })
+                                    @Html.TextBox("Telephone", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Broj telefona kontakta" })
                                 </div>
                             </div>
                         </div>
@@ -317,24 +317,24 @@
                             <div class="col-md-4">
                                 <label for="sales-contact-mobile">Broj mobitela kontakta</label>
                                 <div id="sales-contact-mobile">
-                                    @Html.TextBox("Mobile", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Broj mobitela kontakta" })
+                                    @Html.TextBox("Mobile", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Broj mobitela kontakta" })
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <label for="sales-contact-email">E-mail adresa kontakta</label>
                                 <div id="sales-contact-email">
-                                    @Html.TextBox("ContactEmail", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "E-mail adresa kontakta" })
+                                    @Html.TextBox("ContactEmail", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "E-mail adresa kontakta" })
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <label for="sales-contact-title">Titula / Funkcija</label>
                                 <div id="sales-contact-title">
-                                    @Html.TextBox("TitleFunction", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Titula / funkcija kontakta" })
+                                    @Html.TextBox("TitleFunction", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Titula / funkcija kontakta" })
                                 </div>
                             </div>
                             <div class="hidden">
                                 <div id="entity-id">
-                                    @Html.TextBox("RelatedEntityId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.LeadId })
+                                    @Html.TextBox("RelatedEntityId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
                                 </div>
                             </div>
                         </div>
@@ -370,7 +370,7 @@
                             </div>
                             <div class="hidden">
                                 <div id="ticketid">
-                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.LeadId })
+                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
                                 </div>
                             </div>
                         </div>
@@ -407,7 +407,7 @@
                             <div class="col-md-12">
                                 <label for="unassign">Otključaj priliku</label>
                                 <div id="unassign">
-                                    @Html.CheckBox("Unassign", false, new { @class = "checked", id = "checkbox" })
+                                    @Html.CheckBox("Unassign", false, new { @class = "checked", @id = "checkbox" })
                                 </div>
                             </div>
                         </div>
@@ -415,13 +415,13 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label for="reassign">Dodijeli priliku drugom agentu</label>
-                                <div id="reassign">
+                                <div id="unassign">
                                     @Html.DropDownList("AssignedTo", Model.SalesAgents, new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="hidden">
                                 <div id="ticketid">
-                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.LeadId })
+                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
                                 </div>
                             </div>
                         </div>
@@ -458,19 +458,19 @@
                             <div class="col-md-12">
                                 <label for="status-lns">Status</label>
                                 <div id="status-lns">
-                                    @Html.DropDownList("NewStatus", new SelectList(leadStatusList, "Value", "Text"), "Odaberi novi status leada", new { @class = "form-control", id = "lns" })
+                                    @Html.DropDownList("NewStatus", new SelectList(leadStatusList, "Value", "Text"), "Odaberi novi status leada", new { @class = "form-control", @id = "lns" })
                                 </div>
                             </div>
                             <br />
                             <div class="col-md-12" id="status-description-lns">
                                 <label>Opis</label>
                                 <div>
-                                    @Html.TextArea("StatusDescription", ViewBag.CurrentFilter as string, new { @class = "form-control", Placeholder = "Unesite pojašnjenje statusa" })
+                                    @Html.TextArea("StatusDescription", ViewBag.CurrentFilter as string, new { @class = "form-control", @Placeholder = "Unesite pojašnjenje statusa" })
                                 </div>
                             </div>
                             <div class="hidden">
                                 <div id="ticketid">
-                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.LeadId })
+                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
                                 </div>
                             </div>
                         </div>
@@ -512,7 +512,7 @@
                             </div>
                             <div class="hidden">
                                 <div id="ticketid">
-                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.LeadId })
+                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
                                 </div>
                             </div>
                         </div>
@@ -528,7 +528,7 @@
 }
 
 <!-- Modal - Edit Informations-->
-@using (Html.BeginForm("EditOrganizationDetails", "Organizations", new { area = ""}, FormMethod.Post))
+@using (Html.BeginForm("EditOrganizationDetails", "Organizations", new { area = "" }, FormMethod.Post))
 {
     <div class="modal fade" id="EditInformations" tabindex="-1" role="dialog" aria-labelledby="EditInformations">
         <div class="modal-dialog modal-lg" role="document">
@@ -543,25 +543,25 @@
                             <div class="col-md-4">
                                 <label for="sales-contact-first-name">ERP program</label>
                                 <div id="sales-contact-first-name">
-                                    @Html.TextBox("ERP", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.ERP })
+                                    @Html.TextBox("ERP", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.ERP })
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <label for="sales-contact-last-name">Broj IRA mjesečno</label>
                                 <div id="sales-contact-last-name">
-                                    @Html.TextBox("NumberOfInvoicesSent", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.NumberOfInvoicesSent })
+                                    @Html.TextBox("NumberOfInvoicesSent", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.NumberOfInvoicesSent })
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <label for="sales-contact-telephone">Broj URA mjesečno</label>
                                 <div id="sales-contact-telephone">
-                                    @Html.TextBox("NumberOfInvoicesReceived", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.NumberOfInvoicesReceived })
+                                    @Html.TextBox("NumberOfInvoicesReceived", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.NumberOfInvoicesReceived })
                                 </div>
                             </div>
                         </div>
                         <div class="hidden">
                             <div id="merid">
-                                @Html.TextBox("MerId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.OrganizationId })
+                                @Html.TextBox("MerId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.OrganizationId })
                             </div>
                         </div>
                     </div>
@@ -591,13 +591,13 @@
                         <th>Agent</th>
                         <th>Datum aktivnosti</th>
                     </tr>
-                    @foreach (var activity in Model.RelatedLeadActivities)
+                    @foreach (var Activity in Model.RelatedLeadActivities)
                     {
                         <tr>
-                            <td>@activity.ActivityTypeString</td>
-                            <td>@activity.Description</td>
-                            <td>@activity.User</td>
-                            <td>@activity.InsertDate</td>
+                            <td>@Activity.ActivityTypeString</td>
+                            <td>@Activity.Description</td>
+                            <td>@Activity.User</td>
+                            <td>@Activity.InsertDate</td>
                         </tr>
                     }
                 </table>
@@ -621,9 +621,9 @@
                         <a href="#DeleteNote" title="Brisanje bilješke" class="btn btn-default btn-sm" data-toggle="modal" data-dismiss="modal"><i class="fa fa-trash"></i></a>
                     }
                 </div>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4>Bilješke o leadu</h4>
-                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4>Bilješke o leadu</h4>
+            </div>
             <div class="modal-body">
                 <table class="table">
                     <tr>
@@ -633,13 +633,13 @@
                         <th>Povezani kontakt</th>
                         <th></th>
                     </tr>
-                    @foreach (var note in Model.RelatedLeadNotes)
+                    @foreach (var Note in Model.RelatedLeadNotes)
                     {
                         <tr>
-                            <td>@note.InsertDate</td>
-                            <td>@note.User</td>
-                            <td>@note.Note</td>
-                            <td>@note.Contact</td>
+                            <td>@Note.InsertDate</td>
+                            <td>@Note.User</td>
+                            <td>@Note.Note</td>
+                            <td>@Note.Contact</td>
                             <td>
                                 <a href="#EditNote" data-toggle="modal" data-dismiss="modal"><i class="fa fa-edit"></i></a>
                             </td>
@@ -680,19 +680,19 @@
                         <th>Agent</th>
                         <th></th>
                     </tr>
-                    @foreach (var contact in Model.RelatedSalesContacts)
+                    @foreach (var Contact in Model.RelatedSalesContacts)
                     {
                         <tr>
-                            <td style="width:15%;">@contact.ContactFirstName</td>
-                            <td style="width:15%;">@contact.ContactLastName</td>
-                            <td style="width:20%;">@contact.TelephoneNumber;  @contact.MobilePhoneNumber</td>
-                            <td style="width:20%;"><a data-agent="@User.Identity.Name" data-email="@contact.Email" data-lead-id="@Html.Raw(Model.LeadId)" name="contact-email" class="opportunity-mail" href="mailto:@contact.Email">@contact.Email</a></td>
-                            <td style="width:15%;">@contact.Title</td>
-                            <td style="width:10%;">@contact.User</td>
+                            <td style="width:15%;">@Contact.ContactFirstName</td>
+                            <td style="width:15%;">@Contact.ContactLastName</td>
+                            <td style="width:20%;">@Contact.TelephoneNumber;  @Contact.MobilePhoneNumber</td>
+                            <td style="width:20%;"><a data-agent="@User.Identity.Name" data-email="@Contact.Email" data-lead-id="@Html.Raw(Model.LeadId)" name="contact-email" class="opportunity-mail" href="mailto:@Contact.Email">@Contact.Email</a></td>
+                            <td style="width:15%;">@Contact.Title</td>
+                            <td style="width:10%;">@Contact.User</td>
                             <td style="width:5%;">
                                 <a href="#AddNote" data-toggle="modal" data-dismiss="modal" title="Dodaj bilješku i zabilježi uspješni poziv"><i style="color: forestgreen" class="fa fa-phone-square"></i></a>
                                 <a data-dismiss="modal" href="#AddNoteInfo" data-toggle="modal" title="Dodaj bilješku i zabilježi informativni poziv"><i style="color: lightgreen" class="fa fa-phone-square"></i></a>
-                                <a data-dismiss="modal" data-lead-id="@Html.Raw(Model.LeadId)" data-contact="@Html.Raw(contact.ContactFirstName + " " + contact.ContactLastName)" data-detail-template="Nisu se javili" data-detail-note="" data-identifier="3" href="#" class="add-unsuccessfull-call"><i style="color: gold" class="fa fa-phone-square"></i></a>
+                                <a data-dismiss="modal" data-lead-id="@Html.Raw(Model.LeadId)" data-contact="@Html.Raw(Contact.ContactFirstName + " " + Contact.ContactLastName)" data-detail-template="Nisu se javili" data-detail-note="" data-identifier="3" href="#" class="add-unsuccessfull-call"><i style="color: gold" class="fa fa-phone-square"></i></a>
                             </td>
                         </tr>
                     }
@@ -720,7 +720,7 @@
                 <button type="button" title="Pregled aktivnosti vezanih uz ovaj lead" class="btn btn-sm btn-default" data-toggle="modal" href="#RelatedActivities"><i class="fa fa-history"></i></button>
                 <button type="button" title="Pregled bilješki vezanih uz ovaj lead" class="btn btn-sm btn-default" data-toggle="modal" href="#LeadNotes"><i class="fa fa-sticky-note"></i></button>
                 <button type="button" title="Pregled kontakata za prodaju" class="btn btn-sm btn-default" data-toggle="modal" href="#SalesContacts"><i class="fa fa-address-book"></i></button>
-                <a title="Dodaj ponudu" class="btn btn-sm btn-default" href="@Url.RouteUrl(new { action = "CreateFromLead", controller = "Quotes", area = "Sales", relatedCampaignId = Model.RelatedCampaignId, organizationId = Model.OrganizationId, leadID = Model.LeadId })"><i class="fa fa-plus"></i> <i class="fa fa-book"></i></a>
+                <a title="Dodaj ponudu" id="add-quote" class="btn btn-sm btn-default" method="post" onclick="javascript: AddQuote()"><i class="fa fa-plus"></i> <i class="fa fa-book"></i></a>
                 @if (!Model.IsAssigned && (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
                 {
                     <button type="button" title="Dodijeli lead" class="btn btn-sm btn-default" data-toggle="modal" data-target="#Assign" href="#Assign"><i class="fa fa-mail-reply-all"></i></button>

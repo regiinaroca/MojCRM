@@ -3,7 +3,7 @@
 
 @model IQueryable<MojCRM.Areas.HelpDesk.Models.AcquireEmail>
 @{
-    ViewBag.Title = "Ažuriranje baza korisnika";
+    ViewBag.Title = "Ažuriranje baza korisnika - posebna akcija";
     Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 
     var statusList = new List<ListItem>
@@ -16,7 +16,7 @@
 }
 
 
-<h2>Ažuriranje baza korisnika</h2>
+<h2>Ažuriranje baza korisnika - posebna akcija</h2>
 @*@if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Management"))
 {*@
     <hr/>
@@ -65,6 +65,14 @@
     }
     <hr />
 @*}*@
+<hr />
+<div class="row">
+    <div class="alert alert-info">
+        <p>
+            Ukupno preostalo za obradu: @Model.Count()
+        </p>
+    </div>
+</div>
 <hr />
 @Html.Grid(Model).Named("PopisPredmetaZaAžuriranjeBazaKorisnika").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
 {

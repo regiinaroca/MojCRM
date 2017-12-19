@@ -19,6 +19,7 @@ namespace MojCRM.Areas.Campaigns.ViewModels
         public EmailBasesCampaignStatsViewModel EmailBasesStats { get; set; }
         public SalesCampaignStatsViewModel SalesStats { get; set; }
         public int NumberOfUnassignedEntities { get; set; }
+        public int NumberOfUnassignedEntitiesWithoutTelephone { get; set; }
         public IQueryable<CampaignMember> AssignedMembers { get; set; }
         public IQueryable<CampaignAssignedAgents> AssignedAgents { get; set; }
         public IQueryable<CampaignStatusHelper> EmailsBasesEntityStatusStats { get; set; }
@@ -61,7 +62,8 @@ namespace MojCRM.Areas.Campaigns.ViewModels
             get
             {
                 var agents = (from a in _db.Users
-                    select a);
+                              where a.Email != String.Empty
+                              select a);
 
                 var agentsList = new List<SelectListItem>();
 
@@ -77,6 +79,16 @@ namespace MojCRM.Areas.Campaigns.ViewModels
         public int GetUnassignedEntities(int campaignId)
         {
             var number = _db.AcquireEmails.Count(x => x.Campaign.CampaignId == campaignId && x.AcquireEmailStatus == AcquireEmail.AcquireEmailStatusEnum.Created && x.IsAssigned == false);
+            return number;
+        }
+
+        public int GetUnassignedEntitiesWithoutTelephone(int campaignId)
+        {
+            var number = _db.AcquireEmails.Count(x => x.Campaign.CampaignId == campaignId 
+            && x.AcquireEmailStatus == AcquireEmail.AcquireEmailStatusEnum.Created 
+            && x.IsAssigned == false
+            && (x.Organization.OrganizationDetail.TelephoneNumber == String.Empty || x.Organization.OrganizationDetail.TelephoneNumber == null)
+            && (x.Organization.OrganizationDetail.MobilePhoneNumber == String.Empty || x.Organization.OrganizationDetail.MobilePhoneNumber == null));
             return number;
         }
 

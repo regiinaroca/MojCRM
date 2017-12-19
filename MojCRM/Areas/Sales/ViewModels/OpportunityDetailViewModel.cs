@@ -133,6 +133,7 @@ namespace MojCRM.Areas.Sales.ViewModels
             get
             {
                 var list = (from u in Users
+                            where u.Email != String.Empty
                             select new SelectListItem()
                             {
                                 Text = u.UserName,

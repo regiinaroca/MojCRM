@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.Ajax.Utilities;
 using static MojCRM.Areas.HelpDesk.Models.AcquireEmail;
 using MojCRM.Areas.HelpDesk.Helpers;
 using MojCRM.Areas.HelpDesk.ViewModels;
@@ -41,11 +42,45 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             }
             if (!String.IsNullOrEmpty(model.TelephoneMail))
             {
-                list = list.Where(x => x.Organization.MerDeliveryDetail.Telephone.Contains(model.TelephoneMail) || x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains(model.TelephoneMail));
+                //list = list.Where(x => x.Organization.MerDeliveryDetail.Telephone.Contains(model.TelephoneMail) || x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains(model.TelephoneMail));
+                list = list.Where(x => x.Organization.MerDeliveryDetail.Telephone.EndsWith(model.TelephoneMail) || x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.EndsWith(model.TelephoneMail));
             }
             if (model.EmailStatusEnum != null)
             {
                 var tempStatus = (AcquireEmailStatusEnum) model.EmailStatusEnum;
+                list = list.Where(x => x.AcquireEmailStatus == tempStatus);
+            }
+
+            return View(list.OrderByDescending(x => x.Id));
+        }
+
+        [Authorize]
+        public ActionResult IndexTemp(AcquireEmailSearchModel model)
+        {
+            var list = _db.AcquireEmails.Where(x =>
+                           (x.Organization.OrganizationDetail.TelephoneNumber == String.Empty ||
+                           x.Organization.OrganizationDetail.TelephoneNumber == null)
+                       && (x.Organization.OrganizationDetail.MobilePhoneNumber == String.Empty ||
+                           x.Organization.OrganizationDetail.MobilePhoneNumber == null)
+                           && x.AcquireEmailStatus == AcquireEmailStatusEnum.Created);
+
+            //Search Engine
+            if (!String.IsNullOrEmpty(model.CampaignName))
+            {
+                list = list.Where(x => x.Campaign.CampaignName.Contains(model.CampaignName));
+            }
+            if (!String.IsNullOrEmpty(model.OrganizationName))
+            {
+                list = list.Where(x => x.Organization.SubjectName.Contains(model.OrganizationName));
+            }
+            if (!String.IsNullOrEmpty(model.TelephoneMail))
+            {
+                //list = list.Where(x => x.Organization.MerDeliveryDetail.Telephone.Contains(model.TelephoneMail) || x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains(model.TelephoneMail));
+                list = list.Where(x => x.Organization.MerDeliveryDetail.Telephone.EndsWith(model.TelephoneMail) || x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.EndsWith(model.TelephoneMail));
+            }
+            if (model.EmailStatusEnum != null)
+            {
+                var tempStatus = (AcquireEmailStatusEnum)model.EmailStatusEnum;
                 list = list.Where(x => x.AcquireEmailStatus == tempStatus);
             }
 
@@ -161,7 +196,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         [HttpPost]
         public ActionResult ChangeEntityStatus(int entityId, int identifier)
         {
-            var entity = _db.AcquireEmails.Find(entityId);
+            var entity = _db.AcquireEmails.First(x => x.Id == entityId);
             switch (identifier)
             {
                 case 0:
@@ -201,6 +236,31 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     break;
                 case 7:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.WrongTelephoneNumber;
+                    entity.UpdateDate = DateTime.Now;
+                    _db.SaveChanges();
+                    break;
+                case 8:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.PoslovnaHrvatska;
+                    entity.UpdateDate = DateTime.Now;
+                    _db.SaveChanges();
+                    break;
+                case 9:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.NoTelehoneNumber;
+                    entity.UpdateDate = DateTime.Now;
+                    _db.SaveChanges();
+                    break;
+                case 10:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.Bankruptcy;
+                    entity.UpdateDate = DateTime.Now;
+                    _db.SaveChanges();
+                    break;
+                case 11:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.NoFinancialAccount;
+                    entity.UpdateDate = DateTime.Now;
+                    _db.SaveChanges();
+                    break;
+                case 12:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.ToBeClosed;
                     entity.UpdateDate = DateTime.Now;
                     _db.SaveChanges();
                     break;
@@ -264,7 +324,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 wb.Dispose();
                 return View(model);
             }
-            catch (COMException e)
+            catch (COMException)
             {
                 return View("ErrorOldExcel");
             }
@@ -342,7 +402,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 ws.Cells[cell, 2].Value = res.VAT;
                 ws.Cells[cell, 3].Value = res.SubjectName;
                 ws.Cells[cell, 4].Value = res.AcquiredReceivingInformation;
-                ws.Cells[cell, 5].Value = res.AcquiredEmailEntityStatus;
+                ws.Cells[cell, 5].Value = res.Entity.AcquireEmailEntityStatusString;
                 cell++;
             }
 
@@ -447,7 +507,9 @@ namespace MojCRM.Areas.HelpDesk.Controllers
 
         public ActionResult AdminAssignEntities(int campaignId, int number, string agent)
         {
-            var entites = _db.AcquireEmails.Where(c => c.RelatedCampaignId == campaignId && c.AcquireEmailStatus == AcquireEmailStatusEnum.Created && c.IsAssigned == false).Take(number);
+            var entites = _db.AcquireEmails.Where(c => c.RelatedCampaignId == campaignId 
+            && c.AcquireEmailStatus == AcquireEmailStatusEnum.Created 
+            && c.IsAssigned == false).Take(number);
 
             foreach (var entity in entites)
             {
@@ -478,16 +540,24 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         public ActionResult AcquireEmailsAssignedStats()
         {
             var entities = _db.AcquireEmails.Where(x => x.AcquireEmailStatus == AcquireEmailStatusEnum.Created && x.IsAssigned)
-                .GroupBy(x => new { x.AssignedTo, x.Campaign.CampaignName});
+                .GroupBy(x => new { x.AssignedTo, x.Campaign.CampaignName, x.Campaign.CampaignId});
             var list = new List<AcquireEmailStatsPerAgentAndCampaign>();
 
             foreach (var entity in entities)
             {
+                var entitiesWithoutPhone = _db.AcquireEmails.Where(x =>
+                    (x.Organization.OrganizationDetail.TelephoneNumber == String.Empty || x.Organization.OrganizationDetail.TelephoneNumber == null)
+                    && (x.Organization.OrganizationDetail.MobilePhoneNumber == String.Empty || x.Organization.OrganizationDetail.MobilePhoneNumber == null)
+                    && x.RelatedCampaignId == entity.Key.CampaignId
+                    && x.AcquireEmailStatus == AcquireEmailStatusEnum.Created
+                    && x.AssignedTo == entity.Key.AssignedTo);
                 var temp = new AcquireEmailStatsPerAgentAndCampaign
                 {
                     Agent = entity.Key.AssignedTo,
                     CampaignName = entity.Key.CampaignName,
-                    NumberOfEntitiesForProcessing = entity.Count()
+                    CampaignId = entity.Key.CampaignId,
+                    NumberOfEntitiesForProcessing = entity.Count(),
+                    NumberOfEntitiesWithoutPhoneNumber = entitiesWithoutPhone.Count()
                 };
                 list.Add(temp);
             }
@@ -507,10 +577,12 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                               || ae.AcquireEmailStatus == AcquireEmailStatusEnum.Verified || ae.AcquireEmailStatus == AcquireEmailStatusEnum.Checked /*Ptiček request - temporary!*/)
                               select new AcquireEmailExportModel
                               {
+                                  Entity = ae,
                                   CampaignName = ae.Campaign.CampaignName,
                                   VAT = ae.Organization.VAT,
                                   SubjectName = ae.Organization.SubjectName,
-                                  AcquiredReceivingInformation = ae.Organization.MerDeliveryDetail.AcquiredReceivingInformation
+                                  AcquiredReceivingInformation = ae.Organization.MerDeliveryDetail.AcquiredReceivingInformation,
+                                  AcquiredEmailEntityStatus = ae.AcquireEmailEntityStatus
                               }).ToList();
             return entityList;
         }
@@ -520,11 +592,12 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 where ae.RelatedCampaignId == campaignId && ae.AcquireEmailStatus == AcquireEmailStatusEnum.Reviewed
                 select new AcquireEmailExportModel
                 {
+                    Entity = ae,
                     CampaignName = ae.Campaign.CampaignName,
                     VAT = ae.Organization.VAT,
                     SubjectName = ae.Organization.SubjectName,
                     AcquiredReceivingInformation = ae.Organization.MerDeliveryDetail.AcquiredReceivingInformation,
-                    AcquiredEmailEntityStatus = ae.AcquireEmailEntityStatusString
+                    AcquiredEmailEntityStatus = ae.AcquireEmailEntityStatus
                 }).ToList();
             return entityList;
         }

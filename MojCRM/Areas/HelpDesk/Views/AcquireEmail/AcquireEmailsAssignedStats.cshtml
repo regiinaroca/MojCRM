@@ -22,6 +22,8 @@
             <th>Agent</th>
             <th>Kampanja</th>
             <th>Broj predmeta</th>
+            <th>Broj predmeta bez broja telefona</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -31,6 +33,8 @@
                 <td>@entity.Agent</td>
                 <td>@entity.CampaignName</td>
                 <td>@entity.NumberOfEntitiesForProcessing</td>
+                <td>@entity.NumberOfEntitiesWithoutPhoneNumber</td>
+                <td><a href="@Url.RouteUrl(new { action = "AdminUnassignEntities", controller = "AcquireEmail", area = "HelpDesk", campaignId=entity.CampaignId, agent = entity.Agent, returnUrl = Request.Url })" title="Makni dodjelu za ovog agenta"><i class="fa fa-remove" style="color: red"></i></a></td>
             </tr>
         }
         </tbody>
