@@ -17,6 +17,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
     public class AcquireEmailController : Controller
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        private readonly AcquireEmailMethodHelpers _acquireEmailMethodHelpers = new AcquireEmailMethodHelpers();
         // GET: HelpDesk/AcquireEmail
         [Authorize]
         public ActionResult Index(AcquireEmailSearchModel model)
@@ -239,6 +240,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     entity.UpdateDate = DateTime.Now;
                     entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation = "NEMA ISPRAVNOG BROJA TELEFONA";
                     entity.Organization.MerDeliveryDetail.AcquiredReceivingInformationIsVerified = true;
+                    _acquireEmailMethodHelpers.UpdateWrongTelephoneNumberEntities(entity.RelatedOrganizationId);
                     _db.SaveChanges();
                     break;
                 case 8:
@@ -251,6 +253,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     entity.UpdateDate = DateTime.Now;
                     entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation = "NEMA ISPRAVNOG BROJA TELEFONA";
                     entity.Organization.MerDeliveryDetail.AcquiredReceivingInformationIsVerified = true;
+                    _acquireEmailMethodHelpers.UpdateWrongTelephoneNumberEntities(entity.RelatedOrganizationId);
                     _db.SaveChanges();
                     break;
                 case 10:
