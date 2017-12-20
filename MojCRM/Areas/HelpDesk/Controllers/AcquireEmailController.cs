@@ -237,6 +237,8 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 case 7:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.WrongTelephoneNumber;
                     entity.UpdateDate = DateTime.Now;
+                    entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation = "NEMA ISPRAVNOG BROJA TELEFONA";
+                    entity.Organization.MerDeliveryDetail.AcquiredReceivingInformationIsVerified = true;
                     _db.SaveChanges();
                     break;
                 case 8:
@@ -247,6 +249,8 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 case 9:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.NoTelehoneNumber;
                     entity.UpdateDate = DateTime.Now;
+                    entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation = "NEMA ISPRAVNOG BROJA TELEFONA";
+                    entity.Organization.MerDeliveryDetail.AcquiredReceivingInformationIsVerified = true;
                     _db.SaveChanges();
                     break;
                 case 10:
@@ -452,7 +456,11 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     entityStatusEnum = AcquireEmailEntityStatusEnum.Created;
                     break;
                 case AcquireEmailStatusEnum.Verified:
-                    entityStatusEnum = organization.MerDeliveryDetail.AcquiredReceivingInformation == "ZATVORENA TVRTKA" ? AcquireEmailEntityStatusEnum.ClosedOrganization : AcquireEmailEntityStatusEnum.AcquiredInformation;
+                    //entityStatusEnum = organization.MerDeliveryDetail.AcquiredReceivingInformation == "ZATVORENA TVRTKA" ? AcquireEmailEntityStatusEnum.ClosedOrganization : AcquireEmailEntityStatusEnum.AcquiredInformation;
+                    if (organization.MerDeliveryDetail.AcquiredReceivingInformation == "ZATVORENA TVRTKA")
+                        entityStatusEnum = AcquireEmailEntityStatusEnum.ClosedOrganization;
+                    else if (organization.MerDeliveryDetail.AcquiredReceivingInformation == "NEMA ISPRAVNOG BROJA TELEFONA")
+                        entityStatusEnum = AcquireEmailEntityStatusEnum.WrongTelephoneNumber;
                     break;
             }
 
