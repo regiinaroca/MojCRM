@@ -74,6 +74,24 @@ namespace MojCRM.Areas.Sales.ViewModels
                 return serviceList.AsQueryable();
             }
         }
+        public IList<SelectListItem> QuoteStatusList
+        {
+            get
+            {
+                var quoteStatusList = new List<SelectListItem>
+                {
+                    new SelectListItem{ Value = null, Text = @"-- Odaberi status ponude --"},
+                    new SelectListItem{ Value = "0", Text = @"Kreirana ponuda" },
+                    new SelectListItem{ Value = "1", Text = @"Poslana ponuda" },
+                    new SelectListItem{ Value = "2", Text = @"Revidirana ponuda" },
+                    new SelectListItem{ Value = "3", Text = @"Prihvaćena ponuda" },
+                    new SelectListItem{ Value = "4", Text = @"Prihvaćena ponuda nakon revidiranja" },
+                    new SelectListItem{ Value = "5", Text = @"Odbijena ponuda" },
+                    new SelectListItem{ Value = "6", Text = @"Opozvana ponuda" }
+                };
+                return quoteStatusList;
+            }
+        }
         public IQueryable<SelectListItem> MemberRoleList
         {
             get

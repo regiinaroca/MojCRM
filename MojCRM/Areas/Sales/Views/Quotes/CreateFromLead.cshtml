@@ -37,7 +37,7 @@
     <div class="row">
         <div class="col-md-3">
             <div>
-                @Html.TextBox("StartDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", placeholder = "Datum početka važenja", type = "text" })
+                @Html.TextBox("StartDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Datum početka važenja", @type = "text", @id = "start-date-search", @name = "start-date-search" })
             </div>
         </div>
         <div class="col-md-3">
@@ -50,12 +50,10 @@
                 @Html.DropDownList("QuoteType", Model.QuoteTypeList, new { @class = "form-control" })
             </div>
         </div>
-        <div class="col-md-3" style="margin-top:22px">
+        <div class="col-md-3">
             <div class="form-group">
-                <div>
-                    <input id="Search" type="submit" class="btn btn-primary btn-sm" value="Kreiraj" />
-                    <input id="btn-reset" type="reset" class="btn btn-warning btn-sm" value="Poništi" />
-                </div>
+                <input id="Submit" type="submit" class="btn btn-primary btn-sm" value="Kreiraj" />
+                <input id="btn-reset" type="reset" class="btn btn-warning btn-sm" value="Poništi" />
             </div>
         </div>
     </div>

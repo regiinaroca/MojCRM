@@ -82,7 +82,7 @@
                     <a id="remove-all" method="post" class="btn btn-default btn-sm" onclick="javascript: RemoveAll()" title="Ukloni sve odabrane dokumente">
                         <i class="fa fa-times text-danger"></i>
                     </a>
-                    @if (User.IsInRole("Management") || User.IsInRole("Board") || User.IsInRole("Admin") || User.IsInRole("Superadmin"))
+                    @if (User.IsInRole("Management") || User.IsInRole("Board") || User.IsInRole("Administrator") || User.IsInRole("Superadmin"))
                     {
                         <a id="send-report" method="post" class="btn btn-default btn-sm" onclick="javascript: SendReport()" title="Pošalji jutarnji report upravi">
                             <i class="fa fa-send"></i>

@@ -705,6 +705,69 @@
     </div>
 </div>
 
+<!--Modal - Create Quote-->
+@using (Html.BeginForm("Create", "Quotes", new { area = "Sales" }, FormMethod.Post))
+{
+    <div class="modal fade" id="CreateQuote" tabindex="-1" role="dialog" aria-labelledby="CreateQuote">
+        <div class="modal-dialog modal-lg" role="document" style="overflow-y:initial">
+            <div class="modal-content" style="overflow:hidden">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4>Kreiraj ponudu</h4>
+                    <br />
+                    <div class="alert alert-info">
+                        <p style="text-align: justify">
+                            Molimo definirajte niže tražene parametre:<br />
+                            <ul>
+                                <li><strong>Datum početka važenja</strong> označava datum od kojeg važi ponuda</li>
+                                <li><strong>Datum završetka važenja</strong> označava datum do kojeg važi ponuda</li>
+                                <li><strong>Tip ponude</strong> označava tip ponude ovisno o vrsti komercijalnih odnosa</li>
+                            </ul>
+                            <br />
+                            Nakon definiranja traženih parametara, kreirat će se ponuda u Moj-CRM sustavu. Nakon kreiranja ponude moći ćete nastaviti sa obradom ponude.<br />
+                            Ako imate problema s kreiranjem ponude, molimo obratite se administratoru.
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-body" style="overflow-y:auto; max-height:400px">
+                    <div class="hidden">
+                        <div>
+                            @Html.TextBox("OrganizationId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.OrganizationId })
+                        </div>
+                        <div>
+                            @Html.TextBox("CampaignId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.RelatedCampaignId })
+                        </div>
+                        <div>
+                            @Html.TextBox("LeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.LeadId })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div>
+                                @Html.TextBox("StartDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Datum početka važenja", @type = "text", @id = "start-date-search", @name = "start-date-search" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div>
+                                @Html.TextBox("EndDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", placeholder = "Datum završetka važenja", type = "text" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div id="legal-form">
+                                @Html.DropDownList("QuoteType", Model.QuoteTypeList, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Kreiraj</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Prekini</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+     </div>
+}
+
 
 
 <h2 style="text-align:center"><strong>Detalji leada: @Html.DisplayFor(model => model.OrganizationName) (Kampanja : @Html.DisplayFor(model => model.RelatedCampaignName))</strong></h2>
@@ -720,7 +783,7 @@
                 <button type="button" title="Pregled aktivnosti vezanih uz ovaj lead" class="btn btn-sm btn-default" data-toggle="modal" href="#RelatedActivities"><i class="fa fa-history"></i></button>
                 <button type="button" title="Pregled bilješki vezanih uz ovaj lead" class="btn btn-sm btn-default" data-toggle="modal" href="#LeadNotes"><i class="fa fa-sticky-note"></i></button>
                 <button type="button" title="Pregled kontakata za prodaju" class="btn btn-sm btn-default" data-toggle="modal" href="#SalesContacts"><i class="fa fa-address-book"></i></button>
-                <a title="Dodaj ponudu" id="add-quote" class="btn btn-sm btn-default" method="post" onclick="javascript: AddQuote()"><i class="fa fa-plus"></i> <i class="fa fa-book"></i></a>
+                <button type="button" title="Započni kreiranje ponude" class="btn btn-sm btn-default" data-toggle="modal" href="#CreateQuote"><i class="fa fa-plus"></i> <i class="fa fa-book"></i></button>
                 @if (!Model.IsAssigned && (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
                 {
                     <button type="button" title="Dodijeli lead" class="btn btn-sm btn-default" data-toggle="modal" data-target="#Assign" href="#Assign"><i class="fa fa-mail-reply-all"></i></button>
@@ -948,8 +1011,9 @@
                 method: 'POST',
                 url: '@Url.RouteUrl(new { action = "CreateFromLead", controller = "Quotes", area = "Sales" })',
                 data: {
-                    RelatedOrganizationId: '@Model.OrganizationId',
-                    RelatedCampaignId: '@Model.RelatedCampaignId'
+                    organizationId: '@Model.OrganizationId',
+                    relatedCampaignId: '@Model.RelatedCampaignId',
+                    leadId: '@Model.LeadId'
                 },
                 dataType: 'json'
             });

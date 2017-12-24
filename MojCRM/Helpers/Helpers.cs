@@ -13,7 +13,10 @@ namespace MojCRM.Helpers
         public void LogActivity(string activityDescription, string user, int activityReferenceId, 
             ActivityLog.ActivityTypeEnum activityType, ActivityLog.DepartmentEnum department, ActivityLog.ModuleEnum module)
         {
-            var isSuspicious = _al.CheckSuspiciousActivity(user, activityType);
+            var isSuspicious = false;
+
+            if (activityType != ActivityLog.ActivityTypeEnum.AchievedSales)
+                isSuspicious = _al.CheckSuspiciousActivity(user, activityType);            
             _db.ActivityLogs.Add(new ActivityLog
             {
                 Description = activityDescription,

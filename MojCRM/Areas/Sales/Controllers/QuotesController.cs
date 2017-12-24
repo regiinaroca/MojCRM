@@ -5,12 +5,14 @@ using MojCRM.Areas.Sales.Helpers;
 using MojCRM.Areas.Sales.Models;
 using MojCRM.Areas.Sales.ViewModels;
 using MojCRM.Models;
+using MojCRM.Helpers;
 
 namespace MojCRM.Areas.Sales.Controllers
 {
     public class QuotesController : Controller
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        private readonly HelperMethods _helper = new HelperMethods();
         private readonly QuoteHelperMethods _quoteHelper = new QuoteHelperMethods();
         // GET: Sales/Quotes
         public ActionResult Index()
@@ -27,7 +29,8 @@ namespace MojCRM.Areas.Sales.Controllers
 
             if (quotes != 1)
                 quotes++;
-                var quoteCount = quotes;
+
+            var quoteCount = quotes;
 
             var quoteNumber = organization.MerId + @"-" + DateTime.Now.Year + @"-" + DateTime.Now.Month + @"/" + quoteCount;
             var returnModel = _db.Quotes.Add(new Quote
@@ -64,6 +67,7 @@ namespace MojCRM.Areas.Sales.Controllers
         }
 
         // GET: Sales/Quotes/CreateFromLead
+        [Obsolete]
         public ActionResult CreateFromLead(int relatedCampaignId, int organizationId, int leadId)
         {
             var returnModel = new CreateFromLeadViewModel
@@ -121,6 +125,96 @@ namespace MojCRM.Areas.Sales.Controllers
             _db.SaveChanges();
 
             _quoteHelper.UpdateQuoteSum(model.RelatedQuoteId);
+
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
+        public ActionResult RemoveQuoteLine(int quoteId, int lineItem)
+        {
+            var quoteLine = _db.QuoteLines.First(ql => ql.RelatedQuoteId == quoteId && ql.LineNumber == lineItem);
+
+            _db.QuoteLines.Remove(quoteLine);
+            _db.SaveChanges();
+
+            var newLines = _db.QuoteLines.Where(ql => ql.RelatedQuoteId == quoteId);
+            var newLinesInt = 1;
+
+            foreach (var line in newLines)
+            {
+                line.LineNumber = newLinesInt;
+                line.UpdateDate = DateTime.Now;
+                newLinesInt++;
+            }
+
+            _db.SaveChanges();
+
+            _quoteHelper.UpdateQuoteSum(quoteId);
+
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
+        public ActionResult ChangeStatus(int newStatus, int quoteId)
+        {
+            var quote = _db.Quotes.First(q => q.Id == quoteId);
+
+            switch (newStatus)
+            {
+                case 0:
+                    quote.QuoteStatus = Quote.QuoteStatusEnum.Created;
+                    quote.UpdateDate = DateTime.Now;
+                    _db.SaveChanges();
+                    break;
+                case 1:
+                    quote.QuoteStatus = Quote.QuoteStatusEnum.Sent;
+                    quote.Lead.LeadStatus = Lead.LeadStatusEnum.Quotesent;
+                    quote.Lead.UpdateDate = DateTime.Now;
+                    quote.Lead.LastUpdatedBy = User.Identity.Name;
+                    quote.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Djelatnik " + User.Identity.Name + " je poslao ponudu vezanu za lead " + quote.Lead.LeadTitle + ".",
+                        User.Identity.Name, quoteId, ActivityLog.ActivityTypeEnum.QuoteSent, ActivityLog.DepartmentEnum.Sales, ActivityLog.ModuleEnum.Quotes);
+                    _db.SaveChanges();
+                    break;
+                case 2:
+                    quote.QuoteStatus = Quote.QuoteStatusEnum.Reviewed;
+                    quote.UpdateDate = DateTime.Now;
+                    _db.SaveChanges();
+                    break;
+                case 3:
+                    quote.QuoteStatus = Quote.QuoteStatusEnum.Accepted;
+                    quote.Lead.LeadStatus = Lead.LeadStatusEnum.Accepted;
+                    quote.Lead.UpdateDate = DateTime.Now;
+                    quote.Lead.LastUpdatedBy = User.Identity.Name;
+                    quote.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Djelatnik " + User.Identity.Name + " je ostvario prodaju vezanu za ponudu " + quote.QuoteNumber + " koja je dostavljena tvrtki " + quote.Organization.SubjectName + ".",
+                        User.Identity.Name, quoteId, ActivityLog.ActivityTypeEnum.AchievedSales, ActivityLog.DepartmentEnum.Sales, ActivityLog.ModuleEnum.Quotes);
+                    _db.SaveChanges();
+                    break;
+                case 4:
+                    quote.QuoteStatus = Quote.QuoteStatusEnum.AcceptedAfterReview;
+                    quote.Lead.LeadStatus = Lead.LeadStatusEnum.Accepted;
+                    quote.Lead.UpdateDate = DateTime.Now;
+                    quote.Lead.LastUpdatedBy = User.Identity.Name;
+                    quote.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Djelatnik " + User.Identity.Name + " je ostvario prodaju vezanu za ponudu " + quote.QuoteNumber + " koja je dostavljena tvrtki " + quote.Organization.SubjectName + ".",
+                        User.Identity.Name, quoteId, ActivityLog.ActivityTypeEnum.AchievedSales, ActivityLog.DepartmentEnum.Sales, ActivityLog.ModuleEnum.Quotes);
+                    _db.SaveChanges();
+                    break;
+                case 5:
+                    quote.QuoteStatus = Quote.QuoteStatusEnum.Rejected;
+                    quote.Lead.LeadStatus = Lead.LeadStatusEnum.Rejected;
+                    quote.Lead.UpdateDate = DateTime.Now;
+                    quote.Lead.LastUpdatedBy = User.Identity.Name;
+                    quote.UpdateDate = DateTime.Now;
+                    _db.SaveChanges();
+                    break;
+                case 6:
+                    quote.QuoteStatus = Quote.QuoteStatusEnum.Recalled;
+                    quote.RecallDate = DateTime.Now;
+                    quote.RecalledBy = User.Identity.Name;
+                    quote.UpdateDate = DateTime.Now;
+                    _db.SaveChanges();
+                    break;
+            }
 
             return Redirect(Request.UrlReferrer?.ToString());
         }

@@ -140,5 +140,19 @@ namespace MojCRM.Areas.Sales.ViewModels
 
         public IList<ListItem> SalesNoteTemplates { get; set; }
         public IList<ListItem> RejectReasons { get; set; }
+        public IList<SelectListItem> QuoteTypeList
+        {
+            get
+            {
+                var quoteTypeList = new List<SelectListItem>
+                {
+                    new SelectListItem{ Value = null, Text = @"-- Odaberi tip ponude --"},
+                    new SelectListItem{ Value = "0", Text = @"Ugovor - slobodno slanje" },
+                    new SelectListItem{ Value = "1", Text = @"Ugovor - paketi" },
+                    new SelectListItem{ Value = "2", Text = @"Avansna uplata" },
+                };
+                return quoteTypeList;
+            }
+        }
     }
 }

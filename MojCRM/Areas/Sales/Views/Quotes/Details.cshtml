@@ -1,4 +1,5 @@
-﻿@model MojCRM.Areas.Sales.ViewModels.QuoteDetailsViewModel
+﻿@using MojCRM.Areas.Sales.Models
+@model MojCRM.Areas.Sales.ViewModels.QuoteDetailsViewModel
 @{
     ViewBag.Title = "Detalji ponude";
     Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
@@ -126,6 +127,49 @@
         </div>
     </div>
 }
+<!--Modal - Change Status-->
+@using (Html.BeginForm("ChangeStatus", "Quotes", new { area = "Sales"}, FormMethod.Post))
+{
+    <div class="modal fade" id="ChangeStatus" tabindex="-1" role="dialog" aria-labelledby="ChangeStatus">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content" style="overflow:hidden">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4>Promijeni status ponude</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-12">
+                                Molimo odaberite novi status ponude
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="status-lns">Status</label>
+                                <div id="status-lns">
+                                    @Html.DropDownList("newStatus", Model.QuoteStatusList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <br />
+                            <div class="hidden">
+                                <div id="ticketid">
+                                    @Html.TextBox("quoteId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Quote.Id })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Predaj promjenu</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Prekini</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 <h2>Detalji ponude</h2>
 <br />
 <div class="alert alert-info">
@@ -133,19 +177,29 @@
         Ovaj pregled prikazuje detaljne podatke o kreiranoj ponudi.<br />
         Koristeći ovaj pregled možete napraviti sljedeće akcije:<br/>
         <ul>
-            <li>dodavnje stavki ponude,</li>
-            <li>dodavanje poveznih osoba uz ponudu (u slučaju dijeljenja prodaje)</li>
+            <li>dodavnje i uklanjanje stavki ponude,</li>
+            <li>dodavanje poveznih osoba uz ponudu (u slučaju dijeljenja prodaje),</li>
+            <li>promjenu statusa ponude</li>
         </ul>
         <br/>
-        Ukupna vrijednost ponude se ažurira automatski dodavanjem pojedinih stavki ponudi.
+        <strong>Napomene</strong>
+        <br/>
+        Ukupna vrijednost ponude se ažurira automatski dodavanjem pojedinih stavki ponudi.<br/>
+        Promjene statusa ponude se izravno odražavaju i na status povezanog leada.
     </p>
 </div>
 <hr />
 <div>
     <div class="row">
         <div class="col-md-12">
-            <button type="button" title="Dodaj stavku na ponudu" class="btn btn-sm btn-default" data-toggle="modal" href="#AddQuoteLine"><i class="fa fa-plus"></i> <i class="fa fa-bars"></i></button>
-            <button type="button" title="Dodaj djelatnika uz ponudu" class="btn btn-sm btn-default" data-toggle="modal" href="#AddQuoteMember"><i class="fa fa-plus"></i> <i class="fa fa-user"></i></button>
+            <div class="btn-group" role="group">
+                <button type="button" title="Dodaj stavku na ponudu" class="btn btn-sm btn-default" data-toggle="modal" href="#AddQuoteLine"><i class="fa fa-plus"></i> <i class="fa fa-bars"></i></button>
+                <button type="button" title="Dodaj djelatnika uz ponudu" class="btn btn-sm btn-default" data-toggle="modal" href="#AddQuoteMember"><i class="fa fa-plus"></i> <i class="fa fa-user"></i></button>
+                @if (Model.Quote.QuoteStatus != Quote.QuoteStatusEnum.Accepted || Model.Quote.QuoteStatus != Quote.QuoteStatusEnum.AcceptedAfterReview)
+                {
+                    <button type="button" title="Promijeni status ponude" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangeStatus"><i class="fa fa-refresh"></i></button>   
+                }
+            </div>
         </div>
     </div>
 </div>
@@ -219,6 +273,7 @@
             <th>Osnovna cijena</th>
             <th>Određena cijena</th>
             <th>Iznos stavke (bez PDV-a)</th>
+            <th></th>
         </tr>
         @foreach (var line in Model.QuoteLines)
         {
@@ -229,6 +284,7 @@
                 <td>@line.BaseAmount</td>
                 <td>@line.Price</td>
                 <td><strong>@line.LineTotal</strong></td>
+                <td><a href="@Url.RouteUrl(new { action = "RemoveQuoteLine", controller = "Quotes", area = "Sales", quoteId=Model.Quote.Id, lineItem = line.LineNumber, returnUrl = Request.Url })" title="Ukloni stavku ponude"><i class="fa fa-remove" style="color: red"></i></a></td>
             </tr>
         }
     </table>

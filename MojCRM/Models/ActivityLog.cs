@@ -52,7 +52,13 @@ namespace MojCRM.Models
             Organizationupdate,
 
             [Description("Prikupljene e-mail adrese")]
-            Acquiredemails
+            Acquiredemails,
+
+            [Description("Poslana ponuda")]
+            QuoteSent,
+
+            [Description("Ostvarena prodaja")]
+            AchievedSales
         }
         public enum DepartmentEnum
         {
@@ -86,7 +92,10 @@ namespace MojCRM.Models
             Organizations,
 
             [Description("Ažuriranje baza")]
-            AqcuireEmail
+            AqcuireEmail,
+
+            [Description("Ponude")]
+            Quotes
         }
 
         public string ActivityTypeString
@@ -106,6 +115,8 @@ namespace MojCRM.Models
                     case ActivityTypeEnum.Createdlead: return "Kreiran lead";
                     case ActivityTypeEnum.Ticketassign: return "Zaključana kartica";
                     case ActivityTypeEnum.Acquiredemails: return "Prikupljene e-mail adrese";
+                    case ActivityTypeEnum.QuoteSent: return "Poslana ponuda";
+                    case ActivityTypeEnum.AchievedSales: return "Ostvarena prodaja";
                 }
                 return "Tip aktivnosti";
             }
@@ -137,6 +148,7 @@ namespace MojCRM.Models
                     case ModuleEnum.Opportunities: return "Prodajne prilike";
                     case ModuleEnum.Leads: return "Leadovi";
                     case ModuleEnum.AqcuireEmail: return "Ažuriranje baza";
+                    case ModuleEnum.Quotes: return "Ponude";
                 }
                 return "Modul";
             }
