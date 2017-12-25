@@ -116,14 +116,14 @@ namespace MojCRM.Helpers
         public int Id { get; set; }
         public string ContractNumber { get; set; }
         public string CompanyId { get; set; }
-        public int? SubjektId { get; set; }
+        public int SubjektId { get; set; }
         public string ProposalNumber { get; set; }
-        public DateTime? DateFrom { get; set; }
-        public DateTime? DateTo { get; set; }
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
         public int GracePeriod { get; set; }
         public string Note { get; set; }
         public int? UserId { get; set; }
-        public DateTime? ActivatedDate { get; set; }
+        public DateTime ActivatedDate { get; set; }
         public int? ActivatedUserId { get; set; }
         public DateTime? DeactivatedDate { get; set; }
         public int? DeactivatedUserId { get; set; }

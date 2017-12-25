@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using MojCRM.Areas.Campaigns.Models;
 using MojCRM.Areas.Cooperation.Models;
+using MojCRM.Areas.CRM.Models;
 using MojCRM.Areas.HelpDesk.Models;
 using MojCRM.Areas.Sales.Models;
 using MojCRM.Areas.Stats.Models;
@@ -84,5 +85,11 @@ namespace MojCRM.Models
         public DbSet<QuoteLine> QuoteLines { get; set; }
 
         public DbSet<QuoteMember> QuoteMembers { get; set; }
+
+        public DbSet<Contract> Contracts { get; set; }
+
+        public DbSet<ContractedService> ContractedServices { get; set; }
+
+        public DbSet<ContractRate> ContractRates { get; set; }
     }
 }

@@ -158,66 +158,66 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         //[Authorize(Roles = "Superadmin")]
         public JsonResult CreateTicketsFirstTime(Guid? user)
         {
-            var Credentials = new { MerUser = "", MerPass = "" };
-            string Agent;
+            var credentials = new { MerUser = "", MerPass = "" };
+            string agent;
             if (String.IsNullOrEmpty(user.ToString()))
             {
-                Credentials = (from u in _db.Users
+                credentials = (from u in _db.Users
                                where u.UserName == User.Identity.Name
                                select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
-                Agent = User.Identity.Name;
+                agent = User.Identity.Name;
             }
             else
             {
-                Credentials = (from u in _db.Users
+                credentials = (from u in _db.Users
                                where u.Id == user.ToString()
                                select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
-                Agent = user.ToString();
+                agent = user.ToString();
             }
 
-            int CreatedTickets = 0;
-            MerApiGetNondeliveredDocuments RequestFirstTime = new MerApiGetNondeliveredDocuments()
+            int createdTickets;
+            MerApiGetNondeliveredDocuments requestFirstTime = new MerApiGetNondeliveredDocuments()
             {
-                Id = Credentials.MerUser,
-                Pass = Credentials.MerPass,
+                Id = credentials.MerUser,
+                Pass = credentials.MerPass,
                 Oib = "99999999927",
                 PJ = "",
                 SoftwareId = "MojCRM-001",
                 Type = 1
             };
 
-            string MerRequestFirstTime = JsonConvert.SerializeObject(RequestFirstTime);
+            string merRequestFirstTime = JsonConvert.SerializeObject(requestFirstTime);
 
-            using (var Mer = new WebClient() { Encoding = Encoding.UTF8 })
+            using (var mer = new WebClient() { Encoding = Encoding.UTF8 })
             {
-                Mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-                Mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                var ResponseFirstTime = Mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getNondeliveredDocuments").ToString(), "POST", MerRequestFirstTime);
+                mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
+                var responseFirstTime = mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getNondeliveredDocuments").ToString(), "POST", merRequestFirstTime);
                 //ResponseFirstTime = ResponseFirstTime.Replace("[", "").Replace("]", "");
-                MerGetNondeliveredDocumentsResponse[] ResultsFirstTime = JsonConvert.DeserializeObject<MerGetNondeliveredDocumentsResponse[]>(ResponseFirstTime);
-                foreach (var Result in ResultsFirstTime)
+                MerGetNondeliveredDocumentsResponse[] resultsFirstTime = JsonConvert.DeserializeObject<MerGetNondeliveredDocumentsResponse[]>(responseFirstTime);
+                foreach (var result in resultsFirstTime)
                 {
                     _db.DeliveryTicketModels.Add(new Delivery
                     {
-                        SenderId = Result.PosiljateljId,
-                        ReceiverId = Result.PrimateljId,
-                        InvoiceNumber = Result.InterniBroj,
-                        MerElectronicId = Result.Id,
-                        SentDate = Result.DatumOtpreme,
-                        MerDocumentTypeId = Result.DokumentTypeId,
+                        SenderId = result.PosiljateljId,
+                        ReceiverId = result.PrimateljId,
+                        InvoiceNumber = result.InterniBroj,
+                        MerElectronicId = result.Id,
+                        SentDate = result.DatumOtpreme,
+                        MerDocumentTypeId = result.DokumentTypeId,
                         DocumentStatus = 30,
                         InsertDate = DateTime.Now,
-                        BuyerEmail = Result.EmailPrimatelja,
+                        BuyerEmail = result.EmailPrimatelja,
                         FirstInvoice = true,
                     });
                 }
                 _db.SaveChanges();
-                CreatedTickets = ResultsFirstTime.Count();
+                createdTickets = resultsFirstTime.Count();
             }
 
-            _helper.LogActivity("Kreirano kartica za prvi put: " + CreatedTickets, Agent, 0, ActivityLog.ActivityTypeEnum.System, ActivityLog.DepartmentEnum.MojCrm, ActivityLog.ModuleEnum.Delivery);
+            _helper.LogActivity("Kreirano kartica za prvi put: " + createdTickets, agent, 0, ActivityLog.ActivityTypeEnum.System, ActivityLog.DepartmentEnum.MojCrm, ActivityLog.ModuleEnum.Delivery);
 
-            return Json(new { Status = "OK", CreatedTickets = CreatedTickets }, JsonRequestBehavior.AllowGet);
+            return Json(new { Status = "OK", CreatedTickets = createdTickets }, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Delivery/CreateTickets

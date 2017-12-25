@@ -109,54 +109,54 @@ namespace MojCRM.Controllers
         // GET: Organizations/GetOrganizations
         public JsonResult GetOrganizations(Guid user)
         {
-            var Credentials = new { MerUser = "", MerPass = "" };
+            var credentials = new { MerUser = "", MerPass = "" };
             if (String.IsNullOrEmpty(user.ToString()))
             {
-                Credentials = (from u in _db.Users
+                credentials = (from u in _db.Users
                                where u.UserName == User.Identity.Name
                                select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
             }
             else
             {
-                Credentials = (from u in _db.Users
+                credentials = (from u in _db.Users
                                where u.Id == user.ToString()
                                select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
             }
 
-            var ReferencedId = (from o in _db.Organizations
+            var referencedId = (from o in _db.Organizations
                                orderby o.MerId descending
                                select o.MerId).First();
-            int CreatedCompanies = 0;
+            int createdCompanies = 0;
             var Response = new MerGetSubjektDataResponse()
             {
                 Id = 238,
                 Naziv = "Test Klising d.o.o."
             };
-            ReferencedId++;
+            referencedId++;
             try
             {
                 while (Response != null)
                 {
-                    MerApiGetSubjekt Request = new MerApiGetSubjekt()
+                    MerApiGetSubjekt request = new MerApiGetSubjekt()
                     {
-                        Id = Credentials.MerUser,
-                        Pass = Credentials.MerPass,
+                        Id = credentials.MerUser,
+                        Pass = credentials.MerPass,
                         Oib = "99999999927",
                         PJ = "",
                         SoftwareId = "MojCRM-001",
-                        SubjektPJ = ReferencedId.ToString()
+                        SubjektPJ = referencedId.ToString()
                     };
 
-                    string MerRequest = JsonConvert.SerializeObject(Request);
+                    string merRequest = JsonConvert.SerializeObject(request);
 
-                    using (var Mer = new WebClient() { Encoding = Encoding.UTF8 })
+                    using (var mer = new WebClient() { Encoding = Encoding.UTF8 })
                     {
-                        Mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-                        Mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                        var _Response = Mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getSubjektData").ToString(), "POST", MerRequest);
+                        mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                        mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
+                        var _Response = mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getSubjektData").ToString(), "POST", merRequest);
                         _Response = _Response.Replace("[", "").Replace("]", "");
-                        MerGetSubjektDataResponse Result = JsonConvert.DeserializeObject<MerGetSubjektDataResponse>(_Response);
-                        if (Result == null)
+                        MerGetSubjektDataResponse result = JsonConvert.DeserializeObject<MerGetSubjektDataResponse>(_Response);
+                        if (result == null)
                         {
                             break;
                         }
@@ -164,35 +164,34 @@ namespace MojCRM.Controllers
                         {
                             _db.Organizations.Add(new Organizations
                             {
-                                MerId = Result.Id,
-                                SubjectName = Result.Naziv,
-                                SubjectBusinessUnit = Result.PoslovnaJedinica,
-                                VAT = Result.Oib,
-                                FirstReceived = Result.FirstReceived,
-                                FirstSent = Result.FirstSent,
-                                ServiceProvider = (Organizations.ServiceProviderEnum)Result.ServiceProviderId,
+                                MerId = result.Id,
+                                SubjectName = result.Naziv,
+                                SubjectBusinessUnit = result.PoslovnaJedinica,
+                                VAT = result.Oib,
+                                FirstReceived = result.FirstReceived,
+                                FirstSent = result.FirstSent,
+                                ServiceProvider = (Organizations.ServiceProviderEnum)result.ServiceProviderId,
                                 InsertDate = DateTime.Now
                             });
                             _db.MerDeliveryDetails.Add(new MerDeliveryDetails
                             {
-                                MerId = Result.Id,
-                                TotalSent = Result.TotalSent,
-                                TotalReceived = Result.TotalReceived
+                                MerId = result.Id,
+                                TotalSent = result.TotalSent,
+                                TotalReceived = result.TotalReceived
                             });
                             _db.OrganizationDetails.Add(new OrganizationDetail
                             {
-                                MerId = Result.Id,
-                                MainAddress = Result.Adresa,
-                                MainPostalCode = Int32.Parse(Result.Mjesto.Substring(0, 5).Trim()),
-                                MainCity = Result.Mjesto.Substring(6).Trim(),
+                                MerId = result.Id,
+                                MainAddress = result.Adresa,
+                                MainPostalCode = Int32.Parse(result.Mjesto.Substring(0, 5).Trim()),
+                                MainCity = result.Mjesto.Substring(6).Trim(),
                                 OrganizationGroup = OrganizationGroupEnum.Nema
                             });
                             _db.SaveChanges();
-                            Result = Response;
                         }
                     }
-                    ReferencedId++;
-                    CreatedCompanies++;
+                    referencedId++;
+                    createdCompanies++;
                 }
             }
             catch (NullReferenceException e)
@@ -200,9 +199,9 @@ namespace MojCRM.Controllers
                 _db.LogError.Add(new LogError
                 {
                     Method = @"Organizations - GetOrganizations",
-                    Parameters = ReferencedId.ToString(),
+                    Parameters = referencedId.ToString(),
                     Message = @"Greška kod preuzimanja podataka o tvrtki",
-                    InnerException = e.InnerException.ToString(),
+                    InnerException = e.InnerException?.ToString(),
                     Request = e.Source,
                     User = User.Identity.Name,
                     InsertDate = DateTime.Now
@@ -210,7 +209,7 @@ namespace MojCRM.Controllers
                 _db.SaveChanges();
             }
 
-            return Json(new { Status = "OK", CreatedCompanies = CreatedCompanies }, JsonRequestBehavior.AllowGet);
+            return Json(new { Status = "OK", CreatedCompanies = createdCompanies }, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Organization/UpdateOrganization/1

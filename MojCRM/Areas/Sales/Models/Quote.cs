@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using MojCRM.Areas.Campaigns.Models;
+using MojCRM.Areas.CRM.Models;
 using MojCRM.Models;
 
 namespace MojCRM.Areas.Sales.Models
@@ -64,6 +65,7 @@ namespace MojCRM.Areas.Sales.Models
 
         public virtual ICollection<QuoteMember> QuoteMembers { get; set; }
         public virtual ICollection<QuoteLine> QuoteLines { get; set; }
+        public virtual ICollection<Contract> Contracts { get; set; }
 
         public enum QuoteTypeEnum
         {
