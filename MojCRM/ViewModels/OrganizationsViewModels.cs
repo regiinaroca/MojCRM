@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
+using MojCRM.Areas.CRM.Models;
 
 namespace MojCRM.ViewModels
 {
@@ -93,6 +94,7 @@ namespace MojCRM.ViewModels
         public IQueryable<Lead> Leads { get; set; }
         public int LeadsCount { get; set; }
         public IQueryable<Quote> Quotes { get; set; }
+        public IQueryable<Contract> Contracts { get; set; }
         public IQueryable<Delivery> TicketsAsReceiver { get; set; }
         public int TicketsAsReceiverCount { get; set; }
         public IQueryable<Delivery> TicketsAsSender { get; set; }

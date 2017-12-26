@@ -927,6 +927,7 @@
     <Content Include="Views\Organizations\_Activities.cshtml" />
     <Content Include="Views\Organizations\_Quotes.cshtml" />
     <Content Include="Views\Shared\ErrorWrongInputFormat.cshtml" />
+    <Content Include="Views\Organizations\_Contracts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -179,7 +179,8 @@
         <ul>
             <li>dodavnje i uklanjanje stavki ponude,</li>
             <li>dodavanje poveznih osoba uz ponudu (u slučaju dijeljenja prodaje),</li>
-            <li>promjenu statusa ponude</li>
+            <li>promjenu statusa ponude,</li>
+            <li>pregled postoji li potpisan ugovor kreiran na temelju ove ponude</li>
         </ul>
         <br/>
         <strong>Napomene</strong>
@@ -188,6 +189,20 @@
         Promjene statusa ponude se izravno odražavaju i na status povezanog leada.
     </p>
 </div>
+@if (Model.Quote.Contracts.Count != 0)
+{
+    <div class="alert alert-info">
+        <p style="text-align: justify">
+            Na temelju ove ponude kreirani su i potpisano sljedeći ugovori:
+            <ul>
+                @foreach (var contract in Model.Quote.Contracts)
+                {
+                    <li>@contract.MerContractNumber (@contract.Organization.SubjectName (@contract.Organization.VAT))</li>
+                }
+            </ul>
+        </p>
+    </div>
+}
 <hr />
 <div>
     <div class="row">

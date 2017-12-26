@@ -1,0 +1,106 @@
+﻿@model MojCRM.ViewModels.OrganizationDetailsViewModel
+@{
+    Layout = null;
+}
+<div class="col-md-3">
+
+</div>
+<div class="col-md-9">
+    <div class="row">
+        <div class="alert alert-info">
+            <p>
+                Ugovori predstavljaju osnovu komercijalnog odnosa s servisom Moj-eRačun.
+            </p>
+        </div>
+    </div>
+    @if (Model.Contracts.Count() != 0)
+    {
+        foreach (var contract in Model.Contracts)
+        {
+            if (contract.IsActive)
+            {
+                <div class="alert alert-success" title="Ugovor: @contract.MerContractNumber">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Broj ugovora:</strong> @contract.MerContractNumber
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Početak ugovorne obaveze:</strong> @contract.StartDate.ToShortDateString()
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Završetak ugovorne obaveze:</strong> @contract.EndDate.ToShortDateString()
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        @if (contract.RelatedQuoteId != null)
+                        {
+                            <div class="col-md-4">
+                                <strong>Referentna ponuda:</strong> <a href="@Url.RouteUrl(new { action = "Details", controller = "Quotes", area = "Sales", id = contract.RelatedQuoteId })">@contract.MerQuoteNumber</a>
+                            </div>
+                        }
+                        @if (contract.RelatedQuoteId == null)
+                        {
+                            <div class="col-md-4">
+                                <strong>Referentna ponuda:</strong> @contract.MerQuoteNumber
+                            </div>
+                        }
+                        <div class="col-md-4">
+                            @*TO DO: napraviti ulaz u detalje ugovora*@
+                        </div>
+                    </div>
+                </div>
+            }
+            if (!contract.IsActive)
+            {
+                <div class="alert alert-danger" title="Ugovor: @contract.MerContractNumber">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Broj ugovora:</strong> @contract.MerContractNumber
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Početak ugovorne obaveze:</strong> @contract.StartDate.ToShortDateString()
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Završetak ugovorne obaveze:</strong> @contract.EndDate.ToShortDateString()
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Datum deaktivacije: </strong> @contract.MerDeactivationDate
+                        </div>
+                        <div class="col-md-8">
+                            <strong>Razlog deaktivacije: </strong> @contract.MerDeactivationReason
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        @if (contract.RelatedQuoteId != null)
+                        {
+                            <div class="col-md-4">
+                                <strong>Referentna ponuda:</strong> <a href="@Url.RouteUrl(new { action = "Details", controller = "Quotes", area = "Sales", id = contract.RelatedQuoteId })">@contract.MerQuoteNumber</a>
+                            </div>
+                        }
+                        @if (contract.RelatedQuoteId == null)
+                        {
+                            <div class="col-md-4">
+                                <strong>Referentna ponuda:</strong> @contract.MerQuoteNumber
+                            </div>
+                        }
+                        <div class="col-md-4">
+                            @*TO DO: napraviti ulaz u detalje ugovora*@
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    }
+    else
+    {
+        <p>Ova tvrtka nema sklopljenih ugovora</p>
+    }
+</div>
+
+
+

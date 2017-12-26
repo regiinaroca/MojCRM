@@ -89,6 +89,7 @@ namespace MojCRM.Controllers
                     Leads = _db.Leads.Where(l => l.RelatedOrganizationId == id),
                     LeadsCount = _db.Leads.Count(l => l.RelatedOrganizationId == id),
                     Quotes = _db.Quotes.Where(q => q.RelatedOrganizationId == id),
+                    Contracts = _db.Contracts.Where(c => c.RelatedOrganizationId == id).OrderByDescending(c => c.MerId),
                     TicketsAsReceiver = _db.DeliveryTicketModels.Where(t => t.ReceiverId == id).OrderByDescending(t => t.SentDate),
                     TicketsAsReceiverCount = _db.DeliveryTicketModels.Where(t => t.ReceiverId == id).OrderByDescending(t => t.SentDate).Count(),
                     TicketsAsSender = _db.DeliveryTicketModels.Where(t => t.SenderId == id).OrderByDescending(t => t.SentDate),
