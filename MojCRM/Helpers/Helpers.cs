@@ -1,7 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web.Mvc;
 using MojCRM.Models;
+using Newtonsoft.Json;
 
 namespace MojCRM.Helpers
 {
@@ -110,5 +113,70 @@ namespace MojCRM.Helpers
 
         [Description("C.I.A.K. Grupa")]
         Ciak
+    }
+
+    public class DailyUpdateReturnModel
+    {
+        [JsonProperty]
+        public int NumberOfAttributesUpdated { get; set; }
+    }
+
+    public class AdminHelperMethods
+    {
+        private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        public int UpdateOrganizationAttributes()
+        {
+            int updated = 0;
+
+            var entities = _db.Contracts;
+            var attributes = _db.OrganizationAttributes.Where(a =>
+                a.AttributeType == OrganizationAttribute.AttributeTypeEnum.CONTRACT &&
+                a.AttributeClass == OrganizationAttribute.AttributeClassEnum.MER);
+
+            foreach (var entity in entities)
+            {
+                if (entity.IsActive)
+                {
+                    if (!attributes.Any(x => x.OrganizationId == entity.RelatedOrganizationId))
+                    {
+                        _db.OrganizationAttributes.Add(new OrganizationAttribute()
+                        {
+                            OrganizationId = entity.RelatedOrganizationId,
+                            AttributeClass = OrganizationAttribute.AttributeClassEnum.MER,
+                            AttributeType = OrganizationAttribute.AttributeTypeEnum.CONTRACT,
+                            IsActive = true,
+                            AssignedBy = "Moj-CRM",
+                            InsertDate = DateTime.Now
+                        });
+                    }
+                }
+                if (!entity.IsActive)
+                {
+                    if (!attributes.Any(x => x.OrganizationId == entity.RelatedOrganizationId))
+                    {
+                        _db.OrganizationAttributes.Add(new OrganizationAttribute()
+                        {
+                            OrganizationId = entity.RelatedOrganizationId,
+                            AttributeClass = OrganizationAttribute.AttributeClassEnum.MER,
+                            AttributeType = OrganizationAttribute.AttributeTypeEnum.CONTRACT,
+                            IsActive = false,
+                            AssignedBy = "Moj-CRM",
+                            InsertDate = DateTime.Now
+                        });
+                    }
+                    if (attributes.Any(x => x.OrganizationId == entity.RelatedOrganizationId))
+                    {
+                        var attributeTemp =
+                            _db.OrganizationAttributes.First(a => a.IsActive && a.OrganizationId == entity.RelatedOrganizationId);
+                        attributeTemp.IsActive = false;
+                        attributeTemp.UpdateDate = DateTime.Now;
+                    }
+                }
+                updated++;
+            }
+            _db.SaveChanges();
+
+            return updated;
+        }
     }
 }

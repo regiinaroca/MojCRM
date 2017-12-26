@@ -11,36 +11,39 @@
         <h5>OIB: @Model.Organization.VAT</h5>
     </div>
     <div class="col-md-3">
-        @if (Model.Organization.IsActive == true)
+        @if (Model.Organization.IsActive)
         {
             <span class="label label-success">Aktivna</span>
         }
-        @if (Model.Organization.IsActive == false)
+        @if (!Model.Organization.IsActive)
         {
             <span class="label label-danger">Brisana</span>
         }
     </div>
     <div class="col-md-5">
-        @foreach (var Attribute in Model.Attributes)
+        @foreach (var attribute in Model.Attributes)
         {
-            if (Attribute.AttributeClass == MojCRM.Models.OrganizationAttribute.AttributeClassEnum.MER)
+            if (attribute.IsActive)
             {
-                <span><i class="@Attribute.AttributeTypeIcon" title="@Attribute.AttributeClassString - @Attribute.AttributeTypeString" style="color:blue"></i> </span>
-            }
-            if (Attribute.AttributeClass == MojCRM.Models.OrganizationAttribute.AttributeClassEnum.FINA)
-            {
-                <i class="@Attribute.AttributeTypeIcon" title="@Attribute.AttributeClassString - @Attribute.AttributeTypeString" style="color:darkblue"></i>
-            }
-            if (Attribute.AttributeClass == MojCRM.Models.OrganizationAttribute.AttributeClassEnum.EFAKTURA)
-            {
-                <i class="@Attribute.AttributeTypeIcon" title="@Attribute.AttributeClassString - @Attribute.AttributeTypeString" style="color:lightgreen"></i>
+                if (attribute.AttributeClass == MojCRM.Models.OrganizationAttribute.AttributeClassEnum.MER)
+                {
+                    <span><i class="@attribute.AttributeTypeIcon" title="@attribute.AttributeClassString - @attribute.AttributeTypeString" style="color:blue"></i> </span>
+                }
+                if (attribute.AttributeClass == MojCRM.Models.OrganizationAttribute.AttributeClassEnum.FINA)
+                {
+                    <i class="@attribute.AttributeTypeIcon" title="@attribute.AttributeClassString - @attribute.AttributeTypeString" style="color:darkblue"></i>
+                }
+                if (attribute.AttributeClass == MojCRM.Models.OrganizationAttribute.AttributeClassEnum.EFAKTURA)
+                {
+                    <i class="@attribute.AttributeTypeIcon" title="@attribute.AttributeClassString - @attribute.AttributeTypeString" style="color:lightgreen"></i>
+                }   
             }
         }
     </div>
     @if (User.IsInRole("Superadmin"))
     {
         <div class="col-md-1">
-            <a href="@Url.RouteUrl(new { action = "UpdateOrganization", controller = "Organizations", area = "", MerId = Model.Organization.MerId })" title="Sinkroniziraj podatke sa servisom Moj-eRačun"><i class="fa fa-refresh"></i></a>
+            <a href="@Url.RouteUrl(new { action = "UpdateOrganization", controller = "Organizations", area = "", merId = Model.Organization.MerId })" title="Sinkroniziraj podatke sa servisom Moj-eRačun"><i class="fa fa-refresh"></i></a>
         </div>
     }
 </div>

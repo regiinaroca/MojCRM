@@ -39,6 +39,9 @@ namespace MojCRM.Areas.Stats.Controllers
             var deliveryMail = (from a in _db.ActivityLogs
                                 where a.ActivityType == ActivityLog.ActivityTypeEnum.Email
                                 select a);
+            var acquiredEmails = _db.ActivityLogs.Where(al => al.Description.Contains("@") && al.Description.Contains("nova informacija o preuzimanju"));
+            var acquiredTelephoneNumbers = _db.ActivityLogs.Where(al =>
+                al.Description.Contains("- broj mobitela") || al.Description.Contains("- broj telefona"));
 
             var agents = (from u in _db.Users
                            select u);
@@ -66,7 +69,8 @@ namespace MojCRM.Areas.Stats.Controllers
                 mailChange = mailChange.Where(t => t.InsertDate >= DateTime.Today && t.User == name);
                 resend = resend.Where(t => t.InsertDate >= DateTime.Today && t.User == name);
                 deliveryMail = deliveryMail.Where(t => t.InsertDate >= DateTime.Today && t.User == name);
-
+                acquiredEmails = acquiredEmails.Where(t => t.InsertDate >= DateTime.Today && t.User == name);
+                acquiredTelephoneNumbers = acquiredTelephoneNumbers.Where(t => t.InsertDate >= DateTime.Today && t.User == name);
 
 
                 ViewBag.DistinctDepartments = distinctDepartments;
@@ -83,6 +87,8 @@ namespace MojCRM.Areas.Stats.Controllers
                 resend = resend.Where(t => ((t.InsertDate >= searchDateDt) && (t.InsertDate < searchDatePlus)) && t.User == name);
                 deliveryMail = deliveryMail.Where(t => ((t.InsertDate >= searchDateDt) && (t.InsertDate < searchDatePlus)) && t.User == name);
                 activities = activities.Where(a => (a.User == name) && (a.InsertDate >= searchDateDt) && (a.InsertDate < searchDatePlus));
+                acquiredEmails = acquiredEmails.Where(a => (a.User == name) && (a.InsertDate >= searchDateDt) && (a.InsertDate < searchDatePlus));
+                acquiredTelephoneNumbers = acquiredTelephoneNumbers.Where(a => (a.User == name) && (a.InsertDate >= searchDateDt) && (a.InsertDate < searchDatePlus));
                 
                 distinctDepartments = (from a in _db.ActivityLogs
                                         where (a.User == name) && (a.InsertDate >= searchDateDt) && (a.InsertDate < searchDatePlus)
@@ -100,6 +106,8 @@ namespace MojCRM.Areas.Stats.Controllers
                 mailChange = mailChange.Where(t => ((t.InsertDate >= searchDateDt) && (t.InsertDate < searchDatePlus)) && t.User == agent);
                 resend = resend.Where(t => ((t.InsertDate >= searchDateDt) && (t.InsertDate < searchDatePlus)) && t.User == agent);
                 deliveryMail = deliveryMail.Where(t => ((t.InsertDate >= searchDateDt) && (t.InsertDate < searchDatePlus)) && t.User == agent);
+                acquiredEmails = acquiredEmails.Where(t => ((t.InsertDate >= searchDateDt) && (t.InsertDate < searchDatePlus)) && t.User == agent);
+                acquiredTelephoneNumbers = acquiredTelephoneNumbers.Where(t => ((t.InsertDate >= searchDateDt) && (t.InsertDate < searchDatePlus)) && t.User == agent);
 
                 activities = activities.Where(a => (a.User == agent) && (a.InsertDate >= searchDateDt) && (a.InsertDate < searchDatePlus));
 
@@ -122,7 +130,8 @@ namespace MojCRM.Areas.Stats.Controllers
                 SumMailchange = mailChange.Count(),
                 SumResend = resend.Count(),
                 SumSentMail = deliveryMail.Count(),
-               
+               SumAcquiredEmails = acquiredEmails.Count(),
+               SumAcquiredPhoneNumbers = acquiredTelephoneNumbers.Count()
             };
 
             return View(personalActivities);

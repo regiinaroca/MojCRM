@@ -214,48 +214,48 @@ namespace MojCRM.Controllers
         }
 
         // GET: Organization/UpdateOrganization/1
-        public ActionResult UpdateOrganization(int MerId)
+        public ActionResult UpdateOrganization(int merId)
         {
-            var Credentials = (from u in _db.Users
+            var credentials = (from u in _db.Users
                                where u.UserName == User.Identity.Name
                                select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
-            var Organization = _db.Organizations.Find(MerId);
+            var organization = _db.Organizations.Find(merId);
 
-            using (var Mer = new WebClient() { Encoding = Encoding.UTF8 })
+            using (var mer = new WebClient() { Encoding = Encoding.UTF8 })
             {
-                MerApiGetSubjekt Request = new MerApiGetSubjekt()
+                MerApiGetSubjekt request = new MerApiGetSubjekt()
                 {
-                    Id = Credentials.MerUser,
-                    Pass = Credentials.MerPass,
+                    Id = credentials.MerUser,
+                    Pass = credentials.MerPass,
                     Oib = "99999999927",
                     PJ = "",
                     SoftwareId = "MojCRM-001",
-                    SubjektPJ = Organization.MerId.ToString()
+                    SubjektPJ = organization.MerId.ToString()
                 };
 
-                string MerRequest = JsonConvert.SerializeObject(Request);
+                string merRequest = JsonConvert.SerializeObject(request);
 
-                Mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-                Mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                var _Response = Mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getSubjektData").ToString(), "POST", MerRequest);
-                _Response = _Response.Replace("[", "").Replace("]", "");
-                MerGetSubjektDataResponse Result = JsonConvert.DeserializeObject<MerGetSubjektDataResponse>(_Response);
+                mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
+                var response = mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getSubjektData").ToString(), "POST", merRequest);
+                response = response.Replace("[", "").Replace("]", "");
+                MerGetSubjektDataResponse result = JsonConvert.DeserializeObject<MerGetSubjektDataResponse>(response);
 
-                string postalCode = Result.Mjesto.Substring(0, 5).Trim();
-                string mainCity = Result.Mjesto.Substring(6).Trim();
+                string postalCode = result.Mjesto.Substring(0, 5).Trim();
+                string mainCity = result.Mjesto.Substring(6).Trim();
 
-                Organization.SubjectName = Result.Naziv;
-                Organization.FirstReceived = Result.FirstReceived;
-                Organization.FirstSent = Result.FirstSent;
-                Organization.ServiceProvider = (Organizations.ServiceProviderEnum)Result.ServiceProviderId;
-                Organization.UpdateDate = DateTime.Now;
-                Organization.LastUpdatedBy = User.Identity.Name;
-                Organization.MerUpdateDate = DateTime.Now;
-                Organization.OrganizationDetail.MainAddress = Result.Adresa;
-                Organization.OrganizationDetail.MainPostalCode = Int32.Parse(postalCode);
-                Organization.OrganizationDetail.MainCity = mainCity;
-                Organization.MerDeliveryDetail.TotalSent = Result.TotalSent;
-                Organization.MerDeliveryDetail.TotalReceived = Result.TotalReceived;
+                organization.SubjectName = result.Naziv;
+                organization.FirstReceived = result.FirstReceived;
+                organization.FirstSent = result.FirstSent;
+                organization.ServiceProvider = (Organizations.ServiceProviderEnum)result.ServiceProviderId;
+                organization.UpdateDate = DateTime.Now;
+                organization.LastUpdatedBy = User.Identity.Name;
+                organization.MerUpdateDate = DateTime.Now;
+                organization.OrganizationDetail.MainAddress = result.Adresa;
+                organization.OrganizationDetail.MainPostalCode = Int32.Parse(postalCode);
+                organization.OrganizationDetail.MainCity = mainCity;
+                organization.MerDeliveryDetail.TotalSent = result.TotalSent;
+                organization.MerDeliveryDetail.TotalReceived = result.TotalReceived;
             }
             _db.SaveChanges();
 
@@ -263,7 +263,7 @@ namespace MojCRM.Controllers
         }
 
         // GET: Organizations/UpdateOrganizations
-        public void UpdateOrganizations()
+            public void UpdateOrganizations()
         {
             var Credentials = (from u in _db.Users
                                where u.UserName == User.Identity.Name
@@ -493,19 +493,19 @@ namespace MojCRM.Controllers
         // POST: Organizations/AddAttribute
         [HttpPost]
         [Authorize(Roles = "Superadmin")]
-        public ActionResult AddAttribute(AddOrganizationAttribute Model)
+        public ActionResult AddAttribute(AddOrganizationAttribute model)
         {
             _db.OrganizationAttributes.Add(new OrganizationAttribute
             {
-                OrganizationId = Model.MerId,
-                AttributeClass = Model.AttributeClass,
-                AttributeType = Model.AttributeType,
+                OrganizationId = model.MerId,
+                AttributeClass = model.AttributeClass,
+                AttributeType = model.AttributeType,
                 IsActive = true,
                 AssignedBy = User.Identity.Name,
                 InsertDate = DateTime.Now
             });
             _db.SaveChanges();
-            return RedirectToAction("Details", new { id = Model.MerId });
+            return RedirectToAction("Details", new { id = model.MerId });
         }
 
         // POST: Organizations/CopyMainAddress

@@ -15,6 +15,7 @@ namespace MojCRM.Areas.CRM.Controllers
     public class ContractController : Controller
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        private readonly OrganizationHelperMethods _organizationHelper = new OrganizationHelperMethods();
         // GET: CRM/Contract
         public ActionResult Index()
         {
@@ -76,6 +77,55 @@ namespace MojCRM.Areas.CRM.Controllers
                         IsPartnerStatus = false,
                         InsertDate = DateTime.Now
                     });
+
+                    if (!result.ContractNumber.Contains("PrePaid"))
+                    {
+                        if (_db.OrganizationAttributes.Any(x => x.OrganizationId == result.SubjektId && x.AttributeType == OrganizationAttribute.AttributeTypeEnum.CONTRACT))
+                        {
+                            var attributeForUpdate =
+                                _db.OrganizationAttributes.First(x => x.OrganizationId == result.SubjektId);
+
+                            attributeForUpdate.IsActive = result.IsActive;
+                            attributeForUpdate.UpdateDate = DateTime.Now;
+                        }
+                        if (!_db.OrganizationAttributes.Any(x => x.OrganizationId == result.SubjektId && x.AttributeType == OrganizationAttribute.AttributeTypeEnum.CONTRACT))
+                        {
+                            _db.OrganizationAttributes.Add(new OrganizationAttribute()
+                            {
+                                OrganizationId = result.SubjektId,
+                                AttributeClass = OrganizationAttribute.AttributeClassEnum.MER,
+                                AttributeType = OrganizationAttribute.AttributeTypeEnum.CONTRACT,
+                                IsActive = result.IsActive,
+                                AssignedBy = "MojCRM - ContractImport",
+                                InsertDate = DateTime.Now
+                            });
+                        }
+                    }
+                    if (result.ContractNumber.Contains("PrePaid"))
+                    {
+                        if (_db.OrganizationAttributes.Any(x => x.OrganizationId == result.SubjektId && x.AttributeType == OrganizationAttribute.AttributeTypeEnum.ADVANCE))
+                        {
+                            var attributeForUpdate =
+                                _db.OrganizationAttributes.First(x => x.OrganizationId == result.SubjektId);
+
+                            attributeForUpdate.IsActive = result.IsActive;
+                            attributeForUpdate.UpdateDate = DateTime.Now;
+                        }
+                        if (!_db.OrganizationAttributes.Any(x => x.OrganizationId == result.SubjektId && x.AttributeType == OrganizationAttribute.AttributeTypeEnum.CONTRACT))
+                        {
+                            _db.OrganizationAttributes.Add(new OrganizationAttribute()
+                            {
+                                OrganizationId = result.SubjektId,
+                                AttributeClass = OrganizationAttribute.AttributeClassEnum.MER,
+                                AttributeType = OrganizationAttribute.AttributeTypeEnum.ADVANCE,
+                                IsActive = result.IsActive,
+                                AssignedBy = "MojCRM - ContractImport",
+                                InsertDate = DateTime.Now
+                            });
+                        }
+                    }
+
+                    _organizationHelper.UpdateOrganization(result.SubjektId, user.ToString());
                 }
                 _db.SaveChanges();
 

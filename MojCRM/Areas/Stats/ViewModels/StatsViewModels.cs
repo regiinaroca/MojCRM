@@ -274,6 +274,10 @@ namespace MojCRM.Areas.Stats.ViewModels
         public int? SumMailchange { get; set; }
         [Display(Name = "Ukupno ponovno poslanih obavijesti o dostavi")]
         public int? SumResend { get; set; }
+        [Display(Name = "Ukupno prikupljenih e-mail adresa (ažuriranje baza)")]
+        public int? SumAcquiredEmails { get; set; }
+        [Display(Name = "Ukupno prikupljenih brojeva telefona (ažuriranje baza)")]
+        public int? SumAcquiredPhoneNumbers { get; set; }
         public IList<SelectListItem> AgentList
         {
             get
