@@ -95,7 +95,10 @@ namespace MojCRM.Models
             AqcuireEmail,
 
             [Description("Ponude")]
-            Quotes
+            Quotes,
+
+            [Description("CRM")]
+            Crm
         }
 
         public string ActivityTypeString
@@ -149,6 +152,7 @@ namespace MojCRM.Models
                     case ModuleEnum.Leads: return "Leadovi";
                     case ModuleEnum.AqcuireEmail: return "Ažuriranje baza";
                     case ModuleEnum.Quotes: return "Ponude";
+                    case ModuleEnum.Crm: return "CRM";
                 }
                 return "Modul";
             }

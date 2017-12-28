@@ -18,7 +18,7 @@ namespace MojCRM.Helpers
         {
             var isSuspicious = false;
 
-            if (activityType != ActivityLog.ActivityTypeEnum.AchievedSales)
+            if (activityType != ActivityLog.ActivityTypeEnum.AchievedSales || activityType != ActivityLog.ActivityTypeEnum.System)
                 isSuspicious = _al.CheckSuspiciousActivity(user, activityType);            
             _db.ActivityLogs.Add(new ActivityLog
             {

@@ -58,7 +58,19 @@ namespace MojCRM.Models
             Hr,
 
             [Description("Slovenija")]
-            Si
+            Si,
+
+            [Description("Austrija")]
+            At,
+
+            [Description("Poljska")]
+            Pl,
+
+            [Description("Italija")]
+            It,
+
+            [Description("Njemačka")]
+            De
         }
 
         public string OrganizationGroupString
