@@ -54,7 +54,8 @@ namespace MojCRM
                  "~/Content/font-awesome.css",
                  "~/Content/font-awesome.min.css",
                  "~/Content/main.css",
-                 "~/Content/my-custom-styles.css"));
+                 "~/Content/my-custom-styles.css",
+                 "~/Content/tpribic.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/scripts").Include(
                 "~/Scripts/merscripts.js",

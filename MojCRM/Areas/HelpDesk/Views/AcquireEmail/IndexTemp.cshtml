@@ -20,7 +20,7 @@
 @*@if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Management"))
 {*@
     <hr/>
-    @using (Html.BeginForm("Index", "AcquireEmail", FormMethod.Get))
+    @using (Html.BeginForm("IndexTemp", "AcquireEmail", FormMethod.Get))
     {
         <div class="row">
             <div class="col-md-3">

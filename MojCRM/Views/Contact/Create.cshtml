@@ -171,4 +171,29 @@
             }
         });
     });
+    $(document).ready(function () {
+        $("#OrganizationVAT").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetOrganizationByOib", "Contact")',
+                    datatype: "json",
+                    data: {
+                        term: request.term
+                    },
+                    success: function (data) {
+                        response($.map(data, function (val, item) {
+                            return {
+                                label: val.OIB,
+                                value: val.OIB,
+                                customerId: val.Naziv
+                            }
+                        }))
+                    }
+                })
+            },
+            select: function (event, ui) {
+                $("#Organization").val(ui.item.customerId);
+            }
+        });
+    });
 </script>
