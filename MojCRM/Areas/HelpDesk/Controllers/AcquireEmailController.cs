@@ -299,7 +299,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
 
                     if (VAT != "")
                     {
-                        if (_db.Organizations.Any(o => o.SubjectBusinessUnit == "" && o.VAT == VAT))
+                        if (_db.Organizations.Any(o => (o.SubjectBusinessUnit == "" || o.SubjectBusinessUnit == "11"/*DHL hack/fix*/) && o.VAT == VAT))
                         {
                             validVATs.Add(VAT);
                             ImportEntities(campaignId, VAT);

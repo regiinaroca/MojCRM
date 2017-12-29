@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
+using MojCRM.Areas.CRM.Helpers;
 using MojCRM.Areas.CRM.Models;
 using MojCRM.Helpers;
 using MojCRM.Models;
@@ -18,9 +17,24 @@ namespace MojCRM.Areas.CRM.Controllers
         private readonly HelperMethods _helper = new HelperMethods();
         private readonly OrganizationHelperMethods _organizationHelper = new OrganizationHelperMethods();
         // GET: CRM/Contract
-        public ActionResult Index()
+        public ActionResult Index(ContractSearchModel model)
         {
-            return View();
+            IQueryable<Contract> contracts = _db.Contracts;
+
+            if (!String.IsNullOrEmpty(model.ContractNumber))
+            {
+                contracts = contracts.Where(x => x.MerContractNumber.Contains(model.ContractNumber));
+            }
+            if (!String.IsNullOrEmpty(model.OrganizationName))
+            {
+                contracts = contracts.Where(x => x.Organization.SubjectName.Contains(model.OrganizationName));
+            }
+            if (!String.IsNullOrEmpty(model.OrganizationVat))
+            {
+                contracts = contracts.Where(x => x.Organization.SubjectName.Contains(model.OrganizationVat));
+            }
+
+            return View(contracts.OrderByDescending(c => c.Id));
         }
 
         public JsonResult GetContracts(Guid user)

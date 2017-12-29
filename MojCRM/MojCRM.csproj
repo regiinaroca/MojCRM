@@ -331,6 +331,7 @@
     <Compile Include="Areas\Cooperation\Models\MerIntegrationSoftware.cs" />
     <Compile Include="Areas\CRM\Controllers\ContractController.cs" />
     <Compile Include="Areas\CRM\CRMAreaRegistration.cs" />
+    <Compile Include="Areas\CRM\Helpers\ContractHelpers.cs" />
     <Compile Include="Areas\CRM\Models\Contract.cs" />
     <Compile Include="Areas\CRM\Models\ContractedService.cs" />
     <Compile Include="Areas\CRM\Models\ContractRate.cs" />
@@ -771,6 +772,8 @@
     <Content Include="Areas\Sales\Views\Quotes\Details.cshtml" />
     <Content Include="Areas\HelpDesk\Views\AcquireEmail\IndexTemp.cshtml" />
     <Content Include="Areas\CRM\Views\web.config" />
+    <Content Include="Areas\Sales\Views\Opportunities\_ErrorNoNote.cshtml" />
+    <Content Include="Areas\CRM\Views\Contract\Index.cshtml" />
     <None Include="Scripts\jquery-3.2.1-vsdoc.js" />
     <Content Include="Scripts\daterangepicker.js" />
     <Content Include="Scripts\jquery-3.2.1.js" />
@@ -936,7 +939,6 @@
     <Folder Include="Areas\Campaigns\Views\Shared\" />
     <Folder Include="Areas\Cooperation\Controllers\" />
     <Folder Include="Areas\Cooperation\Views\Shared\" />
-    <Folder Include="Areas\CRM\Views\Contract\" />
     <Folder Include="Areas\CRM\Views\Shared\" />
     <Folder Include="Areas\HelpDesk\Views\Shared\" />
     <Folder Include="Areas\Sales\Views\Shared\" />

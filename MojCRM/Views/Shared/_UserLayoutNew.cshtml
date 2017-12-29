@@ -97,6 +97,15 @@
                             <li>
                                 <a href="@Url.RouteUrl(new { action = "Index", controller = "Campaigns", area = "Campaigns"})"><i class="fa fa-phone"></i><span class="text">Kampanje</span></a>
                             </li>
+                            <li>
+                                <a href="#" class="js-sub-menu-toggle">
+                                    <i class="fa fa-users"></i><span class="text">CRM - Upravljanje korisnicima</span>
+                                    <i class="toggle-icon fa fa-angle-left"></i>
+                                </a>
+                                <ul class="sub-menu">
+                                    <li><a href="@Url.RouteUrl(new { action = "Index", controller = "Contract", area = "CRM"})"><span class="text">Ugovori korisnika</span></a></li>
+                                </ul>
+                            </li>
                         }
                         @if (!User.IsInRole("Guest"))
                         {

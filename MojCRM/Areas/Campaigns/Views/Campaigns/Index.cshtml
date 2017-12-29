@@ -32,7 +32,7 @@
     </div>
 </div>*@
 
-@if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Management"))
+@if (User.IsInRole("Administrator") || User.IsInRole("Board") || User.IsInRole("Superadmin") || User.IsInRole("Management"))
 {
     <hr />
     using (Html.BeginForm("Index", "Campaigns", FormMethod.Get))

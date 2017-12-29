@@ -470,51 +470,58 @@ namespace MojCRM.Areas.Sales.Controllers
 
         public ActionResult ConvertToLead(ConvertToLeadHelper model)
         {
-            var lastOpportunityNote = _db.OpportunityNotes
+            try
+            {
+                var lastOpportunityNote = _db.OpportunityNotes
                 .Where(on => on.RelatedOpportunityId == model.OpportunityId)
                 .OrderByDescending(on => on.Id)
                 .First();
 
-            _db.Leads.Add(new Lead()
-            {
-                LeadTitle = model.OrganizationName,
-                LeadDescription = model.OpportunityDescription,
-                RelatedCampaignId = model.RelatedCampaignId,
-                RelatedOpportunityId = model.OpportunityId,
-                RelatedOrganizationId = model.OrganizationId,
-                LeadStatus = Lead.LeadStatusEnum.Start,
-                CreatedBy = User.Identity.Name,
-                AssignedTo = User.Identity.Name,
-                IsAssigned = model.IsAssigned,
-                InsertDate = DateTime.Now
-            });
-            _db.ActivityLogs.Add(new ActivityLog()
-            {
-                Description = User.Identity.Name + " je kreirao lead za tvrtku: " + model.OrganizationName + " (Kampanja: " + model.RelatedCampaignName + ")",
-                User = User.Identity.Name,
-                ReferenceId = model.OpportunityId,
-                ActivityType = ActivityTypeEnum.Createdlead,
-                Department = DepartmentEnum.Sales,
-                Module = ModuleEnum.Opportunities,
-                InsertDate = DateTime.Now
-            });
-            var opportunity = _db.Opportunities.Find(model.OpportunityId);
-            opportunity.OpportunityStatus = Opportunity.OpportunityStatusEnum.Lead;
-            opportunity.UpdateDate = DateTime.Now;
-            opportunity.LastUpdatedBy = User.Identity.Name;
-            _db.SaveChanges();
+                _db.Leads.Add(new Lead()
+                {
+                    LeadTitle = model.OrganizationName,
+                    LeadDescription = model.OpportunityDescription,
+                    RelatedCampaignId = model.RelatedCampaignId,
+                    RelatedOpportunityId = model.OpportunityId,
+                    RelatedOrganizationId = model.OrganizationId,
+                    LeadStatus = Lead.LeadStatusEnum.Start,
+                    CreatedBy = User.Identity.Name,
+                    AssignedTo = User.Identity.Name,
+                    IsAssigned = model.IsAssigned,
+                    InsertDate = DateTime.Now
+                });
+                _db.ActivityLogs.Add(new ActivityLog()
+                {
+                    Description = User.Identity.Name + " je kreirao lead za tvrtku: " + model.OrganizationName + " (Kampanja: " + model.RelatedCampaignName + ")",
+                    User = User.Identity.Name,
+                    ReferenceId = model.OpportunityId,
+                    ActivityType = ActivityTypeEnum.Createdlead,
+                    Department = DepartmentEnum.Sales,
+                    Module = ModuleEnum.Opportunities,
+                    InsertDate = DateTime.Now
+                });
+                var opportunity = _db.Opportunities.Find(model.OpportunityId);
+                opportunity.OpportunityStatus = Opportunity.OpportunityStatusEnum.Lead;
+                opportunity.UpdateDate = DateTime.Now;
+                opportunity.LastUpdatedBy = User.Identity.Name;
+                _db.SaveChanges();
 
-            var leadId = _db.Leads.Where(l => l.RelatedCampaignId == model.RelatedCampaignId && l.RelatedOpportunityId == model.OpportunityId).Select(l => l.LeadId).First();
-            _db.LeadNotes.Add(new LeadNote
+                var leadId = _db.Leads.Where(l => l.RelatedCampaignId == model.RelatedCampaignId && l.RelatedOpportunityId == model.OpportunityId).Select(l => l.LeadId).First();
+                _db.LeadNotes.Add(new LeadNote
+                {
+                    RelatedLeadId = leadId,
+                    User = lastOpportunityNote.User,
+                    Note = "ZADNJA BILJEŠKA IZ PRODAJNE PRILIKE: " + lastOpportunityNote.Note,
+                    InsertDate = DateTime.Now,
+                    Contact = lastOpportunityNote.Contact
+                });
+                _db.SaveChanges();
+                return Redirect(Request.UrlReferrer?.ToString());
+            }
+            catch (InvalidOperationException)
             {
-                RelatedLeadId = leadId,
-                User = lastOpportunityNote.User,
-                Note = "ZADNJA BILJEŠKA IZ PRODAJNE PRILIKE: " + lastOpportunityNote.Note,
-                InsertDate = DateTime.Now,
-                Contact = lastOpportunityNote.Contact
-            });
-            _db.SaveChanges();
-            return Redirect(Request.UrlReferrer.ToString());
+                return View("_ErrorNoNote");
+            }
         }
 
         public ActionResult ChangeStatus(OpportunityChangeStatusHelper model)
