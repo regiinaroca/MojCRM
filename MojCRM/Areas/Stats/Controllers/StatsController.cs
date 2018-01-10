@@ -512,8 +512,29 @@ namespace MojCRM.Areas.Stats.Controllers
             return View(model);
         }
 
+        // GET: Stats/OrganizationsByCountry
+        public ActionResult OrganizationsByCountry()
+        {
+            var model = new List<OrganizationsByCountryViewModel>();
+
+            var organizations = _db.Organizations.GroupBy(x => x.OrganizationDetail.MainCountry).Select(gx => gx);
+
+            foreach (var organization in organizations)
+            {
+                var tempModel = new OrganizationsByCountryViewModel()
+                {
+                    Country = organization.Key,
+                    NumberOfOrganizations = organization.Count()
+                };
+                model.Add(tempModel);
+            }
+
+            return View(model.AsQueryable());
+        }
+
+
          // GET: Stats/Sales
-         public ActionResult SalesStat(string agent, string searchDateStart, string searchDateEnd)
+        public ActionResult SalesStat(string agent, string searchDateStart, string searchDateEnd)
          {
              var agents = from u in _db.Users
                             select u;

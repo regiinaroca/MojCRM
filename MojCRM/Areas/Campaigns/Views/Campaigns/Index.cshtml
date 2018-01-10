@@ -14,6 +14,12 @@
         new ListItem{ Value= @"3", Text = @"Prekinuto"},
         new ListItem{ Value= @"4", Text = @"Završeno"}
     };
+    var typeList = new List<ListItem>
+    {
+        new ListItem{ Value= @"1", Text = @"Ažuriranje baze korisnika"},
+        new ListItem{ Value= @"2", Text = @"Prodajna kampanja"},
+        new ListItem{ Value= @"3", Text = @"CRM kampanja"}
+    };
 }
 
 <h2 style="text-align:center"><strong>Pregled kampanja</strong></h2>
@@ -56,7 +62,15 @@
             </div>
             <div class="col-md-3">
                 <div class="form-group">
-                    <label for="campaign-status">Status</label>
+                    <label for="campaign-status">Tip kampanje</label>
+                    <div id="campaign-status">
+                        @Html.DropDownList("CampaignType", new SelectList(typeList, "Value", "Text"), "-- Svi tipovi --", new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="campaign-status">Status kampanje</label>
                     <div id="campaign-status">
                         @Html.DropDownList("CampaignStatus", new SelectList(statusList, "Value", "Text"), "-- Svi statusi --", new { @class = "form-control" })
                     </div>

@@ -774,6 +774,7 @@
     <Content Include="Areas\CRM\Views\web.config" />
     <Content Include="Areas\Sales\Views\Opportunities\_ErrorNoNote.cshtml" />
     <Content Include="Areas\CRM\Views\Contract\Index.cshtml" />
+    <Content Include="Areas\Stats\Views\Stats\OrganizationsByCountry.cshtml" />
     <None Include="Scripts\jquery-3.2.1-vsdoc.js" />
     <Content Include="Scripts\daterangepicker.js" />
     <Content Include="Scripts\jquery-3.2.1.js" />

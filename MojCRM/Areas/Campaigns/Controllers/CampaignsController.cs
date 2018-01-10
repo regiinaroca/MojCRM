@@ -29,6 +29,11 @@ namespace MojCRM.Areas.Campaigns.Controllers
             {
                 campaigns = campaigns.Where(x => x.CampaignName.Contains(model.CampaignName));
             }
+            if (model.CampaignType != null)
+            {
+                var tempType = (Campaign.CampaignTypeEnum)model.CampaignType;
+                campaigns = campaigns.Where(x => x.CampaignType == tempType);
+            }
             if (model.CampaignStatus != null)
             {
                 var tempStatus = (Campaign.CampaignStatusEnum)model.CampaignStatus;

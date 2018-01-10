@@ -147,7 +147,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         [HttpPost]
         public JsonResult ChangeStatus(int entityId, int identifier)
         {
-            var entity = _db.AcquireEmails.Find(entityId);
+            var entity = _db.AcquireEmails.First(x => x.Id == entityId);
             switch (identifier)
             {
                 case 1:
@@ -172,9 +172,14 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         [HttpPost]
         public ActionResult ChangeStatusAdmin(int entityId, int identifier)
         {
-            var entity = _db.AcquireEmails.Find(entityId);
+            var entity = _db.AcquireEmails.First(x => x.Id == entityId);
             switch (identifier)
             {
+                case 0:
+                    entity.AcquireEmailStatus = AcquireEmailStatusEnum.Created;
+                    entity.UpdateDate = DateTime.Now;
+                    _db.SaveChanges();
+                    break;
                 case 1:
                     entity.AcquireEmailStatus = AcquireEmailStatusEnum.Checked;
                     entity.UpdateDate = DateTime.Now;
@@ -191,7 +196,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     _db.SaveChanges();
                     break;
             }
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         [HttpPost]
@@ -342,7 +347,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         {
             if (VAT != "")
             {
-                var relatedOrganization = _db.Organizations.First(o => o.SubjectBusinessUnit == "" && o.VAT == VAT);
+                var relatedOrganization = _db.Organizations.First(o => (o.SubjectBusinessUnit == "" || o.SubjectBusinessUnit == "11"/*DHL hack/fix*/) && o.VAT == VAT);
 
                 if (relatedOrganization.MerDeliveryDetail.AcquiredReceivingInformationIsVerified)
                 {

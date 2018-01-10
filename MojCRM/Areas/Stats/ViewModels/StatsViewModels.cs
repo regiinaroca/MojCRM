@@ -365,4 +365,29 @@ namespace MojCRM.Areas.Stats.ViewModels
         public int Count { get; set; }
     }
 
+    #region OrganizationStats
+
+    public class OrganizationsByCountryViewModel
+    {
+        public OrganizationDetail.CountryIdentificationCodeEnum Country { get; set; }
+        public int NumberOfOrganizations { get; set; }
+        public string CountryIdentificationCode
+        {
+            get
+            {
+                switch (Country)
+                {
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Noinfo: return "Nema podatka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Hr: return "Hrvatska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Si: return "Slovenija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.At: return "Austrija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Pl: return "Poljska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.It: return "Italija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.De: return "Njemačka";
+                }
+                return "Nema podatka";
+            }
+        }
+    }
+#endregion
 }

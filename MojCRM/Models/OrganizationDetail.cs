@@ -1,8 +1,8 @@
-﻿using MojCRM.Areas.Cooperation.Models;
-using MojCRM.Helpers;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MojCRM.Areas.Cooperation.Models;
+using MojCRM.Helpers;
 
 namespace MojCRM.Models
 {
@@ -71,6 +71,24 @@ namespace MojCRM.Models
 
             [Description("Njemačka")]
             De
+        }
+
+        public string CountryIdentificationCode
+        {
+            get
+            {
+                switch (MainCountry)
+                {
+                    case CountryIdentificationCodeEnum.Noinfo: return "Nema podatka";
+                    case CountryIdentificationCodeEnum.Hr: return "Hrvatska";
+                    case CountryIdentificationCodeEnum.Si: return "Slovenija";
+                    case CountryIdentificationCodeEnum.At: return "Austrija";
+                    case CountryIdentificationCodeEnum.Pl: return "Poljska";
+                    case CountryIdentificationCodeEnum.It: return "Italija";
+                    case CountryIdentificationCodeEnum.De: return "Njemačka";
+                }
+                return "Nema podatka";
+            }
         }
 
         public string OrganizationGroupString

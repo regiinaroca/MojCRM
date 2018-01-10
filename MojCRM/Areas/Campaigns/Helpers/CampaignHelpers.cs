@@ -5,6 +5,7 @@
         public string Organization { get; set; }
         public string CampaignName { get; set; }
         public int? CampaignStatus { get; set; }
+        public int? CampaignType { get; set; }
     }
 
     public class CampaignAssignedAgents

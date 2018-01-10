@@ -78,6 +78,8 @@ namespace MojCRM
                 "~/Scripts/king-elements.js",
                 "~/Scripts/daterangepicker.js",
                 "~/Scripts/moment.min.js"));
+
+            BundleTable.EnableOptimizations = true;
         }
     }
 }
