@@ -133,6 +133,28 @@ namespace MojCRM.ViewModels
                     case OrganizationDetail.CountryIdentificationCodeEnum.Pl: return "Poljska";
                     case OrganizationDetail.CountryIdentificationCodeEnum.It: return "Italija";
                     case OrganizationDetail.CountryIdentificationCodeEnum.De: return "Njemačka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Be: return "Belgija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Bg: return "Bugarska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Cy: return "Cipar";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Cz: return "Češka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Dk: return "Danska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Ee: return "Estonija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.El: return "Grčka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Es: return "Španjolska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Fi: return "Finska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Fr: return "Francuska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Gb: return "Ujedinjena Kraljevina";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Hu: return "Mađarska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Ie: return "Irska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Lt: return "Litva";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Lu: return "Luksemburg";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Lv: return "Latvija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Mt: return "Malta";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Nl: return "Nizozemska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Pt: return "Portugal";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Ro: return "Rumunjska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Se: return "Švedska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Sk: return "Slovačka";
                 }
                 return "Nema podatka";
             }
@@ -150,6 +172,28 @@ namespace MojCRM.ViewModels
                     case OrganizationDetail.CountryIdentificationCodeEnum.Pl: return "Poljska";
                     case OrganizationDetail.CountryIdentificationCodeEnum.It: return "Italija";
                     case OrganizationDetail.CountryIdentificationCodeEnum.De: return "Njemačka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Be: return "Belgija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Bg: return "Bugarska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Cy: return "Cipar";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Cz: return "Češka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Dk: return "Danska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Ee: return "Estonija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.El: return "Grčka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Es: return "Španjolska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Fi: return "Finska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Fr: return "Francuska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Gb: return "Ujedinjena Kraljevina";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Hu: return "Mađarska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Ie: return "Irska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Lt: return "Litva";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Lu: return "Luksemburg";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Lv: return "Latvija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Mt: return "Malta";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Nl: return "Nizozemska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Pt: return "Portugal";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Ro: return "Rumunjska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Se: return "Švedska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Sk: return "Slovačka";
                 }
                 return "Nema podatka";
             }

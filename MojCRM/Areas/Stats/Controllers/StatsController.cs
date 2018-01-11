@@ -517,19 +517,21 @@ namespace MojCRM.Areas.Stats.Controllers
         {
             var model = new List<OrganizationsByCountryViewModel>();
 
-            var organizations = _db.Organizations.GroupBy(x => x.OrganizationDetail.MainCountry).Select(gx => gx);
+            var organizations = _db.OrganizationDetails.GroupBy(x => x.MainCountry).Select(gx => gx);
+            var organizationCount = _db.OrganizationDetails.Count();
 
             foreach (var organization in organizations)
             {
                 var tempModel = new OrganizationsByCountryViewModel()
                 {
                     Country = organization.Key,
-                    NumberOfOrganizations = organization.Count()
+                    NumberOfOrganizations = organization.Count(),
+                    PercentOfOrganizations = Math.Round(organization.Count() / (decimal)organizationCount * 100, 2)
                 };
                 model.Add(tempModel);
             }
 
-            return View(model.AsQueryable());
+            return View(model.OrderByDescending(x => x.NumberOfOrganizations).AsQueryable());
         }
 
 
