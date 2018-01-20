@@ -9,7 +9,7 @@ namespace MojCRM.Areas.Sales.Helpers
     public class OpportunityNoteHelper
     {
         public string[] NoteTemplates { get; set; }
-        public int? RelatedOpportunityId { get; set; }
+        public int RelatedOpportunityId { get; set; }
         public string User { get; set; }
         public string Contact { get; set; }
         public string Note { get; set; }
