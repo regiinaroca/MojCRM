@@ -161,8 +161,21 @@ namespace MojCRM.Models
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
         public bool CheckSuspiciousActivity(string user, ActivityTypeEnum activityType)
         {
-            var reference = _db.ActivityLogs.OrderByDescending(a => a.InsertDate).First(a =>
-                a.User == user && a.ActivityType == activityType);
+            ActivityLog reference;
+            try
+            {
+                reference = _db.ActivityLogs.OrderByDescending(a => a.InsertDate).First(a =>
+                    a.User == user && a.ActivityType == activityType);
+            }
+            catch (InvalidOperationException)
+            {
+                reference = new ActivityLog()
+                {
+                    User = user,
+                    InsertDate = DateTime.Now.AddMinutes(-5)
+                };
+            }
+            
 
             if (reference != null)
                 if ((int)DateTime.Now.Subtract(reference.InsertDate).TotalMinutes < 1)

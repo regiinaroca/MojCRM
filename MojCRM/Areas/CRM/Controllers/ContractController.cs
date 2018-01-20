@@ -186,7 +186,7 @@ namespace MojCRM.Areas.CRM.Controllers
                 _db.SaveChanges();
 
                 importedContracts = results.Count();
-                _helper.LogActivity("Preuzeto ugovora: " + importedContracts + ", od toga: " + newContracts + "novih i " + updatedContracts + "ažuriranih."
+                _helper.LogActivity("Preuzeto ugovora: " + importedContracts + ", od toga: " + newContracts + " novih i " + updatedContracts + " ažuriranih."
                     , agent, 0, ActivityLog.ActivityTypeEnum.System, ActivityLog.DepartmentEnum.MojCrm, ActivityLog.ModuleEnum.Crm);
             }
             return Json(new { ImportedContracts = importedContracts, UpdatedContracts = updatedContracts, NewContracts = newContracts }, JsonRequestBehavior.AllowGet);
