@@ -5,6 +5,14 @@ using MojCRM.Models;
 
 namespace MojCRM.Areas.Sales.Helpers
 {
+    public class QuoteSearchHelper
+    {
+        public string QuoteNumber { get; set; }
+        public string OrganizationName { get; set; }
+        public string OrganizationVat { get; set; }
+        public int? QuoteType { get; set; }
+    }
+
     public class CreateFromLeadViewQuoteHelper
     {
         public int RelatedOrganizationId { get; set; }

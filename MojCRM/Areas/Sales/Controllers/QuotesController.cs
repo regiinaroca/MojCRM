@@ -15,9 +15,30 @@ namespace MojCRM.Areas.Sales.Controllers
         private readonly HelperMethods _helper = new HelperMethods();
         private readonly QuoteHelperMethods _quoteHelper = new QuoteHelperMethods();
         // GET: Sales/Quotes
-        public ActionResult Index()
+        public ActionResult Index(QuoteSearchHelper model)
         {
-            return View();
+            var quotes = _db.Quotes.Select(q => q);
+
+            //Search Engine
+            if (!String.IsNullOrEmpty(model.QuoteNumber))
+            {
+                quotes = quotes.Where(x => x.QuoteNumber.Contains(model.QuoteNumber));
+            }
+            if (!String.IsNullOrEmpty(model.OrganizationName))
+            {
+                quotes = quotes.Where(x => x.Organization.SubjectName.Contains(model.OrganizationName));
+            }
+            if (!String.IsNullOrEmpty(model.OrganizationVat))
+            {
+                quotes = quotes.Where(x => x.Organization.SubjectName.Contains(model.OrganizationVat));
+            }
+            if (model.QuoteType != null)
+            {
+                var typeTemp = (Quote.QuoteTypeEnum) model.QuoteType;
+                quotes = quotes.Where(x => x.QuoteType == typeTemp);
+            }
+
+            return View(quotes.OrderByDescending(q => q.Id));
         }
 
         // POST: Sales/Quotes/Create
@@ -180,24 +201,10 @@ namespace MojCRM.Areas.Sales.Controllers
                     _db.SaveChanges();
                     break;
                 case 3:
-                    quote.QuoteStatus = Quote.QuoteStatusEnum.Accepted;
-                    quote.Lead.LeadStatus = Lead.LeadStatusEnum.Accepted;
-                    quote.Lead.UpdateDate = DateTime.Now;
-                    quote.Lead.LastUpdatedBy = User.Identity.Name;
-                    quote.UpdateDate = DateTime.Now;
-                    _helper.LogActivity("Djelatnik " + User.Identity.Name + " je ostvario prodaju vezanu za ponudu " + quote.QuoteNumber + " koja je dostavljena tvrtki " + quote.Organization.SubjectName + ".",
-                        User.Identity.Name, quoteId, ActivityLog.ActivityTypeEnum.AchievedSales, ActivityLog.DepartmentEnum.Sales, ActivityLog.ModuleEnum.Quotes);
-                    _db.SaveChanges();
+                    MarkAccepted(quoteId, Quote.QuoteStatusEnum.Accepted);
                     break;
                 case 4:
-                    quote.QuoteStatus = Quote.QuoteStatusEnum.AcceptedAfterReview;
-                    quote.Lead.LeadStatus = Lead.LeadStatusEnum.Accepted;
-                    quote.Lead.UpdateDate = DateTime.Now;
-                    quote.Lead.LastUpdatedBy = User.Identity.Name;
-                    quote.UpdateDate = DateTime.Now;
-                    _helper.LogActivity("Djelatnik " + User.Identity.Name + " je ostvario prodaju vezanu za ponudu " + quote.QuoteNumber + " koja je dostavljena tvrtki " + quote.Organization.SubjectName + ".",
-                        User.Identity.Name, quoteId, ActivityLog.ActivityTypeEnum.AchievedSales, ActivityLog.DepartmentEnum.Sales, ActivityLog.ModuleEnum.Quotes);
-                    _db.SaveChanges();
+                    MarkAccepted(quoteId, Quote.QuoteStatusEnum.AcceptedAfterReview);
                     break;
                 case 5:
                     quote.QuoteStatus = Quote.QuoteStatusEnum.Rejected;
@@ -217,6 +224,27 @@ namespace MojCRM.Areas.Sales.Controllers
             }
 
             return Redirect(Request.UrlReferrer?.ToString());
+        }
+
+        public void MarkAccepted(int quoteId, Quote.QuoteStatusEnum statusType)
+        {
+            var quote = _db.Quotes.First(q => q.Id == quoteId);
+
+            quote.QuoteStatus = statusType;
+            quote.Lead.LeadStatus = Lead.LeadStatusEnum.Accepted;
+            quote.Lead.UpdateDate = DateTime.Now;
+            quote.Lead.LastUpdatedBy = User.Identity.Name;
+            quote.UpdateDate = DateTime.Now;
+            _helper.LogActivity("Djelatnik " + quote.AssignedTo + " je ostvario prodaju vezanu za ponudu " + quote.QuoteNumber + " koja je dostavljena tvrtki " + quote.Organization.SubjectName + ".",
+                User.Identity.Name, quoteId, ActivityLog.ActivityTypeEnum.AchievedSales, ActivityLog.DepartmentEnum.Sales, ActivityLog.ModuleEnum.Quotes);
+            _db.SaveChanges();
+        }
+
+        public JsonResult MarkPaid(int quoteId)
+        {
+            MarkAccepted(quoteId, Quote.QuoteStatusEnum.Accepted);
+
+            return Json(new {Status = "OK"});
         }
     }
 }
