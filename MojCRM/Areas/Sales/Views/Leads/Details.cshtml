@@ -8,13 +8,13 @@
 @{
     var leadStatusList = new List<ListItem>
         {
-            new ListItem{ Value= "0", Text = "Kreirano"},
-            new ListItem{ Value= "1", Text = "U kontaktu"},
-            new ListItem{ Value= "6", Text = "Procesne poteškoće"},
-            new ListItem{ Value= "2", Text = "Odbijeno"},
-            new ListItem{ Value= "3", Text = "Poslana ponuda"},
-            new ListItem{ Value= "4", Text = "Prihvaćena ponuda"},
-            new ListItem{ Value= "5", Text = "Dogovoren sastanak"}
+            new ListItem{ Value= @"0", Text = @"Kreirano"},
+            new ListItem{ Value= @"1", Text = @"U kontaktu"},
+            new ListItem{ Value= @"6", Text = @"Procesne poteškoće"},
+            new ListItem{ Value= @"2", Text = @"Odbijeno"},
+            new ListItem{ Value= @"3", Text = @"Poslana ponuda"},
+            new ListItem{ Value= @"4", Text = @"Prihvaćena ponuda"},
+            new ListItem{ Value= @"5", Text = @"Dogovoren sastanak"}
         };
 }
 
@@ -29,8 +29,8 @@
             <div class="modal-body" style="overflow-y:auto; max-height:400px">
                 <div class="row">
                     <div class="col-md-12">
-                        <label for="note-contact">Kontakt osoba</label>
-                        <div id="note-contact">
+                        <label for="add-note-contact">Kontakt osoba</label>
+                        <div id="add-note-contact">
                             @Html.DropDownList("Contact", Model.RelatedSalesContactsForDetails, new { @class = "form-control col-md-10", @id = "contact-for-note" })
                         </div>
                     </div>
@@ -38,8 +38,8 @@
                 <br />
                 <div class="row">
                     <div class="col-md-12">
-                        <label for="note">Osobna napomena</label>
-                        <div id="note">
+                        <label for="add-note-note">Osobna napomena</label>
+                        <div id="add-note-note">
                             @Html.TextArea("Note", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Napomena", @id = "note-for-note" })
                         </div>
                     </div>
@@ -51,11 +51,11 @@
                         <th></th>
                         <th>Napomena</th>
                     </tr>
-                    @foreach (var Template in Model.SalesNoteTemplates)
+                    @foreach (var template in Model.SalesNoteTemplates)
                     {
                         <tr>
-                            <td>@Html.CheckBox("checked", false, new { Template.Value, @class = "checked", @id = "checkbox", @template = Template.Value })</td>
-                            <td>@Template.Text</td>
+                            <td>@Html.CheckBox("checked", false, new { template.Value, @class = "checked", @id = "checkbox", @template = template.Value })</td>
+                            <td>@template.Text</td>
                         </tr>
                     }
                 </table>
@@ -1004,7 +1004,7 @@
             $("#status-description-lns").hide();
         }
     });
-    function AddQuote() {
+    @*function AddQuote() {
         $(document).on("click", "#add-quote", function (e) {
             e.preventDefault();
             $.ajax({
@@ -1018,7 +1018,7 @@
                 dataType: 'json'
             });
         });   
-    }
+    }*@
 </script>
 
 

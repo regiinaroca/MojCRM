@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 
@@ -84,12 +83,11 @@ namespace MojCRM.Areas.Sales.ViewModels
                 var list = (from t in RelatedSalesContacts
                             select new SelectListItem()
                             {
-                                Text = t.ContactFirstName + " " + t.ContactLastName,
-                                Value = t.ContactFirstName + " " + t.ContactLastName
+                                Text = t.ContactFirstName + @" " + t.ContactLastName,
+                                Value = t.ContactFirstName + @" " + t.ContactLastName
                             }).ToList();
                 return list;
             }
-            set { }
         }
 
         public IList<SelectListItem> RelatedSalesContactsId
@@ -99,12 +97,11 @@ namespace MojCRM.Areas.Sales.ViewModels
                 var list = (from t in RelatedSalesContacts
                             select new SelectListItem()
                             {
-                                Text = t.ContactFirstName + " " + t.ContactLastName,
+                                Text = t.ContactFirstName + @" " + t.ContactLastName,
                                 Value = t.ContactId.ToString()
                             }).ToList();
                 return list;
             }
-            set { }
         }
 
         public IList<SelectListItem> NoteIds
@@ -119,7 +116,6 @@ namespace MojCRM.Areas.Sales.ViewModels
                             }).ToList();
                 return list;
             }
-            set { }
         }
 
         public IList<SelectListItem> SalesAgents
@@ -135,7 +131,6 @@ namespace MojCRM.Areas.Sales.ViewModels
                             }).ToList();
                 return list;
             }
-            set { }
         }
 
         public IList<ListItem> SalesNoteTemplates { get; set; }
