@@ -41,15 +41,24 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             {
                 list = list.Where(x => x.Organization.SubjectName.Contains(model.OrganizationName));
             }
-            if (!String.IsNullOrEmpty(model.TelephoneMail))
+            if (!String.IsNullOrEmpty(model.TelephoneMobile))
             {
                 //list = list.Where(x => x.Organization.MerDeliveryDetail.Telephone.Contains(model.TelephoneMail) || x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains(model.TelephoneMail));
-                list = list.Where(x => x.Organization.MerDeliveryDetail.Telephone.EndsWith(model.TelephoneMail) || x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.EndsWith(model.TelephoneMail));
+                list = list.Where(x => x.Organization.OrganizationDetail.TelephoneNumber.EndsWith(model.TelephoneMobile) || x.Organization.OrganizationDetail.MobilePhoneNumber.EndsWith(model.TelephoneMobile));
+            }
+            if (!String.IsNullOrEmpty(model.Mail))
+            {
+                list = list.Where(x => x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains(model.Mail));
             }
             if (model.EmailStatusEnum != null)
             {
                 var tempStatus = (AcquireEmailStatusEnum) model.EmailStatusEnum;
                 list = list.Where(x => x.AcquireEmailStatus == tempStatus);
+            }
+            if (model.EntityStatusEnum != null)
+            {
+                var tempStatus = (AcquireEmailEntityStatusEnum)model.EntityStatusEnum;
+                list = list.Where(x => x.AcquireEmailEntityStatus == tempStatus);
             }
 
             return View(list.OrderByDescending(x => x.Id));
@@ -74,15 +83,24 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             {
                 list = list.Where(x => x.Organization.SubjectName.Contains(model.OrganizationName));
             }
-            if (!String.IsNullOrEmpty(model.TelephoneMail))
+            if (!String.IsNullOrEmpty(model.TelephoneMobile))
             {
                 //list = list.Where(x => x.Organization.MerDeliveryDetail.Telephone.Contains(model.TelephoneMail) || x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains(model.TelephoneMail));
-                list = list.Where(x => x.Organization.MerDeliveryDetail.Telephone.EndsWith(model.TelephoneMail) || x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.EndsWith(model.TelephoneMail));
+                list = list.Where(x => x.Organization.OrganizationDetail.TelephoneNumber.EndsWith(model.TelephoneMobile) || x.Organization.OrganizationDetail.MobilePhoneNumber.EndsWith(model.TelephoneMobile));
+            }
+            if (!String.IsNullOrEmpty(model.Mail))
+            {
+                list = list.Where(x => x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains(model.Mail));
             }
             if (model.EmailStatusEnum != null)
             {
                 var tempStatus = (AcquireEmailStatusEnum)model.EmailStatusEnum;
                 list = list.Where(x => x.AcquireEmailStatus == tempStatus);
+            }
+            if (model.EntityStatusEnum != null)
+            {
+                var tempStatus = (AcquireEmailEntityStatusEnum)model.EntityStatusEnum;
+                list = list.Where(x => x.AcquireEmailEntityStatus == tempStatus);
             }
 
             return View(list.OrderByDescending(x => x.Id));
@@ -467,8 +485,11 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     //entityStatusEnum = organization.MerDeliveryDetail.AcquiredReceivingInformation == "ZATVORENA TVRTKA" ? AcquireEmailEntityStatusEnum.ClosedOrganization : AcquireEmailEntityStatusEnum.AcquiredInformation;
                     if (organization.MerDeliveryDetail.AcquiredReceivingInformation == "ZATVORENA TVRTKA")
                         entityStatusEnum = AcquireEmailEntityStatusEnum.ClosedOrganization;
-                    else if (organization.MerDeliveryDetail.AcquiredReceivingInformation == "NEMA ISPRAVNOG BROJA TELEFONA")
+                    else if (organization.MerDeliveryDetail.AcquiredReceivingInformation ==
+                             "NEMA ISPRAVNOG BROJA TELEFONA")
                         entityStatusEnum = AcquireEmailEntityStatusEnum.WrongTelephoneNumber;
+                    else
+                        entityStatusEnum = AcquireEmailEntityStatusEnum.AcquiredInformation;
                     break;
             }
 

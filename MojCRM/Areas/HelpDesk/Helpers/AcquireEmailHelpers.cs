@@ -43,8 +43,10 @@ namespace MojCRM.Areas.HelpDesk.Helpers
     {
         public string CampaignName { get; set; }
         public string OrganizationName { get; set; }
-        public string TelephoneMail { get; set; }
+        public string TelephoneMobile { get; set; }
+        public string Mail { get; set; }
         public int? EmailStatusEnum { get; set; }
+        public int? EntityStatusEnum { get; set; }
     }
 
     public class AcquireEmailStatsPerAgentAndCampaign

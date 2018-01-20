@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using MojCRM.Helpers;
-using Newtonsoft.Json;
 
 namespace MojCRM.Controllers
 {
@@ -22,9 +17,9 @@ namespace MojCRM.Controllers
         {
             var model = new DailyUpdateReturnModel();
 
-            model.NumberOfAttributesUpdated = _adminHelper.UpdateOrganizationAttributes();
+            model.NumberOfOrganizationCountriesUpdated = _adminHelper.UpdateOrganizationCountries();
 
-            var returnModel = JsonConvert.SerializeObject(model);
+            var returnModel = model;
             return Json(returnModel, JsonRequestBehavior.AllowGet);
         }
     }

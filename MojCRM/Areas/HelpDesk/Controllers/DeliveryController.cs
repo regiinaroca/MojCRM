@@ -744,7 +744,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                                             select t);
 
             var relatedDeliveryDetails = (from t in _db.DeliveryDetails
-                                           where t.Receiver.MerId == receiverId
+                                           where t.Receiver.MerId == receiverId && t.TicketId == deliveryTicketModel.Id
                                            select t).OrderByDescending(t => t.Id);
 
             var importantComment = (from dd in _db.MerDeliveryDetails

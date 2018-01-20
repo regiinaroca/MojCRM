@@ -13,66 +13,90 @@
         new ListItem{ Value= @"2", Text = @"Verificirano"},
         new ListItem{ Value= @"3", Text = @"Revidirano"}
     };
+    var entityStatusList = new List<ListItem>
+    {
+        new ListItem{ Value= @"0", Text = @"Kreirano"},
+        new ListItem{ Value= @"1", Text = @"Dobivena povratna informacija"},
+        new ListItem{ Value= @"2", Text = @"Nema odgovora / Ne javlja se"},
+        new ListItem{ Value= @"4", Text = @"Ne posluju s korisnikom"},
+        new ListItem{ Value= @"5", Text = @"Partner će se javiti korisniku samostalno"},
+        new ListItem{ Value= @"6", Text = @"Potrebno poslati pisanu suglasnost"},
+        new ListItem{ Value= @"7", Text = @"Neispravan kontakt broj"},
+        new ListItem{ Value= @"3", Text = @"Zatvoren subjekt (sudski / obrtni registar)"},
+        new ListItem{ Value= @"12", Text = @"Najava brisanja subjekta"},
+        new ListItem{ Value= @"10", Text = @"Subjekt u stečaju / likvidaciji"},
+        new ListItem{ Value= @"11", Text = @"Subjekt nema žiro račun"},
+        new ListItem{ Value= @"8", Text = @"PH"},
+        new ListItem{ Value= @"9", Text = @"Nema broja"},
+    };
 }
 
 
-<h2>Ažuriranje baza korisnika - posebna akcija</h2>
+<h2>Ažuriranje baza korisnika</h2>
 @*@if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Management"))
-{*@
-    <hr/>
-    @using (Html.BeginForm("IndexTemp", "AcquireEmail", FormMethod.Get))
-    {
-        <div class="row">
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="campaign-name">Naziv kapmanje</label>
-                    <div id="campaign-name">
-                        @Html.TextBox("CampaignName", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Naziv kapmanje" })
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="organization-name">Naziv tvrtke</label>
-                    <div id="organization-name">
-                        @Html.TextBox("OrganizationName", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Naziv tvrtke" })
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="telephone-mail">Broj telefona ili informacija o zaprimanju</label>
-                    <div id="telephone-mail">
-                        @Html.TextBox("TelephoneMail", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Broj telefona ili informacija o zaprimanju" })
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="email-status">Status</label>
-                    <div id="email-status">
-                        @Html.DropDownList("EmailStatusEnum", new SelectList(statusList, "Value", "Text"), "-- Svi statusi --", new { @class = "form-control" })
-                    </div>
+    {*@
+<hr />
+@using (Html.BeginForm("IndexTemp", "AcquireEmail", FormMethod.Get))
+{
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="campaign-name">Naziv kapmanje</label>
+                <div id="campaign-name">
+                    @Html.TextBox("CampaignName", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Naziv kapmanje" })
                 </div>
             </div>
         </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="organization-name">Naziv tvrtke</label>
+                <div id="organization-name">
+                    @Html.TextBox("OrganizationName", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Naziv tvrtke" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="telephone-mobile">Broj telefona ili mobitela</label>
+                <div id="telephone-mobile">
+                    @Html.TextBox("TelephoneMobile", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Broj telefona ili mobitela" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="mail">Informacija o zaprimanju</label>
+                <div id="mail">
+                    @Html.TextBox("Mail", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Informacija o zaprimanju" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="email-status">Status predmeta</label>
+                <div id="email-status">
+                    @Html.DropDownList("EmailStatusEnum", new SelectList(statusList, "Value", "Text"), "-- Svi statusi --", new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="entity-status">Status obrade</label>
+                <div id="entity-status">
+                    @Html.DropDownList("EntityStatusEnum", new SelectList(entityStatusList, "Value", "Text"), "-- Svi statusi --", new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    </div>
         <div class="col-md-12">
             <div class="form-group" style="margin-bottom:0">
                 <input id="Search" type="submit" class="btn btn-primary btn-sm" value="Traži" />
                 <input id="btn-reset" type="reset" class="btn btn-warning btn-sm" value="Poništi" />
             </div>
         </div>
-    }
-    <hr />
-@*}*@
+}
 <hr />
-<div class="row">
-    <div class="alert alert-info">
-        <p>
-            Ukupno preostalo za obradu: @Model.Count()
-        </p>
-    </div>
-</div>
+@*}*@
 <hr />
 @Html.Grid(Model).Named("PopisPredmetaZaAžuriranjeBazaKorisnika").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
 {
@@ -83,7 +107,7 @@
     if (User.IsInRole("Guest"))
     {
         return @<span title="@v.Organization.SubjectName (@v.Organization.VAT), @v.Organization.OrganizationDetail.MainAddress, @v.Organization.OrganizationDetail.MainPostalCode @v.Organization.OrganizationDetail.MainCity">
-     @v.Organization.SubjectName (@v.Organization.VAT)
+        @v.Organization.SubjectName (@v.Organization.VAT)
     </span>;
     }
     else
@@ -101,8 +125,8 @@
     columns.Add().Encoded(false).Sanitized(false).Titled("Aktivnosti").RenderValueAs(v =>
     {
         return @<span>
-                   <a class="add-successfull-call" data-entity-id="@v.Id" title="Zabilježi uspješan poziv"><i style="color: forestgreen" class="fa fa-phone-square fa-lg"></i></a> |
-    <a class="add-unsuccessfull-call" data-entity-id="@v.Id" title="Zabilježi neuspješan poziv"><i style="color: red" class="fa fa-phone-square fa-lg"></i></a>
+        <a class="add-successfull-call" data-entity-id="@v.Id" title="Zabilježi uspješan poziv"><i style="color: forestgreen" class="fa fa-phone-square fa-lg"></i></a> |
+        <a class="add-unsuccessfull-call" data-entity-id="@v.Id" title="Zabilježi neuspješan poziv"><i style="color: red" class="fa fa-phone-square fa-lg"></i></a>
     </span>;
     });
     columns.Add().Encoded(false).Sanitized(false).Titled("Alati").RenderValueAs(v =>
@@ -110,30 +134,30 @@
         if (v.AcquireEmailStatus == MojCRM.Areas.HelpDesk.Models.AcquireEmail.AcquireEmailStatusEnum.Created)
         {
             return @<span>
-                 <a class="mark-checked" data-entity-id="@v.Id" title="Označi kao provjereno"><i style="color: red" class="fa fa-check-circle-o fa-lg"></i></a> |
-                 <a href="@Url.RouteUrl(new { action = "Details", controller = "AcquireEmail", area = "HelpDesk", id = v.Id })" title="Uredi informaciju o zaprimanju eRačuna"><i class="fa fa-edit fa-lg"></i></a>
+        <a class="mark-checked" data-entity-id="@v.Id" title="Označi kao provjereno"><i style="color: red" class="fa fa-check-circle-o fa-lg"></i></a> |
+        <a href="@Url.RouteUrl(new { action = "Details", controller = "AcquireEmail", area = "HelpDesk", id = v.Id })" title="Uredi informaciju o zaprimanju eRačuna"><i class="fa fa-edit fa-lg"></i></a>
     </span>;
         }
         if ((User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")) && v.AcquireEmailStatus == MojCRM.Areas.HelpDesk.Models.AcquireEmail.AcquireEmailStatusEnum.Checked)
         {
             return @<span>
-    <a class="mark-verified" data-entity-id="@v.Id" title="Označi kao provjereno"><i style="color: gold" title="Provjereno / Čeka verifikaciju" class="fa fa-check-circle-o fa-lg"></i></a> |
-    <a href="@Url.RouteUrl(new { action = "Details", controller = "AcquireEmail", area = "HelpDesk", id = v.Id })" title="Uredi informaciju o zaprimanju eRačuna"><i class="fa fa-edit fa-lg"></i></a>
-</span>;
+        <a class="mark-verified" data-entity-id="@v.Id" title="Označi kao provjereno"><i style="color: gold" title="Provjereno / Čeka verifikaciju" class="fa fa-check-circle-o fa-lg"></i></a> |
+        <a href="@Url.RouteUrl(new { action = "Details", controller = "AcquireEmail", area = "HelpDesk", id = v.Id })" title="Uredi informaciju o zaprimanju eRačuna"><i class="fa fa-edit fa-lg"></i></a>
+    </span>;
         }
         if (v.AcquireEmailStatus == MojCRM.Areas.HelpDesk.Models.AcquireEmail.AcquireEmailStatusEnum.Checked)
         {
             return @<span>
-    <i style="color: gold" title="Provjereno / Čeka verifikaciju" class="fa fa-check-circle-o fa-lg"></i> |
-    <a href="@Url.RouteUrl(new { action = "Details", controller = "AcquireEmail", area = "HelpDesk", id = v.Id })" title="Uredi informaciju o zaprimanju eRačuna"><i class="fa fa-edit fa-lg"></i></a>
-</span>;
+        <i style="color: gold" title="Provjereno / Čeka verifikaciju" class="fa fa-check-circle-o fa-lg"></i> |
+        <a href="@Url.RouteUrl(new { action = "Details", controller = "AcquireEmail", area = "HelpDesk", id = v.Id })" title="Uredi informaciju o zaprimanju eRačuna"><i class="fa fa-edit fa-lg"></i></a>
+    </span>;
         }
         if ((User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")) && v.AcquireEmailStatus == MojCRM.Areas.HelpDesk.Models.AcquireEmail.AcquireEmailStatusEnum.Verified)
         {
             return @<span>
-    <a class="mark-reviewed" data-entity-id="@v.Id" title="Označi kao revidirano"><i style="color: blue" title="Verificarno" class="fa fa-check-circle-o fa-lg"></i></a> |
-    <a href="@Url.RouteUrl(new { action = "Details", controller = "AcquireEmail", area = "HelpDesk", id = v.Id })" title="Uredi informaciju o zaprimanju eRačuna"><i class="fa fa-edit fa-lg"></i></a>
-</span>;
+        <a class="mark-reviewed" data-entity-id="@v.Id" title="Označi kao revidirano"><i style="color: blue" title="Verificarno" class="fa fa-check-circle-o fa-lg"></i></a> |
+        <a href="@Url.RouteUrl(new { action = "Details", controller = "AcquireEmail", area = "HelpDesk", id = v.Id })" title="Uredi informaciju o zaprimanju eRačuna"><i class="fa fa-edit fa-lg"></i></a>
+    </span>;
         }
         return @<span>
     </span>;

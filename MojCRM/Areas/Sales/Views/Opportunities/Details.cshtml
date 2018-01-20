@@ -1,4 +1,5 @@
 ﻿@using System.Web.UI.WebControls
+@using MojCRM.Areas.Sales.Models
 @model MojCRM.Areas.Sales.ViewModels.OpportunityDetailViewModel
 
 @{
@@ -819,7 +820,7 @@
                     {
                         <button type="button" title="Dodijeli prodajnu priliku" class="btn btn-sm btn-default" data-toggle="modal" data-target="#Assign" href="#Assign"><i class="fa fa-mail-reply-all"></i></button>
                     }
-                    @if (Model.OpportunityStatus != MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Lead && Model.OpportunityStatus != MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Rejected)
+                    @if (Model.OpportunityStatus != MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Lead && Model.OpportunityStatus != MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Rejected || Model.OpportunityStatus == Opportunity.OpportunityStatusEnum.ClosedSubject)
                     {
                         if (Model.IsAssigned && (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
                         {
@@ -829,7 +830,7 @@
                         <button type="button" title="Kreiraj lead" class="btn btn-sm btn-default" data-toggle="modal" href="#CreateLead"><i class="fa fa-check text-success"></i></button>
                         <button type="button" title="Označi kao odbijeno" class="btn btn-sm btn-default" data-toggle="modal" href="#MarkRejected"><i class="fa fa-times text-danger"></i></button>
                     }
-                    @if ((Model.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Lead || Model.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Rejected) && User.IsInRole("Superadmin"))
+                    @if ((Model.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Lead || Model.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Rejected || Model.OpportunityStatus == Opportunity.OpportunityStatusEnum.ClosedSubject) && User.IsInRole("Superadmin"))
                     {
                         <button type="button" title="Promijeni dodjelu" class="btn btn-sm btn-default" data-toggle="modal" data-target="#Reassign" href="#Reassign"><i class="fa fa-mail-reply-all"></i></button>
                         <button type="button" title="Promijeni status prodajne prilike" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangeStatus"><i class="fa fa-refresh"></i></button>

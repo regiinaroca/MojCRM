@@ -82,7 +82,10 @@ namespace MojCRM.Areas.Sales.Models
             Finauser,
 
             [Description("eFaktura korisnik")]
-            EFakturauser
+            EFakturauser,
+
+            [Description("Zatvorena tvrtka")]
+            ClosedSubject
         }
 
         public enum OpportunityRejectReasonEnum
@@ -127,6 +130,7 @@ namespace MojCRM.Areas.Sales.Models
                     case OpportunityStatusEnum.Meruser: return "Moj-eRačun korisnik";
                     case OpportunityStatusEnum.Finauser: return "FINA korisnik";
                     case OpportunityStatusEnum.EFakturauser: return "eFaktura korisnik";
+                    case OpportunityStatusEnum.ClosedSubject: return "Zatvorena tvrtka";
                 }
                 return "Status prodajne prilike";
             }

@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using Newtonsoft.Json;
 using System.Text;
 using MojCRM.Areas.HelpDesk.Helpers;
+using MojCRM.Areas.Sales.Helpers;
 
 namespace MojCRM.Controllers
 {
@@ -15,6 +16,7 @@ namespace MojCRM.Controllers
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
         private readonly AcquireEmailMethodHelpers _acquireEmailMethodHelpers = new AcquireEmailMethodHelpers();
+        private readonly OpportunityHelperMethods _opportunityHelperMethods = new OpportunityHelperMethods();
 
         // GET: Organizations
         public ActionResult Index(OrganizationSearchHelper model)
@@ -463,6 +465,7 @@ namespace MojCRM.Controllers
                     organization.MerDeliveryDetail.AcquiredReceivingInformation = "ZATVORENA TVRTKA";
                     organization.MerDeliveryDetail.AcquiredReceivingInformationIsVerified = true;
                     _acquireEmailMethodHelpers.UpdateClosedSubjectEntities(model.MerId);
+                    _opportunityHelperMethods.UpdateClosedSubjectOpportunities(model.MerId);
                 }
                 if (model.LegalStatus == 1)
                 {
