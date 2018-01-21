@@ -412,5 +412,29 @@ namespace MojCRM.Areas.Stats.ViewModels
             }
         }
     }
-#endregion
+    #endregion
+
+    #region SalesStats
+
+    public class OpportunityEntryChannelViewModel
+    {
+        public Opportunity.OpportunityEntryChannelEnum OpportunityEntryChannel { get; set; }
+        public int NumberOfOpportunities { get; set; }
+        public decimal PercentOfOpportunities { get; set; }
+        public string OpportunityEntryChannelString
+        {
+            get
+            {
+                switch (OpportunityEntryChannel)
+                {
+                    case Opportunity.OpportunityEntryChannelEnum.Web: return "Web-forma";
+                    case Opportunity.OpportunityEntryChannelEnum.InfoTelephone: return "Info telefon";
+                    case Opportunity.OpportunityEntryChannelEnum.InfoMail: return "Info email";
+                }
+                return "Nije poznato";
+            }
+        }
+    }
+
+    #endregion
 }

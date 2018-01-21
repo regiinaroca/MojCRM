@@ -383,12 +383,26 @@ namespace MojCRM.ViewModels
             {
                 var campaignTypeList = new List<SelectListItem>
                 {
-                    new SelectListItem{ Value = null, Text = @"-- Odaberi tip kampanje" },
+                    new SelectListItem{ Value = null, Text = @"-- Odaberi tip kampanje --" },
                     new SelectListItem{ Value = "1", Text = @"Ažuriranje baza kupaca" },
                     new SelectListItem{ Value = "2", Text = @"Prodajna kampanja" },
                     new SelectListItem{ Value = "3", Text = @"CRM kampanja" }
                 };
                 return campaignTypeList;
+            }
+        }
+        public IList<SelectListItem> OrganizationEntryChannelDropdown
+        {
+            get
+            {
+                var entryChannelList = new List<SelectListItem>
+                {
+                    new SelectListItem{ Value = null, Text = @"-- Odaberi ulazni kanal --" },
+                    new SelectListItem{ Value = "0", Text = @"Web-forma" },
+                    new SelectListItem{ Value = "1", Text = @"Info telefon" },
+                    new SelectListItem{ Value = "2", Text = @"Info mail" }
+                };
+                return entryChannelList;
             }
         }
     }

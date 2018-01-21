@@ -2,70 +2,145 @@
 @{
     Layout = null;
 }
+
+<!--Modal - CreateCampaign-->
+@using (Html.BeginForm("Create", "Opportunities", new {area = "Sales"}, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="modal fade" id="createOpportunity" tabindex="-1" role="dialog" aria-labelledby="createOpportunity">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content" style="overflow: hidden">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4>Kreiraj prodajnu priliku</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="opportunity-name">Naziv prodajne prilike:</label>
+                                <div id="opportunity-name">
+                                    @Html.TextBox("OpportunityTitle", ViewBag.CurrentFilter as string, new {@class = "form-control col-md-12", @placeholder = "Naziv prodajne prilike"})
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="opportunity-description">Opis prodajne prilike:</label>
+                                <div id="opportunity-description">
+                                    @Html.TextArea("OpportunityDescription", ViewBag.CurrentFilter as string, new {@class = "form-control col-md-12", @placeholder = "Opis prodajne prilike"})
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="created-by">Prodajnu priliku kreirao:</label>
+                                <div id="created-by">
+                                    @Html.TextBox("CreatedBy", ViewBag.CurrentFilter as string, new {@class = "form-control", @Value = User.Identity.Name})
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="entry-channel">Ulazni kanal:</label>
+                                <div id="entry-channel">
+                                    @Html.DropDownList("OpportunityEntryChanel", Model.OrganizationEntryChannelDropdown, new {@class = "form-control"})
+                                </div>
+                            </div>
+                            <div class="hidden">
+                                <div id="organization-id">
+                                    @Html.TextBox("RelatedCompanyId", ViewBag.CurrentFilter as string, new {@class = "form-control", @Value = Model.Organization.MerId})
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Footer ouside of content, new design. If reactions are bad return it one level up-->
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Kreiraj kampanju</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Prekini</button>
+            </div>
+        </div>
+    </div>
+}
+
 <div class="col-md-3">
 
 </div>
-<div class="col-md-9">
-    @if (Model.Opportunities.Count() != 0)
-    {
-        <table class="table">
-            <tr>
-                <th>Naziv kampanje</th>
-                <th>Status prilike</th>
-                <th>Opis prilike</th>
-                <th>Zadnji kontakt</th>
-                <th>Dodijeljeno agentu</th>
-                <th></th>
-            </tr>
-            @foreach (var Opportunity in Model.Opportunities)
+    <div class="col-md-9">
+        <div class="row">
+            <div class="col-md-11">
+
+            </div>
+            @if (!User.IsInRole("Guest"))
             {
-                <tr>
-                    <td>@Opportunity.RelatedCampaign.CampaignName</td>
-                    @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Start)
-                    {
-                        <td><span class="label label-default">@Html.Raw(Opportunity.OpportunityStatusString)</span></td>
-                    }
-                    @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Incontact)
-                    {
-                        <td><span class="label label-primary">@Html.Raw(Opportunity.OpportunityStatusString)</span></td>
-                    }
-                    @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Lead)
-                    {
-                        <td><span class="label label-success">@Html.Raw(Opportunity.OpportunityStatusString)</span></td>
-                    }
-                    @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Meruser)
-                    {
-                        <td><img src="~/Content/e_racun_logo_source.png" alt="Moj-eRačun korisnik" title="Moj-eRačun korisnik" style="width:90px; height:27px" /></td>
-                    }
-                    @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Finauser)
-                    {
-                        <td><img src="~/Content/630px-FINA_Logo.svg.png" alt="FINA korisnik" title="FINA korisnik" style="width:85px; height:16px" /></td>
-                    }
-                    @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.EFakturauser)
-                    {
-                        <td><img src="~/Content/eFaktura2.png" alt="eFaktura korisnik" title="eFaktura korisnik" /></td>
-                    }
-                    @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Rejected)
-                    {
-                        <td><span class="label label-danger">@Html.Raw(Opportunity.OpportunityStatusString)</span><br /><span style="color:red">@Html.Raw(Opportunity.OpportunityRejectReasonString)</span></td>
-                    }
-                    <td>@Opportunity.OpportunityDescription</td>
-                    <td>@Opportunity.LastContactDate</td>
-                    <td>@Opportunity.AssignedTo</td>
-                    @if ((User.Identity.Name == Opportunity.AssignedTo) || (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
-                    {
-                    <td>
-                        <span>
-                            <a href="@Url.RouteUrl(new { action = "Details", controller = "Opportunities", area = "Sales", id = Opportunity.OpportunityId })" title="Detalji prodajne prilike"><i class="fa fa-list"></i></a>
-                        </span>
-                    </td>;
-                    }
-                </tr>
+                <div class="col-md-1" title="Kreiraj prodajnu priliku">
+                    <a href="#createOpportunity" data-toggle="modal"><i class="fa fa-plus"></i></a>
+                </div>
             }
-        </table>
-    }
-    else
-    {
-        <p>Za ovu tvrtku nisu kreirane prodajne prilike</p>
-    }
-</div>
+        </div>
+        <br/>
+        @if (Model.Opportunities.Count() != 0)
+        {
+            <table class="table">
+                <tr>
+                    <th>Naziv kampanje</th>
+                    <th>Status prilike</th>
+                    <th>Opis prilike</th>
+                    <th>Zadnji kontakt</th>
+                    <th>Dodijeljeno agentu</th>
+                    <th></th>
+                </tr>
+                @foreach (var Opportunity in Model.Opportunities)
+                {
+                    <tr>
+                        <td>@Opportunity.RelatedCampaign.CampaignName</td>
+                        @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Start)
+                        {
+                            <td><span class="label label-default">@Html.Raw(Opportunity.OpportunityStatusString)</span></td>
+                        }
+                        @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Incontact)
+                        {
+                            <td><span class="label label-primary">@Html.Raw(Opportunity.OpportunityStatusString)</span></td>
+                        }
+                        @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Lead)
+                        {
+                            <td><span class="label label-success">@Html.Raw(Opportunity.OpportunityStatusString)</span></td>
+                        }
+                        @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Meruser)
+                        {
+                            <td><img src="~/Content/e_racun_logo_source.png" alt="Moj-eRačun korisnik" title="Moj-eRačun korisnik" style="width: 90px; height: 27px"/></td>
+                        }
+                        @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Finauser)
+                        {
+                            <td><img src="~/Content/630px-FINA_Logo.svg.png" alt="FINA korisnik" title="FINA korisnik" style="width: 85px; height: 16px"/></td>
+                        }
+                        @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.EFakturauser)
+                        {
+                            <td><img src="~/Content/eFaktura2.png" alt="eFaktura korisnik" title="eFaktura korisnik"/></td>
+                        }
+                        @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Rejected)
+                        {
+                            <td><span class="label label-danger">@Html.Raw(Opportunity.OpportunityStatusString)</span><br/><span style="color: red">@Html.Raw(Opportunity.OpportunityRejectReasonString)</span></td>
+                        }
+                        <td>@Opportunity.OpportunityDescription</td>
+                        <td>@Opportunity.LastContactDate</td>
+                        <td>@Opportunity.AssignedTo</td>
+                        @if ((User.Identity.Name == Opportunity.AssignedTo) || (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
+                        {
+                            <td>
+                                <span>
+                                    <a href="@Url.RouteUrl(new {action = "Details", controller = "Opportunities", area = "Sales", id = Opportunity.OpportunityId})" title="Detalji prodajne prilike"><i class="fa fa-list"></i></a>
+                                </span>
+                            </td>;
+                        }
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <p>Za ovu tvrtku nisu kreirane prodajne prilike</p>
+        }
+    </div>

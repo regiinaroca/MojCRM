@@ -31,6 +31,16 @@
 }
 @if (User.IsInRole("Management") || User.IsInRole("Board") || User.IsInRole("Administrator") || User.IsInRole("Superadmin"))
 {
+    <hr/>
+    <h4>Prodajne statistike</h4>
+    <div class="row">
+        <div class="col-md-3">
+            <a href="@Url.RouteUrl(new { action = "OpportunityEntryChannel", controller = "Stats", area = "Stats" })" class="btn btn-default btn-sm" title="Statistika prodajnih prilika po kanalu ulaska">
+                <i class="fa fa-bars"></i>
+                Prodajne prilike - kanal ulaska
+            </a>
+        </div>
+    </div>
     <hr />
     <h4>Statistike djelatnika</h4>
     <div class="row">

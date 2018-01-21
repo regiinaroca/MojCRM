@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using MojCRM.Areas.Campaigns.Models;
 using MojCRM.Areas.Sales.Models;
 using MojCRM.Models;
 using static MojCRM.Areas.Sales.Models.Opportunity;
@@ -86,6 +88,24 @@ namespace MojCRM.Areas.Sales.Helpers
         public int? OrganizationId { get; set; }
         public string AssignedTo { get; set; }
         public bool IsAssigned { get; set; }
+    }
+
+    public class CreateOpportunityViewModel
+    {
+        [Display(Name = "Naziv prodajne prilike")]
+        public string OpportunityTitle { get; set; }
+
+        [Display(Name = "Opis prodajne prilike")]
+        public string OpportunityDescription { get; set; }
+
+        [Display(Name = "ID tvrtke")]
+        public int RelatedCompanyId { get; set; }
+
+        [Display(Name = "Pokrenuo")]
+        public string CreatedBy { get; set; }
+
+        [Display(Name = "Ulazni kanal")]
+        public OpportunityEntryChannelEnum OpportunityEntryChanel { get; set; }
     }
 
     public class OpportunityHelperMethods

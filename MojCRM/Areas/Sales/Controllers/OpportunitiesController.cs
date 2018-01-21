@@ -341,6 +341,28 @@ namespace MojCRM.Areas.Sales.Controllers
             return Redirect(Request.UrlReferrer?.ToString());
         }
 
+        // POST: Sales/Opportunities/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(CreateOpportunityViewModel model)
+        {
+            _db.Opportunities.Add(new Opportunity
+            {
+                OpportunityTitle = model.OpportunityTitle,
+                OpportunityDescription = model.OpportunityDescription,
+                RelatedOrganizationId = model.RelatedCompanyId,
+                OpportunityStatus = Opportunity.OpportunityStatusEnum.Start,
+                OpportunityEntryChannel = model.OpportunityEntryChanel,
+                CreatedBy = model.CreatedBy,
+                AssignedTo = model.CreatedBy,
+                IsAssigned = true,
+                InsertDate = DateTime.Now
+            });
+            _db.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
         // GET: Sales/Opportunities/Edit/5
         public ActionResult Edit(int? id)
         {

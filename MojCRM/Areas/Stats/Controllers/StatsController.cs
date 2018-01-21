@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Web.Mvc;
+using MojCRM.Areas.Sales.Models;
 using MojCRM.Areas.Stats.ViewModels;
 
 namespace MojCRM.Areas.Stats.Controllers
@@ -534,8 +536,40 @@ namespace MojCRM.Areas.Stats.Controllers
             return View(model.OrderByDescending(x => x.NumberOfOrganizations).AsQueryable());
         }
 
+        // GET: Stats/OpportunityEntryChannel
+        public ActionResult OpportunityEntryChannel(string startDate, string endDate)
+        {
+            var model = new List<OpportunityEntryChannelViewModel>();
 
-         // GET: Stats/Sales
+            var opportunities = _db.Opportunities.Where(x => x.OpportunityEntryChannel != null).GroupBy(x => x.OpportunityEntryChannel).Select(gx => gx);
+
+            if (!String.IsNullOrEmpty(startDate))
+            {
+                var startDatePlus = Convert.ToDateTime(startDate);
+                var endDatePlus = Convert.ToDateTime(endDate).AddDays(1);
+                opportunities = _db.Opportunities.Where(x => x.OpportunityEntryChannel != null && x.InsertDate >= startDatePlus && x.InsertDate < endDatePlus).GroupBy(x => x.OpportunityEntryChannel).Select(gx => gx);
+            }
+            var opportunitiesCount = _db.Opportunities.Count(x => x.OpportunityEntryChannel != null);
+
+            foreach (var opportunity in opportunities)
+            {
+                if (opportunity.Key != null)
+                {
+                    var tempModel = new OpportunityEntryChannelViewModel()
+                    {
+                        OpportunityEntryChannel = (Opportunity.OpportunityEntryChannelEnum)opportunity.Key,
+                        NumberOfOpportunities = opportunity.Count(),
+                        PercentOfOpportunities = Math.Round(opportunity.Count() / (decimal)opportunitiesCount * 100, 2)
+                    };
+                    model.Add(tempModel);
+                }
+            }
+
+            return View(model.OrderByDescending(x => x.NumberOfOpportunities).AsQueryable());
+        }
+
+
+        // GET: Stats/Sales
         public ActionResult SalesStat(string agent, string searchDateStart, string searchDateEnd)
          {
              var agents = from u in _db.Users

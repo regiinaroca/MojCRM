@@ -159,7 +159,14 @@
 
 @Html.Grid(Model).Named("PopisProdajnihPrilika").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
 {
-columns.Add(m => m.RelatedCampaign.CampaignName).Encoded(false).Sanitized(false).Titled("Naziv kampanje").Sortable(true);
+columns.Add(m => m.RelatedCampaign.CampaignName).Encoded(false).Sanitized(false).Titled("Naziv kampanje").Sortable(true).RenderValueAs(m =>
+{
+    if (m.RelatedCampaignId == null)
+        return @<div><span>Slobodni unos - @m.OpportunityEntryChannelString</span>
+               </div>;
+    return @<div><span>@m.RelatedCampaign.CampaignName</span>
+           </div>;
+});
 columns.Add(m => m.OpportunityTitle).Encoded(false).Sanitized(false).Titled("Naziv prilike").Sortable(false);
 columns.Add(m => m.RelatedOrganization.SubjectName).Encoded(false).Sanitized(false).Titled("Naziv tvrtke").Sortable(false).RenderValueAs(m =>
 Html.RouteLink(m.RelatedOrganization.SubjectName, new { action = "Details", controller = "Organizations", area = "", id = m.RelatedOrganizationId}));
