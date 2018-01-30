@@ -166,7 +166,7 @@ namespace MojCRM.Areas.CRM.Controllers
 
                 foreach (var result in results)
                 {
-                    if (!_db.Contracts.Any(x => x.MerId == result.Id))
+                    if (_db.Contracts.Any(x => x.MerId == result.Id))
                     {
                         foreach (var product in result.Products)
                         {

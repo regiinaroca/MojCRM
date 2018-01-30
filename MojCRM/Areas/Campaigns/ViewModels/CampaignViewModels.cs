@@ -275,30 +275,68 @@ namespace MojCRM.Areas.Campaigns.ViewModels
                 NumberOfLeadsAccepted = leads.Count(l => l.LeadStatus == Lead.LeadStatusEnum.Accepted)
             };
 
+            decimal numberOfOpportunitiesInProgressPercent = 0, numberOfOpportunitiesUserPercent = 0, numberOfOpportunitiesToLeadPercent = 0, numberOfOpportunitiesRejectedPercent = 0,
+                numberOfLeadsInProgressPercent = 0, numberOfLeadsMeetingsPercent = 0, numberOfLeadsQuotesPercent = 0, numberOfLeadsRejectedPercent = 0, numberOfLeadsAcceptedPercent = 0;
+
+            if (opportunities.Count() != 0)
+            {
+                numberOfOpportunitiesInProgressPercent = Math.Round(
+                    ((countModel.NumberOfOpportunitiesInProgress / (decimal) countModel.NumberOfOpportunitiesCreated) *
+                     100), 2);
+                numberOfOpportunitiesUserPercent =
+                    Math.Round(
+                        ((countModel.NumberOfOpportunitiesUser / (decimal) countModel.NumberOfOpportunitiesCreated) *
+                         100), 2);
+                numberOfOpportunitiesToLeadPercent =
+                    Math.Round(
+                        ((countModel.NumberOfOpportunitiesToLead / (decimal) countModel.NumberOfOpportunitiesCreated) *
+                         100), 2);
+                numberOfOpportunitiesRejectedPercent = Math.Round(
+                    ((countModel.NumberOfOpportunitiesRejected / (decimal) countModel.NumberOfOpportunitiesCreated) *
+                     100), 2);
+            }
+            if (leads.Count() != 0)
+            {
+                numberOfLeadsInProgressPercent =
+                    Math.Round(((countModel.NumberOfLeadsInProgress / (decimal) countModel.NumberOfLeadsCreated) * 100),
+                        2);
+                numberOfLeadsMeetingsPercent =
+                    Math.Round(((countModel.NumberOfLeadsMeetings / (decimal) countModel.NumberOfLeadsCreated) * 100),
+                        2);
+                numberOfLeadsQuotesPercent =
+                    Math.Round(((countModel.NumberOfLeadsQuotes / (decimal) countModel.NumberOfLeadsCreated) * 100), 2);
+                numberOfLeadsRejectedPercent =
+                    Math.Round(((countModel.NumberOfLeadsRejected / (decimal) countModel.NumberOfLeadsCreated) * 100),
+                        2);
+                numberOfLeadsAcceptedPercent =
+                    Math.Round(((countModel.NumberOfLeadsAccepted / (decimal) countModel.NumberOfLeadsCreated) * 100),
+                        2);
+            }
+
             var model = new GeneralCampaignStatusViewModel
             {
                 RelatedCampaignId = 6,
                 RelatedCampaignName = campaign.CampaignName,
                 NumberOfOpportunitiesCreated = countModel.NumberOfOpportunitiesCreated,
                 NumberOfOpportunitiesInProgress = countModel.NumberOfOpportunitiesInProgress,
-                NumberOfOpportunitiesInProgressPercent = Math.Round(((countModel.NumberOfOpportunitiesInProgress / (decimal)countModel.NumberOfOpportunitiesCreated) * 100), 2),
+                NumberOfOpportunitiesInProgressPercent = numberOfOpportunitiesInProgressPercent,
                 NumberOfOpportunitesUser = countModel.NumberOfOpportunitiesUser,
-                NumberOfOpportunitiesUserPercent = Math.Round(((countModel.NumberOfOpportunitiesUser / (decimal)countModel.NumberOfOpportunitiesCreated) * 100), 2),
+                NumberOfOpportunitiesUserPercent = numberOfOpportunitiesUserPercent,
                 NumberOfOpportunitiesToLead = countModel.NumberOfOpportunitiesToLead,
-                NumberOfOpportunitiesToLeadPercent = Math.Round(((countModel.NumberOfOpportunitiesToLead / (decimal)countModel.NumberOfOpportunitiesCreated) * 100), 2),
+                NumberOfOpportunitiesToLeadPercent = numberOfOpportunitiesToLeadPercent,
                 NumberOfOpportunitiesRejected = countModel.NumberOfOpportunitiesRejected,
-                NumberOfOpportunitiesRejectedPercent = Math.Round(((countModel.NumberOfOpportunitiesRejected / (decimal)countModel.NumberOfOpportunitiesCreated) * 100), 2),
+                NumberOfOpportunitiesRejectedPercent = numberOfOpportunitiesRejectedPercent,
                 NumberOfLeadsCreated = countModel.NumberOfLeadsCreated,
                 NumberOfLeadsInProgress = countModel.NumberOfLeadsInProgress,
-                NumberOfLeadsInProgressPercent = Math.Round(((countModel.NumberOfLeadsInProgress / (decimal)countModel.NumberOfLeadsCreated) * 100), 2),
+                NumberOfLeadsInProgressPercent = numberOfLeadsInProgressPercent,
                 NumberOfLeadsMeetings = countModel.NumberOfLeadsMeetings,
-                NumberOfLeadsMeetingsPercent = Math.Round(((countModel.NumberOfLeadsMeetings / (decimal)countModel.NumberOfLeadsCreated) * 100), 2),
+                NumberOfLeadsMeetingsPercent = numberOfLeadsMeetingsPercent,
                 NumberOfLeadsQuotes = countModel.NumberOfLeadsQuotes,
-                NumberOfLeadsQuotesPercent = Math.Round(((countModel.NumberOfLeadsQuotes / (decimal)countModel.NumberOfLeadsCreated) * 100), 2),
+                NumberOfLeadsQuotesPercent = numberOfLeadsQuotesPercent,
                 NumberOfLeadsRejected = countModel.NumberOfLeadsRejected,
-                NumberOfLeadsRejectedPercent = Math.Round(((countModel.NumberOfLeadsRejected / (decimal)countModel.NumberOfLeadsCreated) * 100), 2),
+                NumberOfLeadsRejectedPercent = numberOfLeadsRejectedPercent,
                 NumberOfLeadsAccepted = countModel.NumberOfLeadsAccepted,
-                NumberOfLeadsAcceptedPercent = Math.Round(((countModel.NumberOfLeadsAccepted / (decimal)countModel.NumberOfLeadsCreated) * 100), 2)
+                NumberOfLeadsAcceptedPercent = numberOfLeadsAcceptedPercent
             };
 
             return model;

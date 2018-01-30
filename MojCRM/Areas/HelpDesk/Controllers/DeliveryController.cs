@@ -744,8 +744,12 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                                             select t);
 
             var relatedDeliveryDetails = (from t in _db.DeliveryDetails
-                                           where t.Receiver.MerId == receiverId && t.TicketId == deliveryTicketModel.Id
-                                           select t).OrderByDescending(t => t.Id);
+                                           where t.Receiver.MerId == receiverId
+                                           select t).OrderByDescending(t => t.Id).ToList();
+
+            relatedDeliveryDetails.RemoveAll(x =>
+                x.TicketId != id && x.DetailNote ==
+                @"Ovoj je kartici resetiran status zbog ponovnog slanja obavijesti o dostavi eRačuna");
 
             var importantComment = (from dd in _db.MerDeliveryDetails
                                      where dd.MerId == receiverId
@@ -835,7 +839,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     SenderVAT = deliveryTicketModel.Sender.VAT,
                     RelatedInvoices = relatedInvoicesList,
                     RelatedDeliveryContacts = relatedDeliveryContacts,
-                    RelatedDeliveryDetails = relatedDeliveryDetails,
+                    RelatedDeliveryDetails = relatedDeliveryDetails.AsQueryable(),
                     RelatedActivities = relatedActivities,
                     IsAssigned = deliveryTicketModel.IsAssigned,
                     AssignedTo = deliveryTicketModel.AssignedTo,

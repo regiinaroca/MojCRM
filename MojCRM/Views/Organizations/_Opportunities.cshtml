@@ -92,48 +92,59 @@
                     <th>Dodijeljeno agentu</th>
                     <th></th>
                 </tr>
-                @foreach (var Opportunity in Model.Opportunities)
+                @foreach (var opportunity in Model.Opportunities)
                 {
                     <tr>
-                        <td>@Opportunity.RelatedCampaign.CampaignName</td>
-                        @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Start)
+                        @if (opportunity.RelatedCampaignId != null)
                         {
-                            <td><span class="label label-default">@Html.Raw(Opportunity.OpportunityStatusString)</span></td>
+                            <td>@opportunity.RelatedCampaign.CampaignName</td>
                         }
-                        @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Incontact)
+                        @if (opportunity.RelatedCampaignId == null)
                         {
-                            <td><span class="label label-primary">@Html.Raw(Opportunity.OpportunityStatusString)</span></td>
+                            <td>Slobodni unos - @opportunity.OpportunityEntryChannelString</td>
                         }
-                        @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Lead)
+                        @if (opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Start)
                         {
-                            <td><span class="label label-success">@Html.Raw(Opportunity.OpportunityStatusString)</span></td>
+                            <td><span class="label label-default">@Html.Raw(opportunity.OpportunityStatusString)</span></td>
                         }
-                        @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Meruser)
+                        @if (opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Incontact)
+                        {
+                            <td><span class="label label-primary">@Html.Raw(opportunity.OpportunityStatusString)</span></td>
+                        }
+                        @if (opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Lead)
+                        {
+                            <td><span class="label label-success">@Html.Raw(opportunity.OpportunityStatusString)</span></td>
+                        }
+                        @if (opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Meruser)
                         {
                             <td><img src="~/Content/e_racun_logo_source.png" alt="Moj-eRačun korisnik" title="Moj-eRačun korisnik" style="width: 90px; height: 27px"/></td>
                         }
-                        @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Finauser)
+                        @if (opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Finauser)
                         {
                             <td><img src="~/Content/630px-FINA_Logo.svg.png" alt="FINA korisnik" title="FINA korisnik" style="width: 85px; height: 16px"/></td>
                         }
-                        @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.EFakturauser)
+                        @if (opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.EFakturauser)
                         {
                             <td><img src="~/Content/eFaktura2.png" alt="eFaktura korisnik" title="eFaktura korisnik"/></td>
                         }
-                        @if (Opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Rejected)
+                        @if (opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Rejected)
                         {
-                            <td><span class="label label-danger">@Html.Raw(Opportunity.OpportunityStatusString)</span><br/><span style="color: red">@Html.Raw(Opportunity.OpportunityRejectReasonString)</span></td>
+                            <td><span class="label label-danger">@Html.Raw(opportunity.OpportunityStatusString)</span><br/><span style="color: red">@Html.Raw(opportunity.OpportunityRejectReasonString)</span></td>
                         }
-                        <td>@Opportunity.OpportunityDescription</td>
-                        <td>@Opportunity.LastContactDate</td>
-                        <td>@Opportunity.AssignedTo</td>
-                        @if ((User.Identity.Name == Opportunity.AssignedTo) || (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
+                        @if (opportunity.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.ClosedSubject)
+                        {
+                            <td><span class="label label-danger">@Html.Raw(opportunity.OpportunityStatusString)</span></td>
+                        }
+                        <td>@opportunity.OpportunityDescription</td>
+                        <td>@opportunity.LastContactDate</td>
+                        <td>@opportunity.AssignedTo</td>
+                        @if ((User.Identity.Name == opportunity.AssignedTo) || (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
                         {
                             <td>
                                 <span>
-                                    <a href="@Url.RouteUrl(new {action = "Details", controller = "Opportunities", area = "Sales", id = Opportunity.OpportunityId})" title="Detalji prodajne prilike"><i class="fa fa-list"></i></a>
+                                    <a href="@Url.RouteUrl(new {action = "Details", controller = "Opportunities", area = "Sales", id = opportunity.OpportunityId})" title="Detalji prodajne prilike"><i class="fa fa-list"></i></a>
                                 </span>
-                            </td>;
+                            </td>
                         }
                     </tr>
                 }

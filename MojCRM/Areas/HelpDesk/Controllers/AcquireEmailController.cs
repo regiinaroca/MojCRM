@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Ajax.Utilities;
+using MojCRM.Areas.Campaigns.Models;
 using static MojCRM.Areas.HelpDesk.Models.AcquireEmail;
 using MojCRM.Areas.HelpDesk.Helpers;
 using MojCRM.Areas.HelpDesk.ViewModels;
@@ -29,7 +30,11 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             }
             else
             {
-                list = _db.AcquireEmails.Where(ae => ae.AcquireEmailStatus != AcquireEmailStatusEnum.Verified && ae.AssignedTo == User.Identity.Name);
+                //list = _db.AcquireEmails.Where(ae => ae.AcquireEmailStatus != AcquireEmailStatusEnum.Verified && ae.AssignedTo == User.Identity.Name);
+                list = _db.AcquireEmails.Where(x => x.AcquireEmailStatus != AcquireEmailStatusEnum.Verified
+                && x.AssignedTo == User.Identity.Name
+                && (!(x.Organization.OrganizationDetail.TelephoneNumber == String.Empty || x.Organization.OrganizationDetail.TelephoneNumber == null)
+                || !(x.Organization.OrganizationDetail.MobilePhoneNumber == String.Empty || x.Organization.OrganizationDetail.MobilePhoneNumber == null)));
             }
 
             //Search Engine
@@ -43,7 +48,6 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             }
             if (!String.IsNullOrEmpty(model.TelephoneMobile))
             {
-                //list = list.Where(x => x.Organization.MerDeliveryDetail.Telephone.Contains(model.TelephoneMail) || x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains(model.TelephoneMail));
                 list = list.Where(x => x.Organization.OrganizationDetail.TelephoneNumber.EndsWith(model.TelephoneMobile) || x.Organization.OrganizationDetail.MobilePhoneNumber.EndsWith(model.TelephoneMobile));
             }
             if (!String.IsNullOrEmpty(model.Mail))
@@ -546,7 +550,9 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         {
             var entites = _db.AcquireEmails.Where(c => c.RelatedCampaignId == campaignId 
             && c.AcquireEmailStatus == AcquireEmailStatusEnum.Created 
-            && c.IsAssigned == false).Take(number);
+            && c.IsAssigned == false
+            && (!(c.Organization.OrganizationDetail.TelephoneNumber == String.Empty || c.Organization.OrganizationDetail.TelephoneNumber == null)
+            || !(c.Organization.OrganizationDetail.MobilePhoneNumber == String.Empty || c.Organization.OrganizationDetail.MobilePhoneNumber == null))).Take(number);
 
             foreach (var entity in entites)
             {
@@ -554,9 +560,15 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 entity.AssignedTo = agent;
                 entity.UpdateDate = DateTime.Now;
             }
+
+            var campaign = _db.Campaigns.First(c => c.CampaignId == campaignId);
+
+            if (campaign.CampaignStatus == Campaign.CampaignStatusEnum.START)
+                campaign.CampaignStatus = Campaign.CampaignStatusEnum.INPROGRESS;
+
             _db.SaveChanges();
 
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         public ActionResult AdminUnassignEntities(int campaignId, string agent)
