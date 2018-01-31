@@ -71,7 +71,8 @@ namespace MojCRM.Areas.Campaigns.Controllers
                         EmailsBasesEntityStatusStats = model.GetEmailBasesEntityStats(id),
                         SalesOpportunitiesStatusStats = null,
                         SalesLeadsStatusStats = null,
-                        SalesGeneralStatus = null
+                        SalesGeneralStatus = null,
+                        CampaignLeadsAgentEfficiencies = null
                     };
                     return View(model);
                 case Campaign.CampaignTypeEnum.SALES:
@@ -87,7 +88,8 @@ namespace MojCRM.Areas.Campaigns.Controllers
                         EmailsBasesEntityStatusStats = null,
                         SalesOpportunitiesStatusStats = model.GetOpportunitiesSalesStatusStats(id),
                         SalesLeadsStatusStats = model.GetLeadsSalesStatusStats(id),
-                        SalesGeneralStatus = model.GetSalesGeneralStatus(id)
+                        SalesGeneralStatus = model.GetSalesGeneralStatus(id),
+                        CampaignLeadsAgentEfficiencies = model.GetCampaignLeadsAgentEfficiencies(id)
                     };
                     return View(model);
             }

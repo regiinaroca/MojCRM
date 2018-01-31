@@ -7,6 +7,7 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using MojCRM.Helpers;
 
 namespace MojCRM.Controllers
 {
@@ -30,16 +31,29 @@ namespace MojCRM.Controllers
 
         // POST: Contact/Create
         [HttpPost]
-        public ActionResult Create([Bind(Include = "Id,Organization,ContactFirstName,ContactLastName,Title,TelephoneNumber,MobilePhoneNumber,Email,User,InsertDate,UpdateDate,ContactType")] Contact newContact)
+        public ActionResult Create(CreateContact newContact)
         {
-            if (ModelState.IsValid)
-            {
-                _db.Contacts.Add(newContact);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+            bool doNotCall = newContact.DoNotCall == 1;
 
-            return View();
+            var contactType = (Contact.ContactTypeEnum) newContact.ContactType;
+
+            _db.Contacts.Add(new Contact
+            {
+                OrganizationId = newContact.OrganizationId,
+                ContactFirstName = newContact.ContactFirstName,
+                ContactLastName = newContact.ContactLastName,
+                Title = newContact.Title,
+                TelephoneNumber = newContact.TelephoneNumber,
+                MobilePhoneNumber = newContact.MobilePhoneNumber,
+                Email = newContact.Email,
+                User = newContact.User,
+                DoNotCall = doNotCall,
+                ContactType = contactType,
+                InsertDate = DateTime.Now
+            });
+            _db.SaveChanges();
+
+            return RedirectToAction("Index");
         }
 
         // POST: Contact/CreateFromDelivery
@@ -59,7 +73,7 @@ namespace MojCRM.Controllers
                     Email = model.Email,
                     User = User.Identity.Name,
                     InsertDate = DateTime.Now,
-                    ContactType = Contact.ContactTypeEnum.DELIVERY,
+                    ContactType = Contact.ContactTypeEnum.Delivery,
                 });
 
                 _db.SaveChanges();
@@ -120,7 +134,7 @@ namespace MojCRM.Controllers
                 Email = model.ContactEmail,
                 User = User.Identity.Name,
                 InsertDate = DateTime.Now,
-                ContactType = Contact.ContactTypeEnum.SALES,
+                ContactType = Contact.ContactTypeEnum.Sales,
             });
 
             _db.SaveChanges();
@@ -147,7 +161,7 @@ namespace MojCRM.Controllers
                 Email = model.ContactEmail,
                 User = User.Identity.Name,
                 InsertDate = DateTime.Now,
-                ContactType = Contact.ContactTypeEnum.SALES,
+                ContactType = Contact.ContactTypeEnum.Sales,
             });
 
             _db.SaveChanges();

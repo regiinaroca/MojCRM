@@ -740,7 +740,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                                         select t);
 
             var relatedDeliveryContacts = (from t in _db.Contacts
-                                            where t.Organization.MerId == receiverId && t.ContactType == Contact.ContactTypeEnum.DELIVERY
+                                            where t.Organization.MerId == receiverId && t.ContactType == Contact.ContactTypeEnum.Delivery
                                             select t);
 
             var relatedDeliveryDetails = (from t in _db.DeliveryDetails
@@ -1059,7 +1059,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         // POST: Delivery/Contacts
         public ActionResult Contacts(string Organization, string ContactName, string Number, string Email)
         {
-            var Results = _db.Contacts.Where(c => c.ContactType == Contact.ContactTypeEnum.DELIVERY);
+            var Results = _db.Contacts.Where(c => c.ContactType == Contact.ContactTypeEnum.Delivery);
 
             if (!String.IsNullOrEmpty(Organization))
             {

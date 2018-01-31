@@ -405,6 +405,20 @@ namespace MojCRM.ViewModels
                 return entryChannelList;
             }
         }
+        public IList<SelectListItem> ContactTypeDropdown
+        {
+            get
+            {
+                var contactTypeList = new List<SelectListItem>
+                {
+                    new SelectListItem{ Value = null, Text = @"-- Odaberi tip kontakta --" },
+                    new SelectListItem{ Value = "0", Text = @"Općeniti" },
+                    new SelectListItem{ Value = "1", Text = @"Dostava" },
+                    new SelectListItem{ Value = "2", Text = @"Prodaja" }
+                };
+                return contactTypeList;
+            }
+        }
     }
 
     public class AddOrganizationAttributeViewModel

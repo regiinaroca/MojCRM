@@ -116,7 +116,7 @@ namespace MojCRM.Areas.Sales.Controllers
             }
 
             var relatedSalesContacts = _db.Contacts.Where(c =>
-                c.Organization.MerId == lead.RelatedOrganizationId && c.ContactType == Contact.ContactTypeEnum.SALES);
+                c.Organization.MerId == lead.RelatedOrganizationId && c.ContactType == Contact.ContactTypeEnum.Sales);
             var relatedLeadNotes = _db.LeadNotes.Where(n => n.RelatedLeadId == lead.LeadId).OrderByDescending(n => n.InsertDate);
             var relatedLeadActivities = _db.ActivityLogs.Where(a =>
                 a.ReferenceId == lead.LeadId && a.Module == ModuleEnum.Leads).OrderByDescending(a => a.InsertDate);

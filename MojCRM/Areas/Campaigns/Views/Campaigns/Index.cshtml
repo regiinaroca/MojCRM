@@ -1,6 +1,7 @@
 ﻿@using System.Web.UI.WebControls
 @using GridMvc.Html
-@model IQueryable<MojCRM.Areas.Campaigns.Models.Campaign>
+@using MojCRM.Areas.Campaigns.Models
+@model IQueryable<Campaign>
 
 @{
     ViewBag.Title = "Pregled kampanja";
@@ -97,7 +98,36 @@ columns.Add(m => m.CampaignName).Encoded(false).Sanitized(false).Titled("Naziv k
 columns.Add(m => m.CampaignDescription).Encoded(false).Sanitized(false).Titled("Opis kampanje").Sortable(false);
 columns.Add(m => m.CampaignInitiatior).Encoded(false).Sanitized(false).Titled("Pokrenuo").Sortable(false);
 columns.Add(m => m.CampaignTypeString).Encoded(false).Sanitized(false).Titled("Tip kampanje").Sortable(false);
-columns.Add(m => m.CampaignStatusString).Encoded(false).Sanitized(false).Titled("Status").Sortable(true);
+columns.Add(m => m.CampaignStatusString).Encoded(false).Sanitized(false).Titled("Status").Sortable(true).RenderValueAs(m =>
+{
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.START)
+    {
+        return @<div><span class="label label-critical">@m.CampaignStatusString</span>
+               </div>;
+    }
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.INPROGRESS)
+    {
+        return @<div><span class="label label-medium">@m.CampaignStatusString</span>
+               </div>;
+    }
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.HOLD)
+    {
+        return @<div><span class="label label-low">@m.CampaignStatusString</span>
+               </div>;
+    }
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.ENDED)
+    {
+        return @<div><span class="label label-default">@m.CampaignStatusString</span>
+               </div>;
+    }
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.COMPLETED)
+    {
+        return @<div><span class="label label-success">@m.CampaignStatusString</span>
+               </div>;
+    }
+
+    return @<div></div>;
+});
 columns.Add(m => m.CampaignStartDate).Encoded(false).Sanitized(false).Titled("Datum početka").Sortable(false).RenderValueAs(m =>
 {
     return @<div><span>@Html.Raw(m.CampaignStartDate.ToShortDateString())</span></div>;
@@ -105,11 +135,11 @@ columns.Add(m => m.CampaignStartDate).Encoded(false).Sanitized(false).Titled("Da
 columns.Add(m => m.CampaignPlannedEndDate).Encoded(false).Sanitized(false).Titled("Planirani završetak").Sortable(false).RenderValueAs(m =>
 {
 return @<div><span>@Html.Raw(m.CampaignPlannedEndDate.ToShortDateString())</span></div>;
-}); ;
+});
     columns.Add(m => m.CampaignEndDate).Encoded(false).Sanitized(false).Titled("Datum završetka").Sortable(false);
     columns.Add().Encoded(false).Sanitized(false).RenderValueAs(m =>
     {
-        if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || (m.CampaignInitiatior == User.Identity.Name))
+        if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Management") || m.CampaignInitiatior == User.Identity.Name)
         {
             return @<div><span>
                        <a href="@Url.RouteUrl(new { action = "Details", controller = "Campaigns", area = "Campaigns", id=m.CampaignId, returnUrl = Request.Url })" title="Detalji kampanje"><i class="fa fa-list"></i></a>

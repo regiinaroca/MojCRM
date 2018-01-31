@@ -26,6 +26,7 @@ namespace MojCRM.Areas.Campaigns.ViewModels
         public IQueryable<CampaignStatusHelper> SalesOpportunitiesStatusStats { get; set; }
         public IQueryable<CampaignStatusHelper> SalesLeadsStatusStats { get; set; }
         public GeneralCampaignStatusViewModel SalesGeneralStatus { get; set; }
+        public IQueryable<CampaignLeadsAgentEfficiency> CampaignLeadsAgentEfficiencies { get; set; }
 
         public IQueryable<SelectListItem> CampaignStatusList
         {
@@ -165,40 +166,7 @@ namespace MojCRM.Areas.Campaigns.ViewModels
 
             foreach (var entity in entites)
             {
-                string status;
-                switch (entity.Key)
-                {
-                    case Opportunity.OpportunityStatusEnum.Start:
-                        status = "Kreirano";
-                        break;
-                    case Opportunity.OpportunityStatusEnum.Incontact:
-                        status = "U kontaktu";
-                        break;
-                    case Opportunity.OpportunityStatusEnum.Lead:
-                        status = "Kreiran lead";
-                        break;
-                    case Opportunity.OpportunityStatusEnum.Rejected:
-                        status = "Odbijeno";
-                        break;
-                    case Opportunity.OpportunityStatusEnum.Arrangemeeting:
-                        status = "Potrebno dogovoriti sastanak";
-                        break;
-                    case Opportunity.OpportunityStatusEnum.Processdifficulties:
-                        status = "Procesne poteškoće";
-                        break;
-                    case Opportunity.OpportunityStatusEnum.Meruser:
-                        status = "Moj-eRačun korisnik";
-                        break;
-                    case Opportunity.OpportunityStatusEnum.Finauser:
-                        status = "FINA korisnik";
-                        break;
-                    case Opportunity.OpportunityStatusEnum.EFakturauser:
-                        status = "eFaktura korisnik";
-                        break;
-                        default:
-                            status = "Status prodajne prilike";
-                            break;
-                }
+                string status = GetOpportunityStatusString(entity.Key);
                 var temp = new CampaignStatusHelper
                 {
                     StatusName = status,
@@ -340,6 +308,72 @@ namespace MojCRM.Areas.Campaigns.ViewModels
             };
 
             return model;
+        }
+
+        public IQueryable<CampaignLeadsAgentEfficiency> GetCampaignLeadsAgentEfficiencies(int campaignId)
+        {
+            var leads = _db.Leads.Where(l => l.RelatedCampaignId == campaignId)
+                .GroupBy(o => o.AssignedTo);
+            var model = new List<CampaignLeadsAgentEfficiency>();
+
+            foreach (var lead in leads)
+            {
+                var opportunitiesCount = _db.Opportunities.Count(l => l.RelatedCampaignId == campaignId && l.AssignedTo == lead.Key);
+                var totalCount =
+                    _db.Leads.Count(l => l.RelatedCampaignId == campaignId && l.AssignedTo == lead.Key);
+                var temp = new CampaignLeadsAgentEfficiency()
+                {
+                    Agent = lead.Key,
+                    NumberOfOpportunitiesTotal = opportunitiesCount,
+                    ConverionPercent = Math.Round(totalCount / (decimal)opportunitiesCount * 100, 2),
+                    AssignedTotalCount = totalCount,
+                    AcceptedCount = _db.Leads.Count(l => l.RelatedCampaignId == campaignId && l.AssignedTo == lead.Key && l.LeadStatus == Lead.LeadStatusEnum.Accepted),
+                    AcceptedPercent = Math.Round(((_db.Leads.Count(l => l.RelatedCampaignId == campaignId && l.AssignedTo == lead.Key && l.LeadStatus == Lead.LeadStatusEnum.Accepted) / (decimal)totalCount) * 100), 2),
+                    RejectedCount = _db.Leads.Count(l => l.RelatedCampaignId == campaignId && l.AssignedTo == lead.Key && l.LeadStatus == Lead.LeadStatusEnum.Rejected),
+                    RejectedPercent = Math.Round(((_db.Leads.Count(l => l.RelatedCampaignId == campaignId && l.AssignedTo == lead.Key && l.LeadStatus == Lead.LeadStatusEnum.Rejected) / (decimal)totalCount) * 100), 2),
+                };
+                model.Add(temp);
+            }
+            return model.AsQueryable();
+        }
+
+        public string GetOpportunityStatusString(Opportunity.OpportunityStatusEnum status)
+        {
+            string statusString;
+            switch (status)
+            {
+                case Opportunity.OpportunityStatusEnum.Start:
+                    statusString = "Kreirano";
+                    break;
+                case Opportunity.OpportunityStatusEnum.Incontact:
+                    statusString = "U kontaktu";
+                    break;
+                case Opportunity.OpportunityStatusEnum.Lead:
+                    statusString = "Kreiran lead";
+                    break;
+                case Opportunity.OpportunityStatusEnum.Rejected:
+                    statusString = "Odbijeno";
+                    break;
+                case Opportunity.OpportunityStatusEnum.Arrangemeeting:
+                    statusString = "Potrebno dogovoriti sastanak";
+                    break;
+                case Opportunity.OpportunityStatusEnum.Processdifficulties:
+                    statusString = "Procesne poteškoće";
+                    break;
+                case Opportunity.OpportunityStatusEnum.Meruser:
+                    statusString = "Moj-eRačun korisnik";
+                    break;
+                case Opportunity.OpportunityStatusEnum.Finauser:
+                    statusString = "FINA korisnik";
+                    break;
+                case Opportunity.OpportunityStatusEnum.EFakturauser:
+                    statusString = "eFaktura korisnik";
+                    break;
+                default:
+                    statusString = "Status prodajne prilike";
+                    break;
+            }
+            return statusString;
         }
     }
 }

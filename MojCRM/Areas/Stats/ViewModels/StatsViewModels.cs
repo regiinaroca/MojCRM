@@ -436,5 +436,17 @@ namespace MojCRM.Areas.Stats.ViewModels
         }
     }
 
+    public class CampaignLeadsAgentEfficiency
+    {
+        public string Agent { get; set; }
+        public int NumberOfOpportunitiesTotal { get; set; }
+        public int AssignedTotalCount { get; set; }
+        public decimal ConverionPercent { get; set; }
+        public int AcceptedCount { get; set; }
+        public decimal AcceptedPercent { get; set; }
+        public int RejectedCount { get; set; }
+        public decimal RejectedPercent { get; set; }
+    }
+
     #endregion
 }

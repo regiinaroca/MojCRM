@@ -399,6 +399,7 @@
     <Compile Include="Areas\Stats\Controllers\StatsController.cs" />
     <Compile Include="GlimpseSecurityPolicy.cs" />
     <Compile Include="Areas\HelpDesk\Helpers\DeliveryHelpers.cs" />
+    <Compile Include="Helpers\ContactHelpers.cs" />
     <Compile Include="Helpers\Helpers.cs" />
     <Compile Include="Helpers\MerApiRequests.cs" />
     <Compile Include="Helpers\MerApiResponses.cs" />

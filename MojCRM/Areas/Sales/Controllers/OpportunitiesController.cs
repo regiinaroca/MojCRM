@@ -119,7 +119,7 @@ namespace MojCRM.Areas.Sales.Controllers
 
                 var relatedSalesContacts = _db.Contacts.Where(c =>
                     c.Organization.MerId == opportunity.RelatedOrganizationId &&
-                    c.ContactType == Contact.ContactTypeEnum.SALES);
+                    c.ContactType == Contact.ContactTypeEnum.Sales);
                 var relatedOpportunityNotes = _db.OpportunityNotes.Where(n =>
                     n.RelatedOpportunityId == opportunity.OpportunityId).OrderByDescending(n => n.InsertDate);
                 var relatedOpportunityActivities = _db.ActivityLogs.Where(a =>
