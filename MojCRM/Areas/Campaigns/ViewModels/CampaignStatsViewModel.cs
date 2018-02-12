@@ -133,7 +133,7 @@ namespace MojCRM.Areas.Campaigns.ViewModels
                                                   / (decimal)_db.AcquireEmails.Count(a => a.RelatedCampaignId == campaign.CampaignId)) * 100), 0),
                     CheckedPercent = Math.Round(((_db.AcquireEmails.Count(a => a.RelatedCampaignId == campaign.CampaignId && a.AcquireEmailStatus == AcquireEmail.AcquireEmailStatusEnum.Checked)
                                                   / (decimal)_db.AcquireEmails.Count(a => a.RelatedCampaignId == campaign.CampaignId)) * 100), 0),
-                    VerifiedPercent = Math.Round(((_db.AcquireEmails.Count(a => a.RelatedCampaignId == campaign.CampaignId && a.AcquireEmailStatus == AcquireEmail.AcquireEmailStatusEnum.Verified)
+                    VerifiedPercent = Math.Round(((_db.AcquireEmails.Count(a => a.RelatedCampaignId == campaign.CampaignId && (a.AcquireEmailStatus == AcquireEmail.AcquireEmailStatusEnum.Verified || a.AcquireEmailStatus == AcquireEmail.AcquireEmailStatusEnum.Reviewed))
                                                    / (decimal)_db.AcquireEmails.Count(a => a.RelatedCampaignId == campaign.CampaignId)) * 100), 0),
                 };
                 return newCampaign;

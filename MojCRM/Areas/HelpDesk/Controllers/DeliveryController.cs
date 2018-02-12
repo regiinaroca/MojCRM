@@ -832,6 +832,8 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     ReceiverEmail = deliveryTicketModel.BuyerEmail,
                     MerDeliveryDetailComment = deliveryTicketModel.Receiver.MerDeliveryDetail.Comments,
                     MerDeliveryDetailTelephone = deliveryTicketModel.Receiver.MerDeliveryDetail.Telephone,
+                    TelephoneNumber = deliveryTicketModel.Receiver.OrganizationDetail.TelephoneNumber,
+                    MobilePhoneNumber = deliveryTicketModel.Receiver.OrganizationDetail.MobilePhoneNumber,
                     ImportantComment = importantComment,
                     MerElectronicId = deliveryTicketModel.MerElectronicId,
                     ReceiverId = deliveryTicketModel.ReceiverId,

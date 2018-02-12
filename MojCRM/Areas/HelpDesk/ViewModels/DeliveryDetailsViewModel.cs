@@ -47,6 +47,12 @@ namespace MojCRM.Areas.HelpDesk.ViewModels
         [Display(Name = "Kontakt podaci:")]
         public string MerDeliveryDetailTelephone { get; set; }
 
+        [Display(Name = "Broj telefona:")]
+        public string TelephoneNumber { get; set; }
+
+        [Display(Name = "Broj mobitela:")]
+        public string MobilePhoneNumber { get; set; }
+
         [Display(Name = "Napomene za dostavu eRačuna ovom primatelju: ")]
         public string ImportantComment { get; set; }
 

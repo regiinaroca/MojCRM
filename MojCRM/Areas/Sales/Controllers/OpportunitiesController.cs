@@ -10,6 +10,7 @@ using MojCRM.Areas.Sales.ViewModels;
 using MojCRM.Areas.Sales.Helpers;
 using System.Text;
 using System.Web.UI.WebControls;
+using MojCRM.Areas.Campaigns.Models;
 using MojCRM.Helpers;
 using static MojCRM.Models.ActivityLog;
 
@@ -112,6 +113,7 @@ namespace MojCRM.Areas.Sales.Controllers
             try
             {
                 Opportunity opportunity = _db.Opportunities.Find(id);
+                string relatedCampaignName = String.Empty;
                 if (opportunity == null)
                 {
                     return HttpNotFound();
@@ -125,7 +127,11 @@ namespace MojCRM.Areas.Sales.Controllers
                 var relatedOpportunityActivities = _db.ActivityLogs.Where(a =>
                     a.ReferenceId == id && a.Module == ModuleEnum.Opportunities).OrderByDescending(a => a.InsertDate);
                 var relatedOrganization = _db.Organizations.First(o => o.MerId == opportunity.RelatedOrganizationId);
-                var relatedCampaign = _db.Campaigns.First(c => c.CampaignId == opportunity.RelatedCampaignId);
+                if (opportunity.RelatedCampaignId != null)
+                {
+                    var relatedCampaign = _db.Campaigns.First(c => c.CampaignId == opportunity.RelatedCampaignId);
+                    relatedCampaignName = relatedCampaign.CampaignName;
+                }
                 var users = _db.Users;
                 var relatedLeadId = 0;
                 if (opportunity.OpportunityStatus == Opportunity.OpportunityStatusEnum.Lead)
@@ -186,7 +192,7 @@ namespace MojCRM.Areas.Sales.Controllers
                     NumberOfInvoicesSent = relatedOrganization.OrganizationDetail.NumberOfInvoicesSent,
                     NumberOfInvoicesReceived = relatedOrganization.OrganizationDetail.NumberOfInvoicesReceived,
                     RelatedCampaignId = opportunity.RelatedCampaignId,
-                    RelatedCampaignName = relatedCampaign.CampaignName,
+                    RelatedCampaignName = relatedCampaignName,
                     IsAssigned = opportunity.IsAssigned,
                     AssignedTo = opportunity.AssignedTo,
                     LastContactedDate = opportunity.LastContactDate,
