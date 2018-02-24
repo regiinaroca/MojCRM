@@ -169,7 +169,7 @@
         }
         @if (Model.Entity.AcquireEmailStatus != AcquireEmail.AcquireEmailStatusEnum.Created)
         {
-            <a href="@Url.RouteUrl(new {action = "Index", controller = "AcquireEmail", area = "HelpDesk"})" title="Povratak na popis predmeta"><i class="fa fa-arrow-left fa-lg"></i></a>
+            <a href="@Url.RouteUrl(new {action = "Index", controller = "AcquireEmail", area = "HelpDesk"})" title="Povratak na popis predmeta" class="btn btn-sm btn-success">Završi obradu</a>
         }
     </div>
     <div class="col-md-2">

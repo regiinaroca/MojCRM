@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using MojCRM.Areas.HelpDesk.Models;
 using MojCRM.Models;
 
@@ -83,6 +82,20 @@ namespace MojCRM.Areas.HelpDesk.Helpers
             {
                 acquireEmail.AcquireEmailStatus = AcquireEmail.AcquireEmailStatusEnum.Verified;
                 acquireEmail.AcquireEmailEntityStatus = AcquireEmail.AcquireEmailEntityStatusEnum.WrongTelephoneNumber;
+                acquireEmail.UpdateDate = DateTime.Now;
+            }
+            _db.SaveChanges();
+        }
+
+        public void ApplyToAllEntities(AcquireEmail.AcquireEmailEntityStatusEnum status, int entityId)
+        {
+            var organizationId = _db.AcquireEmails.First(x => x.Id == entityId);
+            var entities = _db.AcquireEmails.Where(x =>
+                x.RelatedOrganizationId == organizationId.RelatedOrganizationId && x.AcquireEmailEntityStatus != status);
+
+            foreach (var acquireEmail in entities)
+            {
+                acquireEmail.AcquireEmailEntityStatus = status;
                 acquireEmail.UpdateDate = DateTime.Now;
             }
             _db.SaveChanges();

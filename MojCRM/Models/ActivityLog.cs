@@ -58,7 +58,10 @@ namespace MojCRM.Models
             QuoteSent,
 
             [Description("Ostvarena prodaja")]
-            AchievedSales
+            AchievedSales,
+
+            [Description("Dodjela predmeta za obradu baze")]
+            AcquireEmailAssignement
         }
         public enum DepartmentEnum
         {
@@ -120,6 +123,7 @@ namespace MojCRM.Models
                     case ActivityTypeEnum.Acquiredemails: return "Prikupljene e-mail adrese";
                     case ActivityTypeEnum.QuoteSent: return "Poslana ponuda";
                     case ActivityTypeEnum.AchievedSales: return "Ostvarena prodaja";
+                    case ActivityTypeEnum.AcquireEmailAssignement: return "Dodjela predmeta za obradu baze";
                 }
                 return "Tip aktivnosti";
             }

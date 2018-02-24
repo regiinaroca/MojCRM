@@ -6,11 +6,11 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.Ajax.Utilities;
 using MojCRM.Areas.Campaigns.Models;
 using static MojCRM.Areas.HelpDesk.Models.AcquireEmail;
 using MojCRM.Areas.HelpDesk.Helpers;
 using MojCRM.Areas.HelpDesk.ViewModels;
+using MojCRM.Helpers;
 using OfficeOpenXml;
 
 namespace MojCRM.Areas.HelpDesk.Controllers
@@ -18,6 +18,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
     public class AcquireEmailController : Controller
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        private readonly HelperMethods _helper = new HelperMethods();
         private readonly AcquireEmailMethodHelpers _acquireEmailMethodHelpers = new AcquireEmailMethodHelpers();
         // GET: HelpDesk/AcquireEmail
         [Authorize]
@@ -119,7 +120,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             var model = new AcquireEmailViewModel
             {
                 Entity = entity,
-                Activities = activities
+                Activities = activities.OrderByDescending(x => x.Id)
             };
 
             return View(model);
@@ -128,7 +129,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         [HttpPost]
         public JsonResult LogActivity(int entityId, int identifier)
         {
-            var entity = _db.AcquireEmails.Find(entityId);
+            var entity = _db.AcquireEmails.First(x => x.Id == entityId);
             switch (identifier)
             {
                 case 1:
@@ -245,6 +246,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 case 3:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.ClosedOrganization;
                     entity.UpdateDate = DateTime.Now;
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.ClosedOrganization, entityId);
                     _db.SaveChanges();
                     break;
                 case 4:
@@ -286,6 +288,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 case 10:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.Bankruptcy;
                     entity.UpdateDate = DateTime.Now;
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.Bankruptcy, entityId);
                     _db.SaveChanges();
                     break;
                 case 11:
@@ -559,6 +562,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 entity.IsAssigned = true;
                 entity.AssignedTo = agent;
                 entity.UpdateDate = DateTime.Now;
+                _helper.LogActivity("Predmet je dodijeljen agentu: " + agent + ". Dodijelio: " + User.Identity.Name, User.Identity.Name, entity.Id, ActivityLog.ActivityTypeEnum.AcquireEmailAssignement, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
             }
 
             var campaign = _db.Campaigns.First(c => c.CampaignId == campaignId);
@@ -580,10 +584,11 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 entity.IsAssigned = false;
                 entity.AssignedTo = string.Empty;
                 entity.UpdateDate = DateTime.Now;
+                _helper.LogActivity("Uklonjena dodjela agentu: " + agent + ". Dodjelu uklonio: " + User.Identity.Name, User.Identity.Name, entity.Id, ActivityLog.ActivityTypeEnum.AcquireEmailAssignement, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
             }
             _db.SaveChanges();
 
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         public ActionResult AcquireEmailsAssignedStats()
