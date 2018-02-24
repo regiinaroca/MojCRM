@@ -164,7 +164,7 @@
         @if (Model.Entity.AcquireEmailStatus == AcquireEmail.AcquireEmailStatusEnum.Created)
         {
             <div>
-                       <strong>Alati: </strong><a class="mark-checked" data-entity-id="@Model.Entity.Id" title="Označi kao provjereno"><i style="color: red" class="fa fa-check-circle-o fa-lg"></i></a> | <a href="@Url.RouteUrl(new {action = "Index", controller = "AcquireEmail", area = "HelpDesk"})" title="Povratak na popis predmeta"><i class="fa fa-arrow-left fa-lg"></i></a>
+                       <strong>Alati: </strong><a class="mark-checked" data-entity-id="@Model.Entity.Id" title="Označi kao provjereno"><i style="color: red" class="fa fa-check-circle-o fa-lg"></i></a> | <a href="@Url.RouteUrl(new {action = "Index", controller = "AcquireEmail", area = "HelpDesk"})" title="Povratak na popis predmeta" class="btn btn-sm btn-success">Završi obradu</a>
                    </div>
         }
         @if (Model.Entity.AcquireEmailStatus != AcquireEmail.AcquireEmailStatusEnum.Created)

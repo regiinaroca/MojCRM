@@ -303,7 +303,7 @@ columns.Add(m => m.MerDocumentTypeIdString).Encoded(false).Sanitized(false).Titl
         if (m.DocumentStatus == 30 && m.IsAssigned == false)
             return @<span>
         <a href="@Url.RouteUrl(new { action = "Details", controller = "Delivery", area = "HelpDesk", m.Id, m.ReceiverId, returnUrl = Request.Url })" title="Detalji kartice"><i class="fa fa-edit"></i></a>
-        <a href="@Url.RouteUrl(new { action = "UpdateStatusIndex", controller = "Delivery", area = "HelpDesk", m.Id, returnUrl = Request.Url })" title="Provjeri status dokumenta"><i style="color: forestgreen" class="fa fa-refresh"></i></a>
+        <a href="@Url.RouteUrl(new { action = "UpdateStatusIndex", controller = "Delivery", area = "HelpDesk", id = m.Id, returnUrl = Request.Url })" title="Provjeri status dokumenta"><i style="color: forestgreen" class="fa fa-refresh"></i></a>
         <a data-mer-id="@Html.Raw(m.MerElectronicId)" data-ticket-id="@Html.Raw(m.Id)" href="#" class="remove-from-list-ajax" title="Ukloni s popisa za dostavu"><i style="color: red" class="fa fa-remove"></i></a>
     </span>;
 

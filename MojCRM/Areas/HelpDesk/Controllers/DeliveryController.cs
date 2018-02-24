@@ -458,16 +458,16 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         }
 
         // GET: Delivery/UpdateStatusIndex/12345
-        public ActionResult UpdateStatusIndex(int Id)
+        public ActionResult UpdateStatusIndex(int id)
         {
-            var TicketForUpdate = _db.DeliveryTicketModels.Find(Id);
-            var MerString = "https://www.moj-eracun.hr/exchange/getstatus?id=" + TicketForUpdate.MerElectronicId + "&ver=5115e32c-6be4-4a92-8e92-afe122e99d1c";
+            var ticketForUpdate = _db.DeliveryTicketModels.First(x => x.Id == id);
+            var merString = "https://www.moj-eracun.hr/exchange/getstatus?id=" + ticketForUpdate.MerElectronicId + "&ver=5115e32c-6be4-4a92-8e92-afe122e99d1c";
 
-            MerDeliveryJsonResponse Response = ParseJson(MerString);
+            MerDeliveryJsonResponse response = ParseJson(merString);
 
-            TicketForUpdate.DocumentStatus = Response.Status;
-            TicketForUpdate.BuyerEmail = Response.EmailPrimatelja;
-            TicketForUpdate.UpdateDate = DateTime.Now;
+            ticketForUpdate.DocumentStatus = response.Status;
+            ticketForUpdate.BuyerEmail = response.EmailPrimatelja;
+            ticketForUpdate.UpdateDate = DateTime.Now;
             _db.SaveChanges();
 
             return RedirectToAction("Index");
@@ -830,7 +830,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     MerDocumentTypeId = deliveryTicketModel.MerDocumentTypeId,
                     MerDocumentStatusId = deliveryTicketModel.DocumentStatus,
                     ReceiverEmail = deliveryTicketModel.BuyerEmail,
-                    MerDeliveryDetailComment = deliveryTicketModel.Receiver.MerDeliveryDetail.Comments,
+                    //MerDeliveryDetailComment = deliveryTicketModel.Receiver.MerDeliveryDetail.Comments,
                     MerDeliveryDetailTelephone = deliveryTicketModel.Receiver.MerDeliveryDetail.Telephone,
                     TelephoneNumber = deliveryTicketModel.Receiver.OrganizationDetail.TelephoneNumber,
                     MobilePhoneNumber = deliveryTicketModel.Receiver.OrganizationDetail.MobilePhoneNumber,
