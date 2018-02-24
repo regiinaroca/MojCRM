@@ -446,7 +446,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 cell++;
             }
 
-            return File(wb.GetAsByteArray(), "application/vnd.ms-excel", "Rezultati.xls");
+            return File(wb.GetAsByteArray(), "application/vnd.ms-excel", "Rezultati.xlsx");
         }
 
         public ActionResult ExportEntitiesForEmailNotification(int campaignId)
@@ -471,7 +471,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 cell++;
             }
 
-            return File(wb.GetAsByteArray(), "application/vnd.ms-excel", campaignName + ".xls");
+            return File(wb.GetAsByteArray(), "application/vnd.ms-excel", campaignName + ".xlsx");
         }
 
         public void CreateEntity(Organizations organization, AcquireEmailStatusEnum status, int campaignId)

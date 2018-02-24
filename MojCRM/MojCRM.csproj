@@ -330,6 +330,7 @@
     <Compile Include="Areas\Cooperation\CooperationAreaRegistration.cs" />
     <Compile Include="Areas\Cooperation\Models\MerIntegrationSoftware.cs" />
     <Compile Include="Areas\CRM\Controllers\ContractController.cs" />
+    <Compile Include="Areas\CRM\Controllers\UserReportController.cs" />
     <Compile Include="Areas\CRM\CRMAreaRegistration.cs" />
     <Compile Include="Areas\CRM\Helpers\ContractHelpers.cs" />
     <Compile Include="Areas\CRM\Models\Contract.cs" />
@@ -947,6 +948,7 @@
     <Folder Include="Areas\Cooperation\Controllers\" />
     <Folder Include="Areas\Cooperation\Views\Shared\" />
     <Folder Include="Areas\CRM\Views\Shared\" />
+    <Folder Include="Areas\CRM\Views\UserReport\" />
     <Folder Include="Areas\HelpDesk\Views\Shared\" />
     <Folder Include="Areas\Sales\Views\Shared\" />
     <Folder Include="Areas\Stats\Views\Shared\" />

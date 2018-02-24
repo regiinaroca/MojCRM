@@ -19,6 +19,7 @@ namespace MojCRM.Controllers
         private readonly OpportunityHelperMethods _opportunityHelperMethods = new OpportunityHelperMethods();
 
         // GET: Organizations
+        [Authorize]
         public ActionResult Index(OrganizationSearchHelper model)
         {
             var organizations = from o in _db.Organizations

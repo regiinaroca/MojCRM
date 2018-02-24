@@ -16,6 +16,7 @@ namespace MojCRM.Controllers
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
         // GET: Contact
+        [Authorize]
         public ActionResult Index()
         {
             var contacts = from c in _db.Contacts
