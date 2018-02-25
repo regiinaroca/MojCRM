@@ -406,26 +406,30 @@ namespace MojCRM.Controllers
         // POST: Organizations/EditAcquiredReceivingInformation
         public ActionResult EditAcquiredReceivingInformation(EditAcquiredReceivingInformationHelper model)
         {
-            var organization = _db.MerDeliveryDetails.Find(model.MerId);
-            string LogString = "Agent " + User.Identity.Name + " je izmjenio informaciju za preuzimanju na subjektu: "
+            var organization = _db.MerDeliveryDetails.First(o => o.MerId == model.MerId);
+            string logString = "Agent " + User.Identity.Name + " je izmjenio informaciju za preuzimanju na subjektu: "
                 + organization.Organization.SubjectName + ". Izmjenjeno je:";
+            string newInformation = String.Empty;
 
-            if (!String.IsNullOrEmpty(model.NewAcquiredReceivingInformation))
-            {
-                if (!String.Equals(model.NewAcquiredReceivingInformation, organization.AcquiredReceivingInformation))
-                    LogString += " stara informacija o preuzimanju: " + organization.AcquiredReceivingInformation + ", nova informacija o preuzimanju " + model.NewAcquiredReceivingInformation;
-                organization.AcquiredReceivingInformation = model.NewAcquiredReceivingInformation;
-            }
+            if (!String.IsNullOrEmpty(model.NewAcquiredReceivingInformation1))
+                newInformation = model.NewAcquiredReceivingInformation1;
+            if (!String.IsNullOrEmpty(model.NewAcquiredReceivingInformation2))
+                newInformation += ";" + model.NewAcquiredReceivingInformation2;
+            if (!String.IsNullOrEmpty(model.NewAcquiredReceivingInformation3))
+                newInformation += ";" + model.NewAcquiredReceivingInformation3;
 
-            LogString += ".";
+            if (!String.Equals(newInformation, organization.AcquiredReceivingInformation))
+                logString += " stara informacija o preuzimanju: " + organization.AcquiredReceivingInformation + ", nova informacija o preuzimanju " + newInformation + ".";
+
+            organization.AcquiredReceivingInformation = newInformation;
             organization.Organization.UpdateDate = DateTime.Now;
             organization.Organization.LastUpdatedBy = User.Identity.Name;
 
-            LogActivity(LogString, User.Identity.Name, organization.MerId, ActivityLog.ActivityTypeEnum.Organizationupdate);
+            LogActivity(logString, User.Identity.Name, organization.MerId, ActivityLog.ActivityTypeEnum.Organizationupdate);
 
             _db.SaveChanges();
 
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         // POST: Organizations/EditImportantOrganizationInfo

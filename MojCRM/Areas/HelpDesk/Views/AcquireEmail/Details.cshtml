@@ -220,20 +220,32 @@
 </div>
 }
 <hr />
-<h4>Uredi informaciju o preuzimanju</h4>
+<h4>Uredi informaciju o preuzimanju</h4><h6>- ako Vam korisnik da informaciju da je račun potrebno slati na više e-mail adresa, molimo unesite ih odvojeno u zasebna polja</h6>
 @using (Html.BeginForm("EditAcquiredReceivingInformation", "Organizations", new { area = "" }, FormMethod.Post))
 {
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-3">
         <label for="receiving-information">Informacija o preuzimanju eRačuna</label>
         <div id="receiving-information">
             @Html.TextBox("AcquiredReceivingInformation", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation })
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-3">
         <label for="new-receiving-information">Nova informacija o preuzimanju eRačuna</label>
         <div id="new-receiving-information">
-            @Html.TextBox("NewAcquiredReceivingInformation", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Unesi novu informaciju o preuzimanju" })
+            @Html.TextBox("NewAcquiredReceivingInformation1", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Unesi novu informaciju o preuzimanju" })
+        </div>
+    </div>
+    <div class="col-md-3">
+        <label for="new-receiving-information-2">Nova informacija o preuzimanju eRačuna (2)</label>
+        <div id="new-receiving-information-2">
+            @Html.TextBox("NewAcquiredReceivingInformation2", ViewBag.CurrentFilter as string, new {@class = "form-control", @placeholder = "Unesi novu informaciju o preuzimanju (2)"})
+        </div>
+    </div>
+    <div class="col-md-3">
+        <label for="new-receiving-information-3">Nova informacija o preuzimanju eRačuna (3)</label>
+        <div id="new-receiving-information-3">
+            @Html.TextBox("NewAcquiredReceivingInformation3", ViewBag.CurrentFilter as string, new {@class = "form-control", @placeholder = "Unesi novu informaciju o preuzimanju (3)"})
         </div>
     </div>
     <div class="hidden">
