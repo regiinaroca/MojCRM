@@ -1,7 +1,6 @@
 ﻿using MojCRM.Areas.HelpDesk.Models;
 using MojCRM.Models;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -34,6 +33,9 @@ namespace MojCRM.Areas.Campaigns.Models
         [Display(Name = "Status")]
         public CampaignStatusEnum CampaignStatus { get; set; }
 
+        [Display(Name = "Atributi kampanje")]
+        public string CampaignAttributes { get; set; }
+
         [Display(Name = "Početak")]
         public DateTime CampaignStartDate { get; set; }
 
@@ -55,34 +57,34 @@ namespace MojCRM.Areas.Campaigns.Models
         public enum CampaignTypeEnum
         {
             [Description("Test")]
-            TEST,
+            Test,
 
             [Description("Prikupljanje e-mail adresa")]
-            EMAILBASES,
+            EmailBases,
 
             [Description("Prodajna kampanja")]
-            SALES,
+            Sales,
 
             [Description("CRM kampanja")]
-            CRM
+            Crm
         }
 
         public enum CampaignStatusEnum
         {
             [Description("Pokrenuto")]
-            START,
+            Start,
 
             [Description("U tijeku")]
-            INPROGRESS,
+            InProgress,
 
             [Description("Privremeno zaustavljeno")]
-            HOLD,
+            Hold,
 
             [Description("Prekinuto")]
-            ENDED,
+            Ended,
 
             [Description("Završeno")]
-            COMPLETED
+            Completed
         }
 
         public string CampaignTypeString
@@ -91,10 +93,10 @@ namespace MojCRM.Areas.Campaigns.Models
             {
                 switch (CampaignType)
                 {
-                    case CampaignTypeEnum.TEST: return "Test";
-                    case CampaignTypeEnum.EMAILBASES: return "Ažuriranje baze korisnika";
-                    case CampaignTypeEnum.SALES: return "Prodajna kampanja";
-                    case CampaignTypeEnum.CRM: return "CRM kampanja";
+                    case CampaignTypeEnum.Test: return "Test";
+                    case CampaignTypeEnum.EmailBases: return "Ažuriranje baze korisnika";
+                    case CampaignTypeEnum.Sales: return "Prodajna kampanja";
+                    case CampaignTypeEnum.Crm: return "CRM kampanja";
                 }
                 return "Tip kampanje";
             }
@@ -105,11 +107,11 @@ namespace MojCRM.Areas.Campaigns.Models
             {
                 switch (CampaignStatus)
                 {
-                    case CampaignStatusEnum.START: return "Pokrenuto";
-                    case CampaignStatusEnum.INPROGRESS: return "U tijeku";
-                    case CampaignStatusEnum.HOLD: return "Privremeno zaustavljeno";
-                    case CampaignStatusEnum.ENDED: return "Prekinuto";
-                    case CampaignStatusEnum.COMPLETED: return "Završeno";
+                    case CampaignStatusEnum.Start: return "Pokrenuto";
+                    case CampaignStatusEnum.InProgress: return "U tijeku";
+                    case CampaignStatusEnum.Hold: return "Privremeno zaustavljeno";
+                    case CampaignStatusEnum.Ended: return "Prekinuto";
+                    case CampaignStatusEnum.Completed: return "Završeno";
                 }
                 return "Status kampanje";
             }

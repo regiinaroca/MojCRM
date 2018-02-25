@@ -246,31 +246,55 @@
 <div>
     <h4 style="text-align:center">Kampanja - @Html.Raw(Model.Campaign.CampaignName)</h4>
     <div>
-        <div class="row" style="text-align:center">
-            <div class="col-md-12">
-                <div class="btn-group" role="group">
-                    @if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Management"))
-                    {
-                        <a href="@Url.RouteUrl(new {action = "Edit", controller = "Campaigns", area = "Campaigns", id = Model.Campaign.CampaignId, returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Uređivanje kampanje"><i class="fa fa-edit"></i></a>
+    <div class="row" style="text-align:center">
+        <div class="col-md-12">
+            <div class="btn-group" role="group">
+                @if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Management"))
+                {
+                    <a href="@Url.RouteUrl(new {action = "Edit", controller = "Campaigns", area = "Campaigns", id = Model.Campaign.CampaignId, returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Uređivanje kampanje"><i class="fa fa-edit"></i></a>
                         <button type="button" title="Promijeni status kampanje" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangeStatus"><i class="fa fa-refresh"></i></button>
                         <button type="button" title="Dodijeli agenta kampanji" class="btn btn-sm btn-default" data-toggle="modal" href="#AddAgent"><i class="fa fa-plus"></i> <i class="fa fa-user"></i></button>
-                        if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EMAILBASES)
-                         {
-                             <button type="button" title="Dodijeli predmete" class="btn btn-default btn-sm" data-toggle="modal" href="#adminAssign"><i class="fa fa-reply-all"></i></button>
-                             <button type="button" title="Kreiraj unose za ažuriranje baze" class="btn btn-sm btn-default" data-toggle="modal" href="#checkEntities"><i class="fa fa-plus"></i></button>
-                             <a href="@Url.RouteUrl(new {action = "ExportEntities", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId, identifier = 1 })" class="btn btn-sm btn-default" title="Preuzmi sve rezultate"><i class="fa fa-file-excel-o" style="color: lightgreen"></i></a>
-                             <a href="@Url.RouteUrl(new {action = "ExportEntities", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId, identifier = 2 })" class="btn btn-sm btn-default" title="Preuzmi samo revidirane rezultate"><i class="fa fa-file-excel-o" style="color: blue"></i></a>
-                             <a href="@Url.RouteUrl(new {action = "ExportEntitiesForEmailNotification", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId })" class="btn btn-sm btn-default" title="Preuzmi rezultate formirane za tipsku obavijest"><i class="fa fa-file-excel-o" style="color: yellow"></i></a>
+                    if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases)
+                    {
+                        <button type="button" title="Dodijeli predmete" class="btn btn-default btn-sm" data-toggle="modal" href="#adminAssign"><i class="fa fa-reply-all"></i></button>
+                            <button type="button" title="Kreiraj unose za ažuriranje baze" class="btn btn-sm btn-default" data-toggle="modal" href="#checkEntities"><i class="fa fa-plus"></i></button>
+                            <a href="@Url.RouteUrl(new {action = "ExportEntities", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId, identifier = 1 })" class="btn btn-sm btn-default" title="Preuzmi sve rezultate"><i class="fa fa-file-excel-o" style="color: lightgreen"></i></a>
+                            <a href="@Url.RouteUrl(new {action = "ExportEntities", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId, identifier = 2 })" class="btn btn-sm btn-default" title="Preuzmi samo revidirane rezultate"><i class="fa fa-file-excel-o" style="color: blue"></i></a>
+                            <a href="@Url.RouteUrl(new {action = "ExportEntitiesForEmailNotification", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId })" class="btn btn-sm btn-default" title="Preuzmi rezultate formirane za tipsku obavijest"><i class="fa fa-file-excel-o" style="color: yellow"></i></a>
                             <a href="@Url.RouteUrl(new {action = "Index", controller = "AcquireEmail", area = "HelpDesk", CampaignName = Model.Campaign.CampaignName ,returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Pregled predmeta za ovu kampanju"><i class="fa fa-bars"></i> <i class="fa fa-arrow-right"></i></a>
-                        }
-                        <a href="@Url.RouteUrl(new {action = "Index", controller = "Campaigns", area = "Campaigns", returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Povratak na popis kampanja"><i class="fa fa-arrow-left"></i></a>   
                     }
-                </div>
+                    <a href="@Url.RouteUrl(new {action = "Index", controller = "Campaigns", area = "Campaigns", returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Povratak na popis kampanja"><i class="fa fa-arrow-left"></i></a>
+                }
             </div>
         </div>
     </div>
+    @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases)
+    {
+        <hr />
+            <div class="row" style="text-align: center">
+                <div class="col-md-2">
+                    <h5>Dodaj atribut kampanji</h5>
+                </div>
+                <div class="col-md-2">
+                    <div class="btn-group" role="group">
+                        <a href="@Url.RouteUrl(new {action = "AddAttribute", controller = "Campaigns", area = "Campaigns", campaignId = Model.Campaign.CampaignId, attribute = "Poslana tipska obavijest"})" class="btn btn-sm btn-default" title="Dodaj atribut o poslanoj tipskoj obavijesti"><i class="fa fa-sign-out"></i></a>
+                        <a href="@Url.RouteUrl(new {action = "AddAttribute", controller = "Campaigns", area = "Campaigns", campaignId = Model.Campaign.CampaignId, attribute = "Baza je dostavljena klijentu"})" class="btn btn-sm btn-default" title="Dodaj atribut o dostavljenoj bazi klijentu"><i class="fa fa-check"></i></a>
+                    </div>
+                </div>
+            </div>
+        if (Model.Campaign.CampaignAttributes != null)
+        {
+            <br/>
+            <table class="table" style="word-break:break-word;">
+                <tr>
+                    <th>Dodijeljeni atributi: @Model.CampaignAttributes</th>
+                </tr>
+            </table>
+        }
+    }
+    </div>
     <hr />
-    @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.SALES && Model.SalesStats.TotalCount != 0)
+    @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.Sales && Model.SalesStats.TotalCount != 0)
     {
         <label for="bases-progress" title="Broj obrađenih prodajnih prilika">Status obrade: @Model.SalesStats.NotStartedCount / @Model.SalesStats.TotalCount</label>
         <div id="bases-progress" class="progress">
@@ -279,7 +303,7 @@
             </div>
         </div>
     }
-    @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EMAILBASES && Model.EmailBasesStats.TotalCount != 0)
+    @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases && Model.EmailBasesStats.TotalCount != 0)
     {
         <label for="bases-progress" title="Preostalo za obradu od ukupnog broja kreiranih predmeta">Status obrade: @Model.EmailBasesStats.NotVerifiedCount / @Model.EmailBasesStats.TotalCount</label>
         <div id="bases-progress" class="progress">
@@ -374,7 +398,7 @@
 
             </dl>
         </div>
-        @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EMAILBASES)
+        @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases)
         {
             <div class="col-md-8" title="Statistički podaci o statusu unosa predmeta">
                 <dl class="dl-horizontal">
@@ -393,7 +417,7 @@
                 </dl>
             </div>
         }
-        @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.SALES)
+        @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.Sales)
         {
             <div class="col-md-4" title="Statistički podaci o statusu prodajnih prilika u kampanji">
                 <dl class="dl-horizontal">
@@ -429,7 +453,7 @@
             </div>
         }
     </div>
-    @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.SALES)
+    @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.Sales)
     {
         <div class="row">
             <div class="col-md-12">

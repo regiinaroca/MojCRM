@@ -567,8 +567,8 @@ namespace MojCRM.Areas.HelpDesk.Controllers
 
             var campaign = _db.Campaigns.First(c => c.CampaignId == campaignId);
 
-            if (campaign.CampaignStatus == Campaign.CampaignStatusEnum.START)
-                campaign.CampaignStatus = Campaign.CampaignStatusEnum.INPROGRESS;
+            if (campaign.CampaignStatus == Campaign.CampaignStatusEnum.Start)
+                campaign.CampaignStatus = Campaign.CampaignStatusEnum.InProgress;
 
             _db.SaveChanges();
 

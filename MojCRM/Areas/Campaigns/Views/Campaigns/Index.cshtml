@@ -100,29 +100,29 @@ columns.Add(m => m.CampaignInitiatior).Encoded(false).Sanitized(false).Titled("P
 columns.Add(m => m.CampaignTypeString).Encoded(false).Sanitized(false).Titled("Tip kampanje").Sortable(false);
 columns.Add(m => m.CampaignStatusString).Encoded(false).Sanitized(false).Titled("Status").Sortable(true).RenderValueAs(m =>
 {
-    if (m.CampaignStatus == Campaign.CampaignStatusEnum.START)
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.Start)
     {
         return @<div><span class="label label-critical">@m.CampaignStatusString</span>
                </div>;
     }
-    if (m.CampaignStatus == Campaign.CampaignStatusEnum.INPROGRESS)
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.InProgress)
     {
         return @<div><span class="label label-medium">@m.CampaignStatusString</span>
                </div>;
     }
-    if (m.CampaignStatus == Campaign.CampaignStatusEnum.HOLD)
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.Hold)
     {
         return @<div><span class="label label-low">@m.CampaignStatusString</span>
                </div>;
     }
-    if (m.CampaignStatus == Campaign.CampaignStatusEnum.ENDED)
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.Ended)
     {
         return @<div><span class="label label-default">@m.CampaignStatusString</span>
                </div>;
     }
-    if (m.CampaignStatus == Campaign.CampaignStatusEnum.COMPLETED)
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.Completed)
     {
-        return @<div><span class="label label-success">@m.CampaignStatusString</span>
+        return @<div><span class="label label-success" title="@m.CampaignAttributes">@m.CampaignStatusString</span>
                </div>;
     }
 

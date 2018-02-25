@@ -35,23 +35,23 @@
                             {
                                 <tr>
                                     <td>@campaign.Campaign.CampaignName</td>
-                                    @if (campaign.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.START)
+                                    @if (campaign.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.Start)
                                     {
                                         <td><span class="label label-critical">@campaign.Campaign.CampaignStatusString</span></td>
                                     }
-                                    @if (campaign.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.INPROGRESS)
+                                    @if (campaign.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.InProgress)
                                     {
                                         <td><span class="label label-medium">@campaign.Campaign.CampaignStatusString</span></td>
                                     }
-                                    @if (campaign.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.HOLD)
+                                    @if (campaign.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.Hold)
                                     {
                                         <td><span class="label label-low">@campaign.Campaign.CampaignStatusString</span></td>
                                     }
-                                    @if (campaign.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.ENDED)
+                                    @if (campaign.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.Ended)
                                     {
                                         <td><span class="label label-low">@campaign.Campaign.CampaignStatusString</span></td>
                                     }
-                                    @if (campaign.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.COMPLETED)
+                                    @if (campaign.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.Completed)
                                     {
                                         <td><span class="label label-primary">@campaign.Campaign.CampaignStatusString</span></td>
                                     }

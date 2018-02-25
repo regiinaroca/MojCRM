@@ -1,4 +1,7 @@
-﻿namespace MojCRM.Areas.Campaigns.Helpers
+﻿using System;
+using Newtonsoft.Json;
+
+namespace MojCRM.Areas.Campaigns.Helpers
 {
     public class CampaignSearchHelper
     {
@@ -18,5 +21,13 @@
     {
         public string StatusName { get; set; }
         public int SumOfEntities { get; set; }
+    }
+
+    public class CampaignAttributeJsonHelper
+    {
+        [JsonProperty]
+        public string Attribute { get; set; }
+        public string Creator { get; set; }
+        public DateTime CreateDate { get; set; }
     }
 }
