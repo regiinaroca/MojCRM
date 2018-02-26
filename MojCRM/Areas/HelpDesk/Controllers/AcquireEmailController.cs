@@ -114,6 +114,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         public ActionResult Details(int id)
         {
             var entity = _db.AcquireEmails.Find(id);
+            
             var activities = _db.ActivityLogs.Where(al =>
                 al.Department == ActivityLog.DepartmentEnum.DatabaseUpdate && al.ReferenceId == id);
 
@@ -231,37 +232,44 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 case 0:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.Created;
                     entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Kreirano", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
                 case 1:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.AcquiredInformation;
                     entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Dobivena povratna informacija", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
                 case 2:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.NoAnswer;
                     entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Nema odgovora / Ne javlja se", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
                 case 3:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.ClosedOrganization;
                     entity.UpdateDate = DateTime.Now;
                     _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.ClosedOrganization, entityId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Zatvoren subjekt", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
                 case 4:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.OldPartner;
                     entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Ne posluju s korisnikom", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
                 case 5:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.PartnerWillContactUser;
                     entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Partner će se javiti korisniku samostalno", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
                 case 6:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.WrittenConfirmationRequired;
                     entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Potrebno poslati pisanu suglasnost", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
                 case 7:
@@ -270,11 +278,13 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation = "NEMA ISPRAVNOG BROJA TELEFONA";
                     entity.Organization.MerDeliveryDetail.AcquiredReceivingInformationIsVerified = true;
                     _acquireEmailMethodHelpers.UpdateWrongTelephoneNumberEntities(entity.RelatedOrganizationId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Neispravan kontakt broj", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
                 case 8:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.PoslovnaHrvatska;
                     entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Poslovna Hrvatska", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
                 case 9:
@@ -283,26 +293,30 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation = "NEMA ISPRAVNOG BROJA TELEFONA";
                     entity.Organization.MerDeliveryDetail.AcquiredReceivingInformationIsVerified = true;
                     _acquireEmailMethodHelpers.UpdateWrongTelephoneNumberEntities(entity.RelatedOrganizationId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Ne postoji ispravan kontakt broj", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
                 case 10:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.Bankruptcy;
                     entity.UpdateDate = DateTime.Now;
                     _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.Bankruptcy, entityId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Subjekt u stečaju / likvidaciji", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
                 case 11:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.NoFinancialAccount;
                     entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Subjekt nema žiro račun", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
                 case 12:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.ToBeClosed;
                     entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Najava brisanja subjekta", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
             }
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         [HttpPost]

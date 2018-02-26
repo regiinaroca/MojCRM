@@ -135,28 +135,28 @@
         {
             return @<span>
                  <a class="mark-checked" data-entity-id="@v.Id" title="Označi kao provjereno"><i style="color: red" class="fa fa-check-circle-o fa-lg"></i></a> |
-                 <a href="@Url.RouteUrl(new { action = "Details", controller = "AcquireEmail", area = "HelpDesk", id = v.Id })" title="Uredi informaciju o zaprimanju eRačuna"><i class="fa fa-edit fa-lg"></i></a>
+                 <a href="@Url.RouteUrl(new { action = "Details", controller = "AcquireEmail", area = "HelpDesk", id = v.Id, returnUrl = Request.Url })" title="Uredi informaciju o zaprimanju eRačuna"><i class="fa fa-edit fa-lg"></i></a>
     </span>;
         }
         if ((User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")) && v.AcquireEmailStatus == MojCRM.Areas.HelpDesk.Models.AcquireEmail.AcquireEmailStatusEnum.Checked)
         {
             return @<span>
     <a class="mark-verified" data-entity-id="@v.Id" title="Označi kao provjereno"><i style="color: gold" title="Provjereno / Čeka verifikaciju" class="fa fa-check-circle-o fa-lg"></i></a> |
-    <a href="@Url.RouteUrl(new { action = "Details", controller = "AcquireEmail", area = "HelpDesk", id = v.Id })" title="Uredi informaciju o zaprimanju eRačuna"><i class="fa fa-edit fa-lg"></i></a>
+    <a href="@Url.RouteUrl(new { action = "Details", controller = "AcquireEmail", area = "HelpDesk", id = v.Id, returnUrl = Request.Url })" title="Uredi informaciju o zaprimanju eRačuna"><i class="fa fa-edit fa-lg"></i></a>
 </span>;
         }
         if (v.AcquireEmailStatus == MojCRM.Areas.HelpDesk.Models.AcquireEmail.AcquireEmailStatusEnum.Checked)
         {
             return @<span>
     <i style="color: gold" title="Provjereno / Čeka verifikaciju" class="fa fa-check-circle-o fa-lg"></i> |
-    <a href="@Url.RouteUrl(new { action = "Details", controller = "AcquireEmail", area = "HelpDesk", id = v.Id })" title="Uredi informaciju o zaprimanju eRačuna"><i class="fa fa-edit fa-lg"></i></a>
+    <a href="@Url.RouteUrl(new { action = "Details", controller = "AcquireEmail", area = "HelpDesk", id = v.Id, returnUrl = Request.Url })" title="Uredi informaciju o zaprimanju eRačuna"><i class="fa fa-edit fa-lg"></i></a>
 </span>;
         }
         if ((User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")) && v.AcquireEmailStatus == MojCRM.Areas.HelpDesk.Models.AcquireEmail.AcquireEmailStatusEnum.Verified)
         {
             return @<span>
     <a class="mark-reviewed" data-entity-id="@v.Id" title="Označi kao revidirano"><i style="color: blue" title="Verificarno" class="fa fa-check-circle-o fa-lg"></i></a> |
-    <a href="@Url.RouteUrl(new { action = "Details", controller = "AcquireEmail", area = "HelpDesk", id = v.Id })" title="Uredi informaciju o zaprimanju eRačuna"><i class="fa fa-edit fa-lg"></i></a>
+    <a href="@Url.RouteUrl(new { action = "Details", controller = "AcquireEmail", area = "HelpDesk", id = v.Id, returnUrl = Request.Url })" title="Uredi informaciju o zaprimanju eRačuna"><i class="fa fa-edit fa-lg"></i></a>
 </span>;
         }
         return @<span>
