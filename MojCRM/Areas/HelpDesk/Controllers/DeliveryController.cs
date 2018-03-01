@@ -603,14 +603,14 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         [Authorize]
         public ActionResult ChangeEmail(ChangeEmailHelper model)
         {
-            var Credentials = (from u in _db.Users
+            var credentials = (from u in _db.Users
                                where u.UserName == User.Identity.Name
                                select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
 
-            MerApiChangeEmail Request = new MerApiChangeEmail()
+            MerApiChangeEmail request = new MerApiChangeEmail()
             {
-                Id = Credentials.MerUser,
-                Pass = Credentials.MerPass,
+                Id = credentials.MerUser,
+                Pass = credentials.MerPass,
                 Oib = "99999999927",
                 PJ = "",
                 SoftwareId = "MojCRM-001",
@@ -618,13 +618,13 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 Email = model.NewEmail
             };
 
-            string MerRequest = JsonConvert.SerializeObject(Request);
+            string merRequest = JsonConvert.SerializeObject(request);
 
-            using (var Mer = new WebClient())
+            using (var mer = new WebClient())
             {
-                Mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-                Mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                Mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/changeEmail").ToString(), "POST", MerRequest);
+                mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
+                mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/changeEmail").ToString(), "POST", merRequest);
             }
 
             _helper.LogActivity(User.Identity.Name + " je izmijenio e-mail adresu za dostavu eDokumenta iz " + model.OldEmail + " u " + model.NewEmail + " i ponovno poslao obavijest za dokument broj: " + model.InvoiceNumber,
@@ -638,14 +638,14 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         [Authorize]
         public ActionResult ChangeEmailNoTicket(ChangeEmailHelper model)
         {
-            var Credentials = (from u in _db.Users
+            var credentials = (from u in _db.Users
                                where u.UserName == User.Identity.Name
                                select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
 
-            MerApiChangeEmail Request = new MerApiChangeEmail()
+            MerApiChangeEmail request = new MerApiChangeEmail()
             {
-                Id = Credentials.MerUser,
-                Pass = Credentials.MerPass,
+                Id = credentials.MerUser,
+                Pass = credentials.MerPass,
                 Oib = "99999999927",
                 PJ = "",
                 SoftwareId = "MojCRM-001",
@@ -653,13 +653,13 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 Email = model.NewEmail
             };
 
-            string MerRequest = JsonConvert.SerializeObject(Request);
+            string merRequest = JsonConvert.SerializeObject(request);
 
-            using (var Mer = new WebClient())
+            using (var mer = new WebClient())
             {
-                Mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-                Mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                Mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/changeEmail").ToString(), "POST", MerRequest);
+                mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
+                mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/changeEmail").ToString(), "POST", merRequest);
             }
 
             _helper.LogActivity(User.Identity.Name + " je izmijenio e-mail adresu za dostavu eDokumenta iz " + model.OldEmail + " u " + model.NewEmail + " i ponovno poslao obavijest za dokument broj: " + model.InvoiceNumber,
@@ -670,11 +670,11 @@ namespace MojCRM.Areas.HelpDesk.Controllers
 
         // POST Delivery/Remove/1125768
         [HttpPost]
-        public JsonResult Remove(int MerElectronicId, int TicketId)
+        public JsonResult Remove(int merElectronicId, int ticketId)
         {
-            var TicketForRemoval = _db.DeliveryTicketModels.Find(TicketId);
-            TicketForRemoval.DocumentStatus = 55;
-            TicketForRemoval.UpdateDate = DateTime.Now;
+            var ticketForRemoval = _db.DeliveryTicketModels.First(t => t.Id == ticketId);
+            ticketForRemoval.DocumentStatus = 55;
+            ticketForRemoval.UpdateDate = DateTime.Now;
             _db.SaveChanges();
 
             return Json(new { Status = "OK" });
@@ -756,7 +756,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                                      select dd.ImportantComments).First();
 
             var relatedActivities = (from a in _db.ActivityLogs
-                                      where a.ReferenceId == id
+                                      where a.ReferenceId == id && a.Module == ActivityLog.ModuleEnum.Delivery
                                       select a).OrderByDescending(a => a.Id);
 
             #region Postmark API

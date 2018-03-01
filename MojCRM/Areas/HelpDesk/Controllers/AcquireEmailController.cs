@@ -326,9 +326,9 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             {
                 int importedEntities = 0;
                 int validEntities = 0;
-                List<string> validVATs = new List<string>();
+                List<string> validVats = new List<string>();
                 int invalidEntities = 0;
-                List<string> invalidVATs = new List<string>();
+                List<string> invalidVats = new List<string>();
 
                 //string filepath = Path.Combine(Server.MapPath("~/ImportFiles"), "ImportAcquireEmail.xls");
                 //if(!create)
@@ -339,23 +339,27 @@ namespace MojCRM.Areas.HelpDesk.Controllers
 
                 for (int i = ws.Dimension.Start.Row; i <= ws.Dimension.End.Row; i++)
                 {
-                    string VAT = ws.Cells[i, 1].Value.ToString();
+                    object vat;
 
-                    if (VAT != "")
+                    if ((vat = ws.Cells[i, 1].Value) != null)
                     {
-                        if (_db.Organizations.Any(o => (o.SubjectBusinessUnit == "" || o.SubjectBusinessUnit == "11"/*DHL hack/fix*/) && o.VAT == VAT))
+                        if (_db.Organizations.Any(o => (o.SubjectBusinessUnit == "" || o.SubjectBusinessUnit == "11"/*DHL hack/fix*/) && o.VAT == vat.ToString()))
                         {
-                            validVATs.Add(VAT);
-                            ImportEntities(campaignId, VAT);
+                            validVats.Add(vat.ToString());
+                            ImportEntities(campaignId, vat.ToString());
                             importedEntities++;
 
                             validEntities++;
                         }
                         else
                         {
-                            invalidVATs.Add(VAT);
+                            invalidVats.Add(vat.ToString());
                             invalidEntities++;
                         }
+                    }
+                    else
+                    {
+                        continue;
                     }
                 }
 
@@ -365,8 +369,8 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     ValidEntities = validEntities,
                     InvalidEntities = invalidEntities,
                     ImportedEntities = importedEntities,
-                    ValidVATs = validVATs,
-                    InvalidVATs = invalidVATs
+                    ValidVATs = validVats,
+                    InvalidVATs = invalidVats
                 };
 
                 //if(create)
