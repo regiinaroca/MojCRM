@@ -40,7 +40,7 @@
             }
         }
     </div>
-    @if (User.IsInRole("Superadmin"))
+    @if (User.IsInRole("Superadmin") || User.IsInRole("Management") || User.IsInRole("Administrator"))
     {
         <div class="col-md-1">
             <a href="@Url.RouteUrl(new { action = "UpdateOrganization", controller = "Organizations", area = "", merId = Model.Organization.MerId })" title="Sinkroniziraj podatke sa servisom Moj-eRačun"><i class="fa fa-refresh"></i></a>

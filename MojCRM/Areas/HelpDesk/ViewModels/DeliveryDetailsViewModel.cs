@@ -179,5 +179,20 @@ namespace MojCRM.Areas.HelpDesk.ViewModels
                 return list.AsQueryable();
             }
         }
+        public virtual IQueryable<ApplicationUser> Users { get; set; }
+        public IQueryable<SelectListItem> DeliveryAgents
+        {
+            get
+            {
+                var list = (from u in Users
+                    where u.Email != String.Empty
+                    select new SelectListItem()
+                    {
+                        Text = u.UserName,
+                        Value = u.UserName
+                    });
+                return list;
+            }
+        }
     }
 }

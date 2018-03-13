@@ -1,7 +1,7 @@
 ﻿@using GridMvc.Html
 @using System.Web.UI.WebControls
 
-@model IQueryable<MojCRM.Areas.HelpDesk.Models.Delivery>
+@model MojCRM.Areas.HelpDesk.Helpers.DeliveryIndexViewModel
 
 @{
     ViewBag.Title = "Dostava eRačuna";
@@ -11,18 +11,18 @@
 @{
     var documentTypeList = new List<ListItem>
         {
-            new ListItem {Text = "eDokument", Value = "0" },
-            new ListItem {Text = "eRačun", Value = "1" },
-            new ListItem {Text = "Storno", Value = "3" },
-            new ListItem {Text = "eOpomena", Value = "4" },
-            new ListItem {Text = "eOdgovor", Value = "7" },
-            new ListItem {Text = "eNarudžba", Value = "105" },
-            new ListItem {Text = "eOpoziv", Value = "226" },
-            new ListItem {Text = "eIzmjena", Value = "230" },
-            new ListItem {Text = "eOdgovorN", Value = "231" },
-            new ListItem {Text = "eOtpremnica", Value = "351" },
-            new ListItem {Text = "eOdobrenje", Value = "381" },
-            new ListItem {Text = "eTerećenje", Value = "383" },
+            new ListItem {Text = @"eDokument", Value = @"0" },
+            new ListItem {Text = @"eRačun", Value = @"1" },
+            new ListItem {Text = @"Storno", Value = @"3" },
+            new ListItem {Text = @"eOpomena", Value = @"4" },
+            new ListItem {Text = @"eOdgovor", Value = @"7" },
+            new ListItem {Text = @"eNarudžba", Value = @"105" },
+            new ListItem {Text = @"eOpoziv", Value = @"226" },
+            new ListItem {Text = @"eIzmjena", Value = @"230" },
+            new ListItem {Text = @"eOdgovorN", Value = @"231" },
+            new ListItem {Text = @"eOtpremnica", Value = @"351" },
+            new ListItem {Text = @"eOdobrenje", Value = @"381" },
+            new ListItem {Text = @"eTerećenje", Value = @"383" },
         };
     var ticketTypeList = new List<ListItem>
         {
@@ -43,20 +43,20 @@
             new ListItem{ Value= "50", Text = "Neuspješan"},
             new ListItem{ Value= "55", Text = "Uklonjen"},
         };
-    var deliveryAgents = new List<ListItem>
-        {
-            new ListItem{ Value = "Darko Glatki", Text = "Darko Glatki"},
-            new ListItem{ Value = "Filip Troskot", Text = "Filip Troskot"},
-            new ListItem{ Value = "Filip Karmazen", Text = "Filip Karmazen"},
-            new ListItem{ Value = "Katarina Ceković", Text = "Katarina Ceković"},
-            new ListItem{ Value = "Viktor Jajtić", Text = "Viktor Jajtić"},
-            new ListItem{ Value = "Filip Vučemilović Grgić", Text = "Filip Vučemilović Grgić"},
-            new ListItem{ Value = "Nikolina Ćosić", Text = "Nikolina Ćosić"},
-            new ListItem{ Value = "Ivan Boban", Text = "Ivan Boban"},
-            new ListItem{ Value = "Ana Šimac", Text = "Ana Šimac"},
-            new ListItem{ Value = "Matija Ekart", Text = "Matija Ekart"},
-            new ListItem{ Value = "Filip Klarić", Text = "Filip Klarić"}
-        };
+    //var deliveryAgents = new List<ListItem>
+    //    {
+    //        new ListItem{ Value = "Darko Glatki", Text = "Darko Glatki"},
+    //        new ListItem{ Value = "Filip Troskot", Text = "Filip Troskot"},
+    //        new ListItem{ Value = "Filip Karmazen", Text = "Filip Karmazen"},
+    //        new ListItem{ Value = "Katarina Ceković", Text = "Katarina Ceković"},
+    //        new ListItem{ Value = "Viktor Jajtić", Text = "Viktor Jajtić"},
+    //        new ListItem{ Value = "Filip Vučemilović Grgić", Text = "Filip Vučemilović Grgić"},
+    //        new ListItem{ Value = "Nikolina Ćosić", Text = "Nikolina Ćosić"},
+    //        new ListItem{ Value = "Ivan Boban", Text = "Ivan Boban"},
+    //        new ListItem{ Value = "Ana Šimac", Text = "Ana Šimac"},
+    //        new ListItem{ Value = "Matija Ekart", Text = "Matija Ekart"},
+    //        new ListItem{ Value = "Filip Klarić", Text = "Filip Klarić"}
+    //    };
 
 }
 
@@ -198,7 +198,8 @@
                     <div class="form-group">
                         <label for="ticket-type-search">Dodijeljeno</label>
                         <div>
-                            @Html.DropDownList("AssignedTo", new SelectList(deliveryAgents, "Value", "Text"), "Dodijeljeno agentu", new { @class = "form-control" })
+                            @*@Html.DropDownList("AssignedTo", new SelectList(deliveryAgents, "Value", "Text"), "Dodijeljeno agentu", new { @class = "form-control" })*@
+                            @Html.DropDownList("AssignedTo", Model.DeliveryAgents, "-- Odaberi agenta --", new { @class = "form-control col-md-10" })
                         </div>
                     </div>
                 </div>
@@ -223,7 +224,7 @@
         </div>
     }
     <hr />
-    @Html.Grid(Model).Named("PopisRačunaZaDostavu").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
+    @Html.Grid(Model.Tickets).Named("PopisRačunaZaDostavu").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
 {
 columns.Add().Encoded(false).Sanitized(false).RenderValueAs(o => Html.CheckBox("checked", false, new { o.MerElectronicId, @class = "checked", @id = "checkbox", @idVal = o.Id }));
 columns.Add(m => m.Sender.SubjectName).Encoded(false).Sanitized(false).Titled("Pošijatelj").Sortable(true).RenderValueAs(m =>

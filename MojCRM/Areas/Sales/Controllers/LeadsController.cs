@@ -110,6 +110,7 @@ namespace MojCRM.Areas.Sales.Controllers
         public ActionResult Details(int id)
         {
             Lead lead = _db.Leads.Find(id);
+            string relatedCampaignName = String.Empty;
             if (lead == null)
             {
                 return HttpNotFound();
@@ -122,7 +123,11 @@ namespace MojCRM.Areas.Sales.Controllers
                 a.ReferenceId == lead.LeadId && a.Module == ModuleEnum.Leads).OrderByDescending(a => a.InsertDate);
             var relatedOrganization = _db.Organizations.First(o => o.MerId == lead.RelatedOrganizationId);
             var relatedOrganizationDetail = _db.OrganizationDetails.First(od => od.MerId == lead.RelatedOrganizationId);
-            var relatedCampaign = _db.Campaigns.First(c => c.CampaignId == lead.RelatedCampaignId);
+            if (lead.RelatedCampaignId != null)
+            {
+                var relatedCampaign = _db.Campaigns.First(c => c.CampaignId == lead.RelatedCampaignId);
+                relatedCampaignName = relatedCampaign.CampaignName;
+            }
             var users = _db.Users.Select(u => u);
             //var _LastLeadNote = (from n in db.LeadNotes
             //                     where n.RelatedLeadId == lead.LeadId
@@ -177,7 +182,7 @@ namespace MojCRM.Areas.Sales.Controllers
                 NumberOfInvoicesSent = relatedOrganizationDetail.NumberOfInvoicesSent,
                 NumberOfInvoicesReceived = relatedOrganizationDetail.NumberOfInvoicesReceived,
                 RelatedCampaignId = lead.RelatedCampaignId,
-                RelatedCampaignName = relatedCampaign.CampaignName,
+                RelatedCampaignName = relatedCampaignName,
                 IsAssigned = lead.IsAssigned,
                 AssignedTo = lead.AssignedTo,
                 LastContactedDate = lead.LastContactDate,

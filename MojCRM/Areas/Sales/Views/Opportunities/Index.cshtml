@@ -180,6 +180,10 @@ columns.Add(m => m.OpportunityStatus).Encoded(false).Sanitized(false).Titled("St
         {
             return @<div><span class="label label-primary">@Html.Raw(m.OpportunityStatusString)</span></div>;
         }
+        if (m.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Arrangemeeting)
+        {
+        return @<div><span class="label label-primary">@Html.Raw(m.OpportunityStatusString)</span></div>;
+        }
         if (m.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Lead)
         {
             return @<div><span class="label label-success">@Html.Raw(m.OpportunityStatusString)</span></div>;

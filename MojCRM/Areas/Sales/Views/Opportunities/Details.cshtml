@@ -385,7 +385,7 @@
                             <div class="col-md-12">
                                 <label for="assign">Dodijeli prodajnu priliku agentu</label>
                                 <div id="assign">
-                                    @Html.DropDownList("AssignedTo", Model.SalesAgents, new { @class = "form-control" })
+                                    @Html.DropDownList("AssignedTo", Model.SalesAgents, "-- Odaberi agenta --", new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="hidden">
@@ -436,7 +436,7 @@
                             <div class="col-md-12">
                                 <label for="reassign">Dodijeli priliku drugom agentu</label>
                                 <div id="unassign">
-                                    @Html.DropDownList("AssignedTo", Model.SalesAgents, new { @class = "form-control" })
+                                    @Html.DropDownList("AssignedTo", Model.SalesAgents, "-- Odaberi agenta --", new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="hidden">

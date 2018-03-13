@@ -150,7 +150,13 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     break;
             }
 
-            return View(resultsNew);
+            var returnModel = new DeliveryIndexViewModel()
+            {
+                Tickets = resultsNew,
+                Users = _db.Users
+            };
+
+            return View(returnModel);
         }
 
         // GET: Delivery/CreateTicketsFirstTime
@@ -505,19 +511,19 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         // GET: Delivery/UpdateAllStatuses
         public ActionResult UpdateAllStatusesSent()
         {
-            var OpenTickets = (from t in _db.DeliveryTicketModels
-                               where t.DocumentStatus == 30
-                               select t).AsEnumerable();
+            var openTickets = from t in _db.DeliveryTicketModels
+                              where t.DocumentStatus == 30
+                              select t;
 
-            foreach (var Ticket in OpenTickets)
+            foreach (var ticket in openTickets)
             {
                 //var TicketForUpdate = db.DeliveryTicketModels.Find(Ticket.Id);
-                var MerString = "https://www.moj-eracun.hr/exchange/getstatus?id=" + Ticket.MerElectronicId + "&ver=13ca6cad-60a4-4894-ba38-1a6f86b25a3c";
-                MerDeliveryJsonResponse Result = ParseJson(MerString);
+                var merString = "https://www.moj-eracun.hr/exchange/getstatus?id=" + ticket.MerElectronicId + "&ver=13ca6cad-60a4-4894-ba38-1a6f86b25a3c";
+                MerDeliveryJsonResponse result = ParseJson(merString);
 
-                Ticket.DocumentStatus = Result.Status;
-                Ticket.BuyerEmail = Result.EmailPrimatelja;
-                Ticket.UpdateDate = DateTime.Now;
+                ticket.DocumentStatus = result.Status;
+                ticket.BuyerEmail = result.EmailPrimatelja;
+                ticket.UpdateDate = DateTime.Now;
             }
             _db.SaveChanges();
 
@@ -758,6 +764,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             var relatedActivities = (from a in _db.ActivityLogs
                                       where a.ReferenceId == id && a.Module == ActivityLog.ModuleEnum.Delivery
                                       select a).OrderByDescending(a => a.Id);
+            var users = _db.Users;
 
             #region Postmark API
             MessagesOutboundOpenResponse openingHistoryResponse;
@@ -847,7 +854,8 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     AssignedTo = deliveryTicketModel.AssignedTo,
                     DocumentHistory = resultsDocumentHistory.Where(i => (i.DokumentStatusId != 10) && (/*i.DokumentTypeId != 6 && -- This was removed from API on Moj-eRačun*/ i.DokumentTypeId != 632)).AsQueryable(),
                     PostmarkOpenings = openingHistoryResponse,
-                    PostmarkBounces = bounces
+                    PostmarkBounces = bounces,
+                    Users = users
                 };
 
                 return View(deliveryDetails);
