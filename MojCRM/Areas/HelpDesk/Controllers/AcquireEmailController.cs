@@ -227,7 +227,14 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         public ActionResult ChangeEntityStatus(int entityId, int identifier)
         {
             var entity = _db.AcquireEmails.First(x => x.Id == entityId);
-            switch (identifier)
+            int indetifierTemp;
+
+            if (entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains("@") && entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation != null)
+                indetifierTemp = 1; //check if agent inserted an email and set identifier to AcquiredInformation by default
+            else
+                indetifierTemp = identifier;
+
+            switch (indetifierTemp)
             {
                 case 0:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.Created;
@@ -238,6 +245,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 case 1:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.AcquiredInformation;
                     entity.UpdateDate = DateTime.Now;
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.AcquiredInformation, entityId);
                     _helper.LogActivity("Promijenjen status obrade. Novi status: Dobivena povratna informacija", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
@@ -315,6 +323,16 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     _helper.LogActivity("Promijenjen status obrade. Novi status: Najava brisanja subjekta", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
+                case 13:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.Post;
+                    entity.UpdateDate = DateTime.Now;
+                    entity.Organization.MerDeliveryDetail.RequiredPostalService = true;
+                    entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation = "ŽELE POŠTOM";
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.Post, entityId);
+                    _acquireEmailMethodHelpers.UpdateStatus(AcquireEmailStatusEnum.Verified, entity.Organization.MerId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Žele primati eRačune poštom", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
             }
             return Redirect(Request.UrlReferrer?.ToString());
         }
@@ -343,17 +361,19 @@ namespace MojCRM.Areas.HelpDesk.Controllers
 
                     if ((vat = ws.Cells[i, 1].Value) != null)
                     {
-                        if (_db.Organizations.Any(o => (o.SubjectBusinessUnit == "" || o.SubjectBusinessUnit == "11"/*DHL hack/fix*/) && o.VAT == vat.ToString()))
+                        string vatTemp = vat.ToString();
+
+                        if (_db.Organizations.Any(o => (o.SubjectBusinessUnit == "" || o.SubjectBusinessUnit == "11"/*DHL hack/fix*/) && o.VAT == vatTemp))
                         {
-                            validVats.Add(vat.ToString());
-                            ImportEntities(campaignId, vat.ToString());
+                            validVats.Add(vatTemp);
+                            ImportEntities(campaignId, vatTemp);
                             importedEntities++;
 
                             validEntities++;
                         }
                         else
                         {
-                            invalidVats.Add(vat.ToString());
+                            invalidVats.Add(vatTemp);
                             invalidEntities++;
                         }
                     }
@@ -513,6 +533,9 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     else if (organization.MerDeliveryDetail.AcquiredReceivingInformation ==
                              "NEMA ISPRAVNOG BROJA TELEFONA")
                         entityStatusEnum = AcquireEmailEntityStatusEnum.WrongTelephoneNumber;
+                    else if (organization.MerDeliveryDetail.AcquiredReceivingInformation ==
+                             "ŽELE POŠTOM")
+                        entityStatusEnum = AcquireEmailEntityStatusEnum.Post;
                     else
                         entityStatusEnum = AcquireEmailEntityStatusEnum.AcquiredInformation;
                     break;

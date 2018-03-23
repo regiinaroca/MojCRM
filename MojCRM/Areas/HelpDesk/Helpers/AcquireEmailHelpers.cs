@@ -76,6 +76,18 @@ namespace MojCRM.Areas.HelpDesk.Helpers
             _db.SaveChanges();
         }
 
+        public void UpdateStatus(AcquireEmail.AcquireEmailStatusEnum status, int organizationId)
+        {
+            var entities = _db.AcquireEmails.Where(x => x.RelatedOrganizationId == organizationId);
+
+            foreach (var acquireEmail in entities)
+            {
+                acquireEmail.AcquireEmailStatus = status;
+                acquireEmail.UpdateDate = DateTime.Now;
+            }
+            _db.SaveChanges();
+        }
+
         public void UpdateWrongTelephoneNumberEntities(int? organizationId)
         {
             var entities = _db.AcquireEmails.Where(x => x.RelatedOrganizationId == organizationId);

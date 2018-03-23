@@ -146,6 +146,24 @@ namespace MojCRM.Areas.Campaigns.ViewModels
                     case AcquireEmail.AcquireEmailEntityStatusEnum.WrongTelephoneNumber:
                         status = "Neispravan kontakt broj";
                         break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.PoslovnaHrvatska:
+                        status = "Kontakt u bazi";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.NoTelehoneNumber:
+                        status = "Ne postoji ispravan kontakt broj";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.Bankruptcy:
+                        status = "Subjekt u stečaju / likvidaciji";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.NoFinancialAccount:
+                        status = "Subjekt nema žiro račun";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.ToBeClosed:
+                        status = "Najava brisanja subjekta";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.Post:
+                        status = "Žele primati eRačune poštom";
+                        break;
                     default:
                         status = "Status unosa";
                         break;

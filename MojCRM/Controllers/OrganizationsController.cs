@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using Newtonsoft.Json;
 using System.Text;
 using MojCRM.Areas.HelpDesk.Helpers;
+using MojCRM.Areas.HelpDesk.Models;
 using MojCRM.Areas.Sales.Helpers;
 
 namespace MojCRM.Controllers
@@ -548,12 +549,15 @@ namespace MojCRM.Controllers
         [HttpPost]
         public JsonResult MarkAsPostalService(int merId, bool unmark = false)
         {
-            var organization = _db.MerDeliveryDetails.Find(merId);
+            var organization = _db.MerDeliveryDetails.First(x => x.MerId == merId);
+            var acquireEmailEntity = _db.AcquireEmails.First(x => x.RelatedOrganizationId == merId);
 
             organization.RequiredPostalService = !unmark;
             organization.AcquiredReceivingInformation = !unmark ? "ŽELE POŠTOM" : String.Empty;
             organization.Organization.LastUpdatedBy = User.Identity.Name;
             organization.Organization.UpdateDate = DateTime.Now;
+            _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmail.AcquireEmailEntityStatusEnum.Post, acquireEmailEntity.Id);
+            _acquireEmailMethodHelpers.UpdateStatus(AcquireEmail.AcquireEmailStatusEnum.Verified, merId);
             _db.SaveChanges();
 
             return Json(new { Status = "OK" });

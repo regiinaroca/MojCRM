@@ -96,7 +96,10 @@ namespace MojCRM.Areas.HelpDesk.Models
             NoFinancialAccount,
 
             [Description("Najava brisanja subjekta")]
-            ToBeClosed
+            ToBeClosed,
+
+            [Description("Žele primati eRačune poštom")]
+            Post
         }
 
         public string AcquireEmailEntityStatusString
@@ -118,6 +121,7 @@ namespace MojCRM.Areas.HelpDesk.Models
                     case AcquireEmailEntityStatusEnum.Bankruptcy: return "Subjekt u stečaju / likvidaciji";
                     case AcquireEmailEntityStatusEnum.NoFinancialAccount: return "Subjekt nema žiro račun";
                     case AcquireEmailEntityStatusEnum.ToBeClosed: return "Najava brisanja subjekta";
+                    case AcquireEmailEntityStatusEnum.Post: return "Žele primati eRačune poštom";
                 }
                 return "Status unosa";
             }
