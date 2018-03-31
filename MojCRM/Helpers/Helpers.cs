@@ -184,70 +184,76 @@ namespace MojCRM.Helpers
 
             foreach (var organization in forUpdate)
             {
-                if (organization.Organization.VAT.StartsWith("AT"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.At;
-                else if (organization.Organization.VAT.StartsWith("BE"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Be;
-                else if (organization.Organization.VAT.StartsWith("BG"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Bg;
-                else if (organization.Organization.VAT.StartsWith("CY"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Cy;
-                else if (organization.Organization.VAT.StartsWith("CZ"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Cz;
-                else if (organization.Organization.VAT.StartsWith("DE"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.De;
-                else if (organization.Organization.VAT.StartsWith("DK"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Dk;
-                else if (organization.Organization.VAT.StartsWith("EE"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Ee;
-                else if (organization.Organization.VAT.StartsWith("EL"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.El;
-                else if (organization.Organization.VAT.StartsWith("ES"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Es;
-                else if (organization.Organization.VAT.StartsWith("FI"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Fi;
-                else if (organization.Organization.VAT.StartsWith("FR"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Fr;
-                else if (organization.Organization.VAT.StartsWith("GB"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Gb;
-                else if (organization.Organization.VAT.StartsWith("HU"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Hu;
-                else if (organization.Organization.VAT.StartsWith("IE"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Ie;
-                else if (organization.Organization.VAT.StartsWith("IT"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.It;
-                else if (organization.Organization.VAT.StartsWith("LT"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Lt;
-                else if (organization.Organization.VAT.StartsWith("LU"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Lu;
-                else if (organization.Organization.VAT.StartsWith("LV"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Lv;
-                else if (organization.Organization.VAT.StartsWith("MT"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Mt;
-                else if (organization.Organization.VAT.StartsWith("NL"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Nl;
-                else if (organization.Organization.VAT.StartsWith("PL"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Pl;
-                else if (organization.Organization.VAT.StartsWith("PT"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Pt;
-                else if (organization.Organization.VAT.StartsWith("RO"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Ro;
-                else if (organization.Organization.VAT.StartsWith("SE"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Se;
-                else if (organization.Organization.VAT.StartsWith("SI"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Si;
-                else if (organization.Organization.VAT.StartsWith("SK"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Sk;
-                else if (organization.Organization.VAT.StartsWith("AT"))
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.At;
-                else
-                    organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Hr;
-
+                UpdateCountry(organization.MerId);
                 updated++;
             }
             _db.SaveChanges();
 
             return updated;
+        }
+
+        public void UpdateCountry(int organizationId)
+        {
+            var organization = _db.OrganizationDetails.First(x => x.MerId == organizationId);
+
+            if (organization.Organization.VAT.StartsWith("AT"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.At;
+            else if (organization.Organization.VAT.StartsWith("BE"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Be;
+            else if (organization.Organization.VAT.StartsWith("BG"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Bg;
+            else if (organization.Organization.VAT.StartsWith("CY"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Cy;
+            else if (organization.Organization.VAT.StartsWith("CZ"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Cz;
+            else if (organization.Organization.VAT.StartsWith("DE"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.De;
+            else if (organization.Organization.VAT.StartsWith("DK"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Dk;
+            else if (organization.Organization.VAT.StartsWith("EE"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Ee;
+            else if (organization.Organization.VAT.StartsWith("EL"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.El;
+            else if (organization.Organization.VAT.StartsWith("ES"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Es;
+            else if (organization.Organization.VAT.StartsWith("FI"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Fi;
+            else if (organization.Organization.VAT.StartsWith("FR"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Fr;
+            else if (organization.Organization.VAT.StartsWith("GB"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Gb;
+            else if (organization.Organization.VAT.StartsWith("HU"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Hu;
+            else if (organization.Organization.VAT.StartsWith("IE"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Ie;
+            else if (organization.Organization.VAT.StartsWith("IT"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.It;
+            else if (organization.Organization.VAT.StartsWith("LT"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Lt;
+            else if (organization.Organization.VAT.StartsWith("LU"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Lu;
+            else if (organization.Organization.VAT.StartsWith("LV"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Lv;
+            else if (organization.Organization.VAT.StartsWith("MT"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Mt;
+            else if (organization.Organization.VAT.StartsWith("NL"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Nl;
+            else if (organization.Organization.VAT.StartsWith("PL"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Pl;
+            else if (organization.Organization.VAT.StartsWith("PT"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Pt;
+            else if (organization.Organization.VAT.StartsWith("RO"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Ro;
+            else if (organization.Organization.VAT.StartsWith("SE"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Se;
+            else if (organization.Organization.VAT.StartsWith("SI"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Si;
+            else if (organization.Organization.VAT.StartsWith("SK"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Sk;
+            else if (organization.Organization.VAT.StartsWith("AT"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.At;
+            else
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Hr;
         }
     }
 }

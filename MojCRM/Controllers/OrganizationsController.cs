@@ -182,7 +182,8 @@ namespace MojCRM.Controllers
                             {
                                 MerId = result.Id,
                                 TotalSent = result.TotalSent,
-                                TotalReceived = result.TotalReceived
+                                TotalReceived = result.TotalReceived,
+                                AcquiredReceivingInformation = string.Empty
                             });
                             _db.OrganizationDetails.Add(new OrganizationDetail
                             {

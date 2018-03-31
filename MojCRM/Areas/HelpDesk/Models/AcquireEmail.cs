@@ -121,7 +121,7 @@ namespace MojCRM.Areas.HelpDesk.Models
                     case AcquireEmailEntityStatusEnum.Bankruptcy: return "Subjekt u stečaju / likvidaciji";
                     case AcquireEmailEntityStatusEnum.NoFinancialAccount: return "Subjekt nema žiro račun";
                     case AcquireEmailEntityStatusEnum.ToBeClosed: return "Najava brisanja subjekta";
-                    case AcquireEmailEntityStatusEnum.Post: return "Žele primati eRačune poštom";
+                    case AcquireEmailEntityStatusEnum.Post: return "POŠTA";
                 }
                 return "Status unosa";
             }

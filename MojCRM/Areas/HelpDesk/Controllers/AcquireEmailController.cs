@@ -283,8 +283,8 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 case 7:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.WrongTelephoneNumber;
                     entity.UpdateDate = DateTime.Now;
-                    entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation = "NEMA ISPRAVNOG BROJA TELEFONA";
-                    entity.Organization.MerDeliveryDetail.AcquiredReceivingInformationIsVerified = true;
+                    //entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation = "NEMA ISPRAVNOG BROJA TELEFONA";
+                    //entity.Organization.MerDeliveryDetail.AcquiredReceivingInformationIsVerified = true;
                     _acquireEmailMethodHelpers.UpdateWrongTelephoneNumberEntities(entity.RelatedOrganizationId);
                     _helper.LogActivity("Promijenjen status obrade. Novi status: Neispravan kontakt broj", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
