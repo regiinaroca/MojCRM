@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
-using System.Web.UI.WebControls;
+using MojCRM.Areas.Campaigns.Models;
+using MojCRM.Areas.Sales.Models;
+using MojCRM.Models;
 using static MojCRM.Areas.Sales.Models.Opportunity;
 
 namespace MojCRM.Areas.Sales.Helpers
@@ -10,7 +11,7 @@ namespace MojCRM.Areas.Sales.Helpers
     public class OpportunityNoteHelper
     {
         public string[] NoteTemplates { get; set; }
-        public int? RelatedOpportunityId { get; set; }
+        public int RelatedOpportunityId { get; set; }
         public string User { get; set; }
         public string Contact { get; set; }
         public string Note { get; set; }
@@ -87,5 +88,49 @@ namespace MojCRM.Areas.Sales.Helpers
         public int? OrganizationId { get; set; }
         public string AssignedTo { get; set; }
         public bool IsAssigned { get; set; }
+    }
+
+    public class CreateOpportunityViewModel
+    {
+        [Display(Name = "Naziv prodajne prilike")]
+        public string OpportunityTitle { get; set; }
+
+        [Display(Name = "Opis prodajne prilike")]
+        public string OpportunityDescription { get; set; }
+
+        [Display(Name = "ID tvrtke")]
+        public int RelatedCompanyId { get; set; }
+
+        [Display(Name = "Pokrenuo")]
+        public string CreatedBy { get; set; }
+
+        [Display(Name = "Ulazni kanal")]
+        public OpportunityEntryChannelEnum OpportunityEntryChanel { get; set; }
+    }
+
+    public class OpportunityHelperMethods
+    {
+        private readonly ApplicationDbContext _db = new ApplicationDbContext();
+
+        public void UpdateClosedSubjectOpportunities(int organizationId)
+        {
+            var opportunities = _db.Opportunities.Where(o => o.RelatedOrganizationId == organizationId);
+
+            foreach (var opportunity in opportunities)
+            {
+                opportunity.OpportunityStatus = OpportunityStatusEnum.ClosedSubject;
+                opportunity.UpdateDate = DateTime.Now;
+
+                _db.OpportunityNotes.Add(new OpportunityNote()
+                {
+                    RelatedOpportunityId = opportunity.OpportunityId,
+                    User = @"Moj-CRM",
+                    Note = @"Prodajnoj prilici je promijenjen status jer je administrator označio povezani subjekt kao zatvoren.",
+                    InsertDate = DateTime.Now,
+                    Contact = String.Empty
+                });
+            }
+            _db.SaveChanges();
+        }
     }
 }

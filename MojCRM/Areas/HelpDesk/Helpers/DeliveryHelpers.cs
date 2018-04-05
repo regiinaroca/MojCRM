@@ -1,9 +1,8 @@
-﻿using MojCRM.Models;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using MojCRM.Areas.HelpDesk.Models;
+using MojCRM.Models;
 
 namespace MojCRM.Areas.HelpDesk.Helpers
 {
@@ -55,5 +54,25 @@ namespace MojCRM.Areas.HelpDesk.Helpers
         public int ReceiverId { get; set; }
         public int TicketId { get; set; }
         public int? ContactId { get; set; }
+    }
+
+    public class DeliveryIndexViewModel
+    {
+        public IQueryable<Delivery> Tickets { get; set; }
+        public virtual IQueryable<ApplicationUser> Users { get; set; }
+        public IQueryable<SelectListItem> DeliveryAgents
+        {
+            get
+            {
+                var list = (from u in Users
+                    where u.Email != String.Empty
+                    select new SelectListItem()
+                    {
+                        Text = u.UserName,
+                        Value = u.UserName
+                    });
+                return list;
+            }
+        }
     }
 }

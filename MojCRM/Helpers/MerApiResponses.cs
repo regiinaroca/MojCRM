@@ -46,7 +46,7 @@ namespace MojCRM.Helpers
         public string PrimateljOib { get; set; }
         public string PrimateljNaziv { get; set; }
         public string EmailPrimatelja { get; set; }
-        public int TotalReceived { get; set; } // No. of total documents with DocumentStatus = 40
+        public int? TotalReceived { get; set; } // No. of total documents with DocumentStatus = 40
     }
 
     //DocumentHistory
@@ -116,14 +116,14 @@ namespace MojCRM.Helpers
         public int Id { get; set; }
         public string ContractNumber { get; set; }
         public string CompanyId { get; set; }
-        public int? SubjektId { get; set; }
+        public int SubjektId { get; set; }
         public string ProposalNumber { get; set; }
-        public DateTime? DateFrom { get; set; }
-        public DateTime? DateTo { get; set; }
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
         public int GracePeriod { get; set; }
         public string Note { get; set; }
         public int? UserId { get; set; }
-        public DateTime? ActivatedDate { get; set; }
+        public DateTime ActivatedDate { get; set; }
         public int? ActivatedUserId { get; set; }
         public DateTime? DeactivatedDate { get; set; }
         public int? DeactivatedUserId { get; set; }
@@ -153,5 +153,16 @@ namespace MojCRM.Helpers
         public DateTime Created { get; set; }
         public DateTime? Modified { get; set; }
         public DateTime Changed { get; set; }
+    }
+
+    public class MerGetInaReportResponse
+    {
+        public string PosiljateljOib { get; set; }
+        public string PosiljateljNaziv { get; set; }
+        public string InterniBroj { get; set; }
+        public DateTime? DatumOtpreme { get; set; }
+        public DateTime? DatumDostave { get; set; }
+        public int Id { get; set; }
+        public int DokumentStatusId { get; set; }
     }
 }

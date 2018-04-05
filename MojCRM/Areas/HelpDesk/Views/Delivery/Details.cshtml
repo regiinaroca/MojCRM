@@ -1,28 +1,11 @@
 ﻿@model MojCRM.Areas.HelpDesk.ViewModels.DeliveryDetailsViewModel
 @using System.Web.UI.WebControls
-@using MojCRM.Helpers
 
 @{
     ViewBag.Title = "Detalji";
     Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 }
 
-@{ 
-    var deliveryAgents = new List<ListItem>
-    {
-        new ListItem{ Value = "Darko Glatki", Text = "Darko Glatki"},
-        new ListItem{ Value = "Filip Troskot", Text = "Filip Troskot"},
-        new ListItem{ Value = "Filip Karmazen", Text = "Filip Karmazen"},
-        new ListItem{ Value = "Katarina Ceković", Text = "Katarina Ceković"},
-        new ListItem{ Value = "Viktor Jajtić", Text = "Viktor Jajtić"},
-        new ListItem{ Value = "Filip Vučemilović Grgić", Text = "Filip Vučemilović Grgić"},
-        new ListItem{ Value = "Nikolina Ćosić", Text = "Nikolina Ćosić"},
-        new ListItem{ Value = "Ivan Boban", Text = "Ivan Boban"},
-        new ListItem{ Value = "Ana Šimac", Text = "Ana Šimac"},
-        new ListItem{ Value = "Matija Ekart", Text = "Matija Ekart"},
-        new ListItem{ Value = "Filip Klarić", Text = "Filip Klarić"}
-    };
-}
 
 <!--Modal - CreateContact-->
 @using (Html.BeginForm("CreateFromDelivery", "Contact", new { area = ""}, FormMethod.Post))
@@ -183,10 +166,10 @@
 @{
     var deliveryTemplates = new List<ListItem>
         {
-            new ListItem {Text = "Preuzet će", Value = "Preuzet će" },
-            new ListItem {Text = "Promjena e-maila", Value = "Promjena e-maila" },
-            new ListItem {Text = "Ponovno poslana obavijest o dostavi", Value = "Ponovno poslana obavijest o dostavi" },
-            new ListItem {Text = "Nisu se javili", Value = "Nisu se javili" },
+            new ListItem {Text = @"Preuzet će", Value = @"Preuzet će" },
+            new ListItem {Text = @"Promjena e-maila", Value = @"Promjena e-maila" },
+            new ListItem {Text = @"Ponovno poslana obavijest o dostavi", Value = @"Ponovno poslana obavijest o dostavi" },
+            new ListItem {Text = @"Nisu se javili", Value = @"Nisu se javili" },
         };
 }
 
@@ -228,7 +211,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label for="delivery-detail-template">Napomena</label>
-                                <div id="delivery-detail-contact">
+                                <div id="delivery-detail-template">
                                     @Html.DropDownList("DetailTemplate", new SelectList(deliveryTemplates, "Value", "Text"), "Odaberi napomenu",new { @class = "form-control" })
                                 </div>
                             </div>
@@ -304,7 +287,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label for="delivery-detail-id">Odaberi staru napomenu za izmjenu</label>
-                                <div id="delivery-detail-contact">
+                                <div id="delivery-detail-id">
                                     @Html.DropDownList("DetailNoteId", Model.DeliveryDetailsIds, new { @class = "form-control" })
                                 </div>
                             </div>
@@ -395,7 +378,7 @@
 <!--Modal - DeleteDetail-->
 @using (Html.BeginForm("DeleteDetail", "Delivery", FormMethod.Post))
 {
-    @Html.AntiForgeryToken();
+    @Html.AntiForgeryToken()
     <div class="modal fade" id="DeleteDetail" tabindex="-1" role="dialog" aria-labelledby="DeleteDetail">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content panel-danger" style="overflow:hidden">
@@ -463,8 +446,8 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label for="reassign">Dodijeli karticu drugom agentu</label>
-                                <div id="unassign">
-                                    @Html.DropDownList("ReassignedTo", new SelectList(deliveryAgents, "Value", "Text"), "Dodijeljeno agentu", new { @class = "form-control" })
+                                <div id="reassign">
+                                    @Html.DropDownList("ReassignedTo", Model.DeliveryAgents, "-- Odaberi agenta --", new { @class = "form-control col-md-10" })
                                 </div>
                             </div>
                             <div class="hidden">
@@ -503,40 +486,40 @@
                         <th>Datum slanja</th>
                         <th></th>
                     </tr>
-                    @foreach (var Document in Model.DocumentHistory)
+                    @foreach (var document in Model.DocumentHistory)
                     {
                         <tr>
-                            <td class="hidden">@Document.Id</td>
-                            <td style="width:10%;">@Document.DocumentTypeIdString</td>
-                            @if (Document.DocumentStatusString == "Poslan")
+                            <td class="hidden">@document.Id</td>
+                            <td style="width:10%;">@document.DocumentTypeIdString</td>
+                            @if (document.DocumentStatusString == "Poslan")
 	                        {
-		                        <td style="width:10%;"><span class="label label-warning">@Html.Raw(Document.DocumentStatusString)</span></td>
+		                        <td style="width:10%;"><span class="label label-warning">@Html.Raw(document.DocumentStatusString)</span></td>
 	                        }
-                            @if (Document.DocumentStatusString == "Dostavljen")
+                            @if (document.DocumentStatusString == "Dostavljen")
                             {
-                                <td style="width:10%;"><span class="label label-success">@Html.Raw(Document.DocumentStatusString)</span></td>
+                                <td style="width:10%;"><span class="label label-success">@Html.Raw(document.DocumentStatusString)</span></td>
                             }
-                            @if (Document.DocumentStatusString == "Ispisan")
+                            @if (document.DocumentStatusString == "Ispisan")
                             {
-                                <td style="width:10%;"><span class="label label-info">@Html.Raw(Document.DocumentStatusString)</span></td>
+                                <td style="width:10%;"><span class="label label-info">@Html.Raw(document.DocumentStatusString)</span></td>
                             }
-                            @if (Document.DocumentStatusString == "Neuspješan")
+                            @if (document.DocumentStatusString == "Neuspješan")
                             {
-                                <td style="width:10%;"><span class="label label-danger">@Html.Raw(Document.DocumentStatusString)</span></td>
+                                <td style="width:10%;"><span class="label label-danger">@Html.Raw(document.DocumentStatusString)</span></td>
                             }
-                            <td style="width:25%;">@Document.PosiljateljNaziv</td>
-                            <td style="width:20%;">@Document.EmailPrimatelja</td>
-                            <td style="width:15%;">@Document.InterniBroj</td>
-                            @if (Document.DatumOtpreme != null)
+                            <td style="width:25%;">@document.PosiljateljNaziv</td>
+                            <td style="width:20%;">@document.EmailPrimatelja</td>
+                            <td style="width:15%;">@document.InterniBroj</td>
+                            @if (document.DatumOtpreme != null)
                             {
-                                <td style="width:15%;">@Document.DatumOtpreme</td>
+                                <td style="width:15%;">@document.DatumOtpreme</td>
                             }
-                            @if (Document.DatumOtpreme != null)
+                            @if (document.DatumOtpreme != null)
                             {
                                 <td style="width:5%;">
                                     <div class="btn-group" style="display:inline-grid;" role="group">
-                                        <a href="@Url.RouteUrl(new { action = "Resend", controller = "Delivery", area = "HelpDesk", Model.TicketId, MerElectronicId = Document.Id, Model.ReceiverId, User.Identity.Name, IsTicket = false, returnUrl = Request.Url })" class="btn btn-sm btn-primary" title="Ponovno slanje obavijesti o dostavi eRačuna"><i class="glyphicon glyphicon-share-alt"></i></a>
-                                        <a id="changeEmailNoTicket" method="post" title="Izmijeni e-mail adresu primatelja" class="btn btn-sm btn-primary" data-mer-id="@Document.Id" style="margin:0px;" data-old-email="@Document.EmailPrimatelja" data-ticket-id="@Html.Raw(Model.TicketId)" data-receiver-id="@Html.Raw(Model.ReceiverId)" data-invoice-number="@Document.InterniBroj" onclick="javascript: ChangeEmailNoTicket()" data-dismiss="modal" data-toggle="modal" href="#ChangeEmailNoTicket"><i class="glyphicon glyphicon-envelope"></i></a>
+                                        <a href="@Url.RouteUrl(new { action = "Resend", controller = "Delivery", area = "HelpDesk", Model.TicketId, MerElectronicId = document.Id, Model.ReceiverId, User.Identity.Name, IsTicket = false, returnUrl = Request.Url })" class="btn btn-sm btn-primary" title="Ponovno slanje obavijesti o dostavi eRačuna"><i class="glyphicon glyphicon-share-alt"></i></a>
+                                        <a id="changeEmailNoTicket" method="post" title="Izmijeni e-mail adresu primatelja" class="btn btn-sm btn-primary" data-mer-id="@document.Id" style="margin:0px;" data-old-email="@document.EmailPrimatelja" data-ticket-id="@Html.Raw(Model.TicketId)" data-receiver-id="@Html.Raw(Model.ReceiverId)" data-invoice-number="@document.InterniBroj" onclick="javascript: ChangeEmailNoTicket()" data-dismiss="modal" data-toggle="modal" href="#ChangeEmailNoTicket"><i class="glyphicon glyphicon-envelope"></i></a>
                                     </div>
                                 </td>
                             }
@@ -568,13 +551,13 @@
                         <th>Agent</th>
                         <th>Datum aktivnosti</th>
                     </tr>
-                    @foreach (var Activity in Model.RelatedActivities)
+                    @foreach (var activity in Model.RelatedActivities)
                                 {
                         <tr>
-                            <td>@Activity.ActivityTypeString</td>
-                            <td>@Activity.Description</td>
-                            <td>@Activity.User</td>
-                            <td>@Activity.InsertDate</td>
+                            <td>@activity.ActivityTypeString</td>
+                            <td>@activity.Description</td>
+                            <td>@activity.User</td>
+                            <td>@activity.InsertDate</td>
                         </tr>
                     }
                 </table>
@@ -611,13 +594,13 @@
                         <th>@Html.DisplayNameFor(model => model.DeliveryDetailContact)</th>
                         <th></th>
                     </tr>
-                    @foreach (var Detail in Model.RelatedDeliveryDetails)
+                    @foreach (var detail in Model.RelatedDeliveryDetails)
                                 {
                         <tr>
-                            <td>@Detail.InsertDate</td>
-                            <td>@Detail.User</td>
-                            <td>@Detail.DetailNote</td>
-                            <td>@Detail.Contact</td>
+                            <td>@detail.InsertDate</td>
+                            <td>@detail.User</td>
+                            <td>@detail.DetailNote</td>
+                            <td>@detail.Contact</td>
                             <td>
                                 <a href="#EditDetail" data-toggle="modal" data-dismiss="modal"><i class="fa fa-edit"></i></a>
                             </td>
@@ -655,18 +638,18 @@
                         <th>@Html.DisplayNameFor(model => model.DeliveryContactAgent)</th>
                         <th></th>
                     </tr>
-                    @foreach (var Contact in Model.RelatedDeliveryContacts)
+                    @foreach (var contact in Model.RelatedDeliveryContacts)
                             {
                         <tr>
-                            <td style="width:15%;">@Contact.ContactFirstName</td>
-                            <td style="width:15%;">@Contact.ContactLastName</td>
-                            <td style="width:15%;">@Contact.TelephoneNumber;  @Contact.MobilePhoneNumber</td>
-                            <td style="width:35%;"><a data-email="@Contact.Email" data-ticket-id="@Html.Raw(Model.TicketId)" name="contact-email" class="delivery-mail" href="mailto:@Contact.Email">@Contact.Email</a></td>
-                            <td style="width:15%;">@Contact.User</td>
+                            <td style="width:15%;">@contact.ContactFirstName</td>
+                            <td style="width:15%;">@contact.ContactLastName</td>
+                            <td style="width:15%;">@contact.TelephoneNumber;  @contact.MobilePhoneNumber</td>
+                            <td style="width:35%;"><a data-email="@contact.Email" data-ticket-id="@Html.Raw(Model.TicketId)" name="contact-email" class="delivery-mail" href="mailto:@contact.Email">@contact.Email</a></td>
+                            <td style="width:15%;">@contact.User</td>
                             <td style="width:55%;">
                                 <a href="#AddDetail" data-toggle="modal" data-dismiss="modal"><i style="color: forestgreen" class="fa fa-phone-square"></i></a>
-                                <a data-dismiss="modal" data-receiver-id="@Html.Raw(Model.ReceiverId)" data-contact="@Html.Raw(Contact.ContactId)" data-detail-template="Informativni poziv" data-detail-note="" data-ticket-id="@Model.TicketId" data-invoice-number="@Model.InvoiceNumber" data-identifier-short="2" href="#" class="add-successfull-call-short"><i style="color: lightgreen" class="fa fa-phone-square"></i></a>
-                                <a data-dismiss="modal" data-receiver-id="@Html.Raw(Model.ReceiverId)" data-contact="@Html.Raw(Contact.ContactId)" data-detail-template="Nisu se javili" data-detail-note="" data-ticket-id="@Model.TicketId" data-invoice-number="@Model.InvoiceNumber" data-identifier="3" href="#" class="add-unsuccessfull-call"><i style="color: gold" class="fa fa-phone-square"></i></a>
+                                <a data-dismiss="modal" data-receiver-id="@Html.Raw(Model.ReceiverId)" data-contact="@Html.Raw(contact.ContactId)" data-detail-template="Informativni poziv" data-detail-note="" data-ticket-id="@Model.TicketId" data-invoice-number="@Model.InvoiceNumber" data-identifier-short="2" href="#" class="add-successfull-call-short"><i style="color: lightgreen" class="fa fa-phone-square"></i></a>
+                                <a data-dismiss="modal" data-receiver-id="@Html.Raw(Model.ReceiverId)" data-contact="@Html.Raw(contact.ContactId)" data-detail-template="Nisu se javili" data-detail-note="" data-ticket-id="@Model.TicketId" data-invoice-number="@Model.InvoiceNumber" data-identifier="3" href="#" class="add-unsuccessfull-call"><i style="color: gold" class="fa fa-phone-square"></i></a>
                             </td>
                         </tr>
                     }
@@ -697,37 +680,37 @@
                         <th>@Html.DisplayNameFor(model => model.SentDate)</th>
                         <th></th>
                     </tr>
-                    @foreach (var Invoice in Model.RelatedInvoices)
+                    @foreach (var invoice in Model.RelatedInvoices)
                             {
                         <tr>
-                            <td>@Invoice.Sender.SubjectName</td>
-                            @if (Invoice.DocumentStatus == 10)
+                            <td>@invoice.Sender.SubjectName</td>
+                            @if (invoice.DocumentStatus == 10)
                             {
-                                <td>@Invoice.MerDocumentTypeIdString<br /><span class="label label-info">@Invoice.DocumentStatusString</span></td>
+                                <td>@invoice.MerDocumentTypeIdString<br /><span class="label label-info">@invoice.DocumentStatusString</span></td>
                             }
-                            @if (Invoice.DocumentStatus == 30)
+                            @if (invoice.DocumentStatus == 30)
                             {
-                                <td>@Invoice.MerDocumentTypeIdString<br /><span class="label label-warning">@Invoice.DocumentStatusString</span></td>
+                                <td>@invoice.MerDocumentTypeIdString<br /><span class="label label-warning">@invoice.DocumentStatusString</span></td>
                             }
-                            @if (Invoice.DocumentStatus == 40)
+                            @if (invoice.DocumentStatus == 40)
                             {
-                                <td>@Invoice.MerDocumentTypeIdString<br /><span class="label label-success">@Invoice.DocumentStatusString</span></td>
+                                <td>@invoice.MerDocumentTypeIdString<br /><span class="label label-success">@invoice.DocumentStatusString</span></td>
                             }
-                            @if (Invoice.DocumentStatus == 50)
+                            @if (invoice.DocumentStatus == 50)
                             {
-                                <td>@Invoice.MerDocumentTypeIdString<br /><span class="label label-danger">@Invoice.DocumentStatusString</span></td>
+                                <td>@invoice.MerDocumentTypeIdString<br /><span class="label label-danger">@invoice.DocumentStatusString</span></td>
                             }
-                            @if (Invoice.DocumentStatus == 55)
+                            @if (invoice.DocumentStatus == 55)
                             {
-                                <td>@Invoice.MerDocumentTypeIdString<br /><span class="label label-info">@Invoice.DocumentStatusString</span></td>
+                                <td>@invoice.MerDocumentTypeIdString<br /><span class="label label-info">@invoice.DocumentStatusString</span></td>
                             }
-                            <td>@Invoice.BuyerEmail</td>
-                            <td>@Invoice.InvoiceNumber</td>
-                            <td>@Invoice.SentDate.ToShortDateString()</td>
+                            <td>@invoice.BuyerEmail</td>
+                            <td>@invoice.InvoiceNumber</td>
+                            <td>@invoice.SentDate.ToShortDateString()</td>
                             <td>
-                                <a href="@Url.RouteUrl(new { action = "Details", controller = "Delivery", area = "HelpDesk", Invoice.Id, Invoice.ReceiverId, User.Identity.Name, returnUrl = Request.Url })"><i class="fa fa-edit"></i></a>
-                                <a href="@Url.RouteUrl(new { action = "UpdateStatusIndex", controller = "Delivery", area = "HelpDesk", Invoice.MerElectronicId, returnUrl = Request.Url })"><i style="color: forestgreen" class="fa fa-refresh"></i></a>
-                                <a data-mer-id="@Html.Raw(Invoice.MerElectronicId)" href="#" class="remove-from-list-ajax"><i style="color: red" class="fa fa-remove"></i></a>
+                                <a href="@Url.RouteUrl(new { action = "Details", controller = "Delivery", area = "HelpDesk", invoice.Id, invoice.ReceiverId, User.Identity.Name, returnUrl = Request.Url })"><i class="fa fa-edit"></i></a>
+                                <a href="@Url.RouteUrl(new { action = "UpdateStatusIndex", controller = "Delivery", area = "HelpDesk", invoice.MerElectronicId, returnUrl = Request.Url })"><i style="color: forestgreen" class="fa fa-refresh"></i></a>
+                                <a data-mer-id="@Html.Raw(invoice.MerElectronicId)" href="#" class="remove-from-list-ajax"><i style="color: red" class="fa fa-remove"></i></a>
                             </td>
                         </tr>
                     }
@@ -788,16 +771,16 @@
                         <th>Vrijeme čitanja (s)</th>
                         <th>E-mail primatelja</th>
                     </tr>
-                    @foreach (var Opening in Model.PostmarkOpenings.Opens)
+                    @foreach (var opening in Model.PostmarkOpenings.Opens)
                             {
                         <tr>
-                            <td>@Opening.Client.Name</td>
-                            <td>@Opening.Client.Company</td>
-                            <td>@Opening.OS.Name</td>
-                            <td>@Opening.OS.Company</td>
-                            <td>@Opening.Platform</td>
-                            <td>@Opening.ReadSeconds</td>
-                            <td>@Opening.Recipient</td>
+                            <td>@opening.Client.Name</td>
+                            <td>@opening.Client.Company</td>
+                            <td>@opening.OS.Name</td>
+                            <td>@opening.OS.Company</td>
+                            <td>@opening.Platform</td>
+                            <td>@opening.ReadSeconds</td>
+                            <td>@opening.Recipient</td>
                         </tr>
                     }
                 </table>
@@ -831,18 +814,18 @@
                         <th>Naslov e-maila</th>
                         <th></th>
                     </tr>
-                    @foreach (var Bounce in Model.PostmarkBounces.Bounces)
+                    @foreach (var bounce in Model.PostmarkBounces.Bounces)
                     {
                         <tr>
-                            <td>@Bounce.Name</td>
-                            <td>@Bounce.Description</td>
-                            <td>@Bounce.Description</td>
-                            <td>@Bounce.Email</td>
-                            <td>@Bounce.BouncedAt</td>
-                            <td>@Bounce.Subject</td>
+                            <td>@bounce.Name</td>
+                            <td>@bounce.Description</td>
+                            <td>@bounce.Description</td>
+                            <td>@bounce.Email</td>
+                            <td>@bounce.BouncedAt</td>
+                            <td>@bounce.Subject</td>
                             @if (true)
                             {
-                                <td><a id="activateBounce" method="put" title="Aktivacija e-mail adrese" class="btn btn-sm btn-warning" data-bounce-id="@Html.Raw(Bounce.ID)" data-ticket-id="@Html.Raw(Model.TicketId)" onclick="javascript: PostmarkActivateBounce()"><i class="fa fa-check"></i></a></td>
+                                <td><a id="activateBounce" method="put" title="Aktivacija e-mail adrese" class="btn btn-sm btn-warning" data-bounce-id="@Html.Raw(bounce.ID)" data-ticket-id="@Html.Raw(Model.TicketId)" onclick="javascript: PostmarkActivateBounce()"><i class="fa fa-check"></i></a></td>
                             }
                         </tr>
                     }
@@ -915,7 +898,7 @@
 
 <h2 style="text-align:center"><strong>Detalji za preuzimanje dokumenta: @Html.DisplayFor(model => model.MerDocumentTypeIdString) @Model.InvoiceNumber (@Model.DocumentStatusString)</strong></h2>
 <br />
-@if (Model.IsAssigned == true)
+@if (Model.IsAssigned)
 {
     <h4 style="text-align:center; color:red">Ova kartica je dodijeljena agentu: <strong>@Model.AssignedTo</strong></h4>
 }
@@ -941,7 +924,7 @@
                 {
                     <a id="assign" method="post" title="Dodijeli karticu" class="btn btn-sm btn-default" data-ticket-id="@Html.Raw(Model.TicketId)" data-agent="@User.Identity.Name" onclick="javascript: Assign()"><i class="fa fa-check-circle-o"></i></a>
                 }
-                @if (Model.IsAssigned == true && (User.IsInRole("Management") || User.IsInRole ("Administrator") || User.IsInRole("Superadmin")))
+                @if (Model.IsAssigned && (User.IsInRole("Management") || User.IsInRole ("Administrator") || User.IsInRole("Superadmin")))
                 {
                     <button type="button" title="Promijeni dodjelu" class="btn btn-sm btn-default" data-toggle="modal" data-target="#Reassing" href="#Reassing"><i class="fa fa-mail-reply-all"></i></button>
                 }
@@ -983,6 +966,17 @@
         </div>
     </div>
     <br />
+    <div class="row">
+        <div class="col-md-4">
+            <strong>@Html.DisplayNameFor(model => model.TelephoneNumber)</strong>
+            @Model.TelephoneNumber
+        </div>
+        <div class="col-md-4">
+            <strong>@Html.DisplayNameFor(model => model.MobilePhoneNumber)</strong>
+            @Html.DisplayFor(model => model.MobilePhoneNumber)
+        </div>
+    </div>
+    <br />
     <br />
     <div class="row">
         <div class="col-md-10">
@@ -1003,10 +997,10 @@
     <hr />
     <h4><img src="~/Content/e_racun_logo_source.png" style="width:100px; height:30px" /></h4>
     <div class="row">
-        <div class="col-md-6">
+        @*<div class="col-md-6">
             <strong>@Html.DisplayNameFor(model => model.MerDeliveryDetailComment)</strong>
             @Html.DisplayFor(model => model.MerDeliveryDetailComment)
-        </div>
+        </div>*@
         <div class="col-md-6">
             <strong>@Html.DisplayNameFor(model => model.MerDeliveryDetailTelephone)</strong>
             @Html.DisplayFor(model => model.MerDeliveryDetailTelephone)
@@ -1032,7 +1026,7 @@
                 },
                 dataType: 'json'
             });
-        window.location.reload(true)
+        window.location.reload(true);
     });
     $(document).on("click", "a.add-successfull-call-short", function (e) {
         e.preventDefault();
@@ -1054,7 +1048,7 @@
             },
             dataType: 'json'
         });
-        window.location.reload(true)
+        window.location.reload(true);
     });
         $(document).on("click", "a.add-unsuccessfull-call", function (e) {
         e.preventDefault();
@@ -1076,8 +1070,8 @@
             },
             dataType: 'json'
         });
-        window.location.reload(true)
-    });
+            window.location.reload(true);
+        });
         $(document).on("click", "a.delivery-mail", function (e) {
         e.preventDefault();
         $.ajax({
@@ -1114,7 +1108,7 @@
                         },
                         dataType: 'json'
                     });
-                window.location.reload(true)
+                window.location.reload(true);
             });
         };
         function PostmarkActivateBounce() {
@@ -1136,7 +1130,7 @@
                     },
                     dataType: 'json'
                 });
-                window.location.reload(true)
+                window.location.reload(true);
             });
         };
 

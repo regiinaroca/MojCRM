@@ -1,0 +1,76 @@
+﻿@model MojCRM.Areas.Sales.Models.Quote
+@{
+    ViewBag.Title = "Kreirana ponuda";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+}
+
+<h2>Kreirana ponuda</h2>
+<br/>
+<div class="alert alert-info">
+    <p style="text-align: justify">
+        Ovaj pregled prikazuje podatke o kreiranoj ponudi.<br/>
+        Kako biste započeli dodavanje stavki na ponudu, molimo odaberite niže navedenu akciju.
+    </p>
+</div>
+<hr />
+<div>
+    <a title="Pregledaj detalje ponude" class="btn btn-sm btn-default" href="@Url.RouteUrl(new { action = "Details", controller = "Quotes", area = "Sales", Model.Id })"><i class="fa fa-bars"></i> Detalji</a>
+</div>
+<hr />
+<div>
+    <h4>Opći podaci</h4>
+    <div class="row">
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.QuoteNumber)</strong>
+            @Html.DisplayFor(model => model.QuoteNumber)
+        </div>
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.Organization.SubjectName)</strong>
+            <a href="@Url.RouteUrl(new {action = "Details", controller = "Organizations", area = "", Id = Model.RelatedOrganizationId})">@Model.Organization.SubjectName (@Model.Organization.VAT)</a>
+        </div>
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.AssignedTo)</strong>
+            @Html.DisplayFor(model => model.AssignedTo)
+        </div>
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.InsertDate)</strong>
+            @Html.DisplayFor(model => model.InsertDate)
+        </div>
+    </div>
+    <br/>
+    <h4>Podaci o trajanju i povezanoj kampanji</h4>
+    <div class="row">
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.StartDate)</strong>
+            @Model.StartDate.ToShortDateString()
+        </div>
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.EndDate)</strong>
+            @Model.EndDate.ToShortDateString()
+        </div>
+        <div class="col-md-6">
+            <strong>@Html.DisplayNameFor(model => model.Campaign.CampaignName)</strong>
+            @Html.DisplayFor(model => model.Campaign.CampaignName)
+        </div>
+    </div>
+    <br/>
+    <h4>Komercijalni podaci ponude</h4>
+    <div class="row">
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.QuoteTypeString)</strong>
+            @Html.DisplayFor(model => model.QuoteTypeString)
+        </div>
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.QuoteStatusString)</strong>
+            @Html.DisplayFor(model => model.QuoteStatusString)
+        </div>
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.QuoteSum)</strong>
+            @Html.DisplayFor(model => model.QuoteSum)
+        </div>
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.QuoteSumTotal)</strong>
+            @Html.DisplayFor(model => model.QuoteSumTotal)
+        </div>
+    </div>
+</div>

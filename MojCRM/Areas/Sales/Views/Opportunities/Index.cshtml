@@ -10,39 +10,41 @@
 @{ 
     var opportunityStatusList = new List<ListItem>
         {
-            new ListItem{ Value= "0", Text = "Kreirano"},
-            new ListItem{ Value= "6", Text = "Postojeći Moj-eRačun korisnik"},
-            new ListItem{ Value= "1", Text = "U kontaktu"},
-            new ListItem{ Value= "4", Text = "Potrebno dogovoriti sastanak"},
-            new ListItem{ Value= "5", Text = "Procesne poteškoće"},
-            new ListItem{ Value= "2", Text = "Kreiran lead"},
-            new ListItem{ Value= "7", Text = "FINA korisnik"},
-            new ListItem{ Value= "8", Text = "eFaktura korisnik"},
-            new ListItem{ Value= "3", Text = "Odbijeno"}
+            new ListItem{ Value= @"0", Text = @"Kreirano"},
+            new ListItem{ Value= @"6", Text = @"Postojeći Moj-eRačun korisnik"},
+            new ListItem{ Value= @"1", Text = @"U kontaktu"},
+            new ListItem{ Value= @"4", Text = @"Potrebno dogovoriti sastanak"},
+            new ListItem{ Value= @"5", Text = @"Procesne poteškoće"},
+            new ListItem{ Value= @"2", Text = @"Kreiran lead"},
+            new ListItem{ Value= @"7", Text = @"FINA korisnik"},
+            new ListItem{ Value= @"8", Text = @"eFaktura korisnik"},
+            new ListItem{ Value= @"3", Text = @"Odbijeno"},
+            new ListItem{ Value= @"9", Text = @"Zatvorena tvrtka"}
         };
     var opportunityRejectReasonList = new List<ListItem>
         {
-            new ListItem{ Value= "0", Text = "Ne želi navesti"},
-            new ListItem{ Value= "1", Text = "Nema interesa za uslugu"},
-            new ListItem{ Value= "2", Text = "Previsoka cijena"},
-            new ListItem{ Value= "3", Text = "Neadekvatna ponuda"},
-            new ListItem{ Value= "4", Text = "Koristi drugog posrednika"}
+            new ListItem{ Value= @"0", Text = @"Ne želi navesti"},
+            new ListItem{ Value= @"1", Text = @"Nema interesa za uslugu"},
+            new ListItem{ Value= @"2", Text = @"Previsoka cijena"},
+            new ListItem{ Value= @"3", Text = @"Neadekvatna ponuda"},
+            new ListItem{ Value= @"4", Text = @"Koristi drugog posrednika"}
         };
     var assigned = new List<ListItem>
         {
-            new ListItem{ Value = "1", Text = "Nedodijeljene"},
-            new ListItem{ Value = "2", Text = "Dodijeljene"}
+            new ListItem{ Value = @"1", Text = @"Nedodijeljene"},
+            new ListItem{ Value = @"2", Text = @"Dodijeljene"}
         };
     var salesAgents = new List<ListItem>
         {
-            new ListItem{ Value = "Josip Kovačec", Text = "Josip Kovačec"},
-            new ListItem{ Value = "Dominik Antonio Turudić", Text = "Dominik Antonio Turudić"},
-            new ListItem{ Value = "Ivan Tomljenović", Text = "Ivan Tomljenović"},
-            new ListItem{ Value = "Marin Štimac", Text = "Marin Štimac"},
-            new ListItem{ Value = "Karlo Vuljanko", Text = "Karlo Vuljanko"},
-            new ListItem{ Value = "Davor Hruban", Text = "Davor Hruban"},
-            new ListItem{ Value = "Diana Dragija", Text = "Diana Dragija"},
-            new ListItem{ Value = "Sonja Franjčić", Text = "Sonja Franjčić"}
+            new ListItem{ Value = @"Josip Kovačec", Text = @"Josip Kovačec"},
+            new ListItem{ Value = @"Dominik Antonio Turudić", Text = @"Dominik Antonio Turudić"},
+            new ListItem{ Value = @"Ivan Tomljenović", Text = @"Ivan Tomljenović"},
+            new ListItem{ Value = @"Marin Štimac", Text = @"Marin Štimac"},
+            new ListItem{ Value = @"Karlo Vuljanko", Text = @"Karlo Vuljanko"},
+            new ListItem{ Value = @"Davor Hruban", Text = @"Davor Hruban"},
+            new ListItem{ Value = @"Diana Dragija", Text = @"Diana Dragija"},
+            new ListItem{ Value = @"Sonja Franjčić", Text = @"Sonja Franjčić"},
+            new ListItem{ Value = @"Vedran Horvatinec", Text = @"Vedran Horvatinec"}
         };
 }
 
@@ -96,7 +98,7 @@
     <div class="col-md-3">
         <div class="form-group">
             <label for="opportunity-status-search">Status prilike</label>
-            <div id="opportunity-detail-contact">
+            <div id="opportunity-status-search">
                 @Html.DropDownList("OpportunityStatus", new SelectList(opportunityStatusList, "Value", "Text"), "Odaberi status prilike", new { @class = "form-control" })
             </div>
         </div>
@@ -104,7 +106,7 @@
     <div class="col-md-3">
         <div class="form-group">
             <label for="reject-reason-search">Razlog odbijanja</label>
-            <div>
+            <div id="reject-reason-search">
                 @Html.DropDownList("RejectReason", new SelectList(opportunityRejectReasonList, "Value", "Text"), "Odaberi razlog odbijanja", new { @class = "form-control" })
             </div>
         </div>
@@ -114,7 +116,7 @@
         <div class="col-md-3">
             <div class="form-group">
                 <label for="assigned-search">Dodijeljeno</label>
-                <div>
+                <div id="assigned-search">
                     @Html.DropDownList("Assigned", new SelectList(assigned, "Value", "Text"), "Odaberi", new { @class = "form-control" })
                 </div>
             </div>
@@ -122,7 +124,7 @@
         <div class="col-md-3">
             <div class="form-group">
                 <label for="assigned-to-search">Dodijeljeno agentu</label>
-                <div>
+                <div id="assigned-to-search">
                     @Html.DropDownList("AssignedTo", new SelectList(salesAgents, "Value", "Text"), "Dodijeljeno agentu", new { @class = "form-control" })
                 </div>
             </div>
@@ -157,7 +159,14 @@
 
 @Html.Grid(Model).Named("PopisProdajnihPrilika").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
 {
-columns.Add(m => m.RelatedCampaign.CampaignName).Encoded(false).Sanitized(false).Titled("Naziv kampanje").Sortable(true);
+columns.Add(m => m.RelatedCampaign.CampaignName).Encoded(false).Sanitized(false).Titled("Naziv kampanje").Sortable(true).RenderValueAs(m =>
+{
+    if (m.RelatedCampaignId == null)
+        return @<div><span>Slobodni unos - @m.OpportunityEntryChannelString</span>
+               </div>;
+    return @<div><span>@m.RelatedCampaign.CampaignName</span>
+           </div>;
+});
 columns.Add(m => m.OpportunityTitle).Encoded(false).Sanitized(false).Titled("Naziv prilike").Sortable(false);
 columns.Add(m => m.RelatedOrganization.SubjectName).Encoded(false).Sanitized(false).Titled("Naziv tvrtke").Sortable(false).RenderValueAs(m =>
 Html.RouteLink(m.RelatedOrganization.SubjectName, new { action = "Details", controller = "Organizations", area = "", id = m.RelatedOrganizationId}));
@@ -170,6 +179,10 @@ columns.Add(m => m.OpportunityStatus).Encoded(false).Sanitized(false).Titled("St
         if (m.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Incontact)
         {
             return @<div><span class="label label-primary">@Html.Raw(m.OpportunityStatusString)</span></div>;
+        }
+        if (m.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Arrangemeeting)
+        {
+        return @<div><span class="label label-primary">@Html.Raw(m.OpportunityStatusString)</span></div>;
         }
         if (m.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Lead)
         {
@@ -188,14 +201,18 @@ columns.Add(m => m.OpportunityStatus).Encoded(false).Sanitized(false).Titled("St
         {
             return @<div><img src="~/Content/eFaktura2.png" alt="eFaktura korisnik" title="eFaktura korisnik" /></div>;
         }
+        if (m.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.ClosedSubject)
+        {
+            return @<div><span class="label label-danger">@Html.Raw(m.OpportunityStatusString)</span></div>;
+        }
 
-        return @<div><span class="label label-danger">@Html.Raw(m.OpportunityStatusString)</span><br /><span style="color:red">@Html.Raw(m.OpportunityRejectReasonString)</span></div>;
+    return @<div><span class="label label-danger">@Html.Raw(m.OpportunityStatusString)</span><br /><span style="color:red">@Html.Raw(m.OpportunityRejectReasonString)</span></div>;
     });
     columns.Add(m => m.OpportunityDescription).Encoded(false).Sanitized(false).Titled("Opis prilike").Sortable(false).RenderValueAs(m =>
     {
         if (m.IsAssigned == false && (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
         {
-            return @<div><i title="Prilika je slobodna za dodijeljivanje" class="fa fa-check-circle-o fa-2x text-success assinged"></i></div>;
+            return @<div><i title="Prilika je slobodna za dodijeljivanje" class="fa fa-check-circle-o fa-2x text-success"></i></div>;
         }
         return @<div><span><i class="fa fa-times-circle-o fa-2x text-danger" title="Prilika je već dodijeljena"></i> Dodijeljeno agentu: <strong>@Html.Raw(m.AssignedTo)</strong></span></div>;
     });

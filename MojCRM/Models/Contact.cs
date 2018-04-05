@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace MojCRM.Models
 {
     public class Contact
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
         [Key]
         public int ContactId { get; set; }
@@ -55,13 +53,13 @@ namespace MojCRM.Models
         public enum ContactTypeEnum
         {
             [Description("Općeniti")]
-            GENERAL,
+            General,
 
             [Description("Dostava")]
-            DELIVERY,
+            Delivery,
 
             [Description("Prodaja")]
-            SALES
+            Sales
         }
 
         [Display(Name = "Dodijeli novog agenta")]
@@ -70,7 +68,7 @@ namespace MojCRM.Models
         {
             get
             {
-                var agents = (from u in db.Users
+                var agents = (from u in _db.Users
                               select new SelectListItem()
                               {
                                   Text = u.UserName,
@@ -78,7 +76,6 @@ namespace MojCRM.Models
                               }).ToList();
                 return agents;
             }
-            set { }
         }
 
         public string ContactTypeString
@@ -87,9 +84,9 @@ namespace MojCRM.Models
             {
                 switch (ContactType)
                 {
-                    case ContactTypeEnum.GENERAL: return "Općeniti";
-                    case ContactTypeEnum.DELIVERY: return "Dostava eDokumenata";
-                    case ContactTypeEnum.SALES: return "Prodaja";
+                    case ContactTypeEnum.General: return "Općeniti";
+                    case ContactTypeEnum.Delivery: return "Dostava eDokumenata";
+                    case ContactTypeEnum.Sales: return "Prodaja";
                 }
                 return "Nije poznato";
             }

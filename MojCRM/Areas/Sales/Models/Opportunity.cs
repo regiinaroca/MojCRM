@@ -28,6 +28,9 @@ namespace MojCRM.Areas.Sales.Models
         public OpportunityRejectReasonEnum? RejectReason { get; set; }
         public string RejectReasonDescription { get; set; }
 
+        [Display(Name = "Kanal kreiranja")]
+        public OpportunityEntryChannelEnum? OpportunityEntryChannel { get; set; }
+
         [Display(Name = "Kreirao")]
         public string CreatedBy { get; set; }
 
@@ -82,7 +85,10 @@ namespace MojCRM.Areas.Sales.Models
             Finauser,
 
             [Description("eFaktura korisnik")]
-            EFakturauser
+            EFakturauser,
+
+            [Description("Zatvorena tvrtka")]
+            ClosedSubject
         }
 
         public enum OpportunityRejectReasonEnum
@@ -112,6 +118,18 @@ namespace MojCRM.Areas.Sales.Models
             Other
         }
 
+        public enum OpportunityEntryChannelEnum
+        {
+            [Description("Web-forma")]
+            Web,
+
+            [Description("Info-telefon")]
+            InfoTelephone,
+
+            [Description("Info-mail")]
+            InfoMail
+        }
+
         public string OpportunityStatusString
         {
             get
@@ -127,6 +145,7 @@ namespace MojCRM.Areas.Sales.Models
                     case OpportunityStatusEnum.Meruser: return "Moj-eRačun korisnik";
                     case OpportunityStatusEnum.Finauser: return "FINA korisnik";
                     case OpportunityStatusEnum.EFakturauser: return "eFaktura korisnik";
+                    case OpportunityStatusEnum.ClosedSubject: return "Zatvorena tvrtka";
                 }
                 return "Status prodajne prilike";
             }
@@ -148,6 +167,20 @@ namespace MojCRM.Areas.Sales.Models
                     case OpportunityRejectReasonEnum.Other: return "Drugo / Ostalo";
                 }
                 return "Nije odbijeno";
+            }
+        }
+
+        public string OpportunityEntryChannelString
+        {
+            get
+            {
+                switch (OpportunityEntryChannel)
+                {
+                    case OpportunityEntryChannelEnum.Web: return "Web-forma";
+                    case OpportunityEntryChannelEnum.InfoTelephone: return "Info telefon";
+                    case OpportunityEntryChannelEnum.InfoMail: return "Info email";
+                }
+                return "Nije poznato";
             }
         }
     }

@@ -3,8 +3,12 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+using MojCRM.Areas.Campaigns.Models;
+using MojCRM.Areas.Cooperation.Models;
+using MojCRM.Areas.CRM.Models;
+using MojCRM.Areas.HelpDesk.Models;
+using MojCRM.Areas.Sales.Models;
+using MojCRM.Areas.Stats.Models;
 
 namespace MojCRM.Models
 {
@@ -38,40 +42,54 @@ namespace MojCRM.Models
             return new ApplicationDbContext();
         }
 
-        public System.Data.Entity.DbSet<MojCRM.Areas.HelpDesk.Models.Delivery> DeliveryTicketModels { get; set; }
+        public DbSet<Delivery> DeliveryTicketModels { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Models.Organizations> Organizations { get; set; }
+        public DbSet<Organizations> Organizations { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Models.Contact> Contacts { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Areas.HelpDesk.Models.DeliveryDetail> DeliveryDetails { get; set; }
+        public DbSet<DeliveryDetail> DeliveryDetails { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Models.LogError> LogError { get; set; }
+        public DbSet<LogError> LogError { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Models.ActivityLog> ActivityLogs { get; set; }
+        public DbSet<ActivityLog> ActivityLogs { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Models.MerDeliveryDetails> MerDeliveryDetails { get; set; }
+        public DbSet<MerDeliveryDetails> MerDeliveryDetails { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Areas.Campaigns.Models.Campaign> Campaigns { get; set; }
+        public DbSet<Campaign> Campaigns { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Areas.Campaigns.Models.CampaignMember> CampaignMembers { get; set; }
+        public DbSet<CampaignMember> CampaignMembers { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Areas.Sales.Models.Opportunity> Opportunities { get; set; }
+        public DbSet<Opportunity> Opportunities { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Areas.Sales.Models.Lead> Leads { get; set; }
+        public DbSet<Lead> Leads { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Models.OrganizationDetail> OrganizationDetails { get; set; }
+        public DbSet<OrganizationDetail> OrganizationDetails { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Areas.Sales.Models.OpportunityNote> OpportunityNotes { get; set; }
+        public DbSet<OpportunityNote> OpportunityNotes { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Areas.Sales.Models.LeadNote> LeadNotes { get; set; }
+        public DbSet<LeadNote> LeadNotes { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Models.OrganizationAttribute> OrganizationAttributes { get; set; }
+        public DbSet<OrganizationAttribute> OrganizationAttributes { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Areas.Cooperation.Models.MerIntegrationSoftware> MerIntegrationSoftware { get; set; }
+        public DbSet<MerIntegrationSoftware> MerIntegrationSoftware { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Areas.Stats.Models.MerDocumentExchangeHistory> MerDocumentExchangeHistory { get; set; }
+        public DbSet<MerDocumentExchangeHistory> MerDocumentExchangeHistory { get; set; }
 
-        public System.Data.Entity.DbSet<MojCRM.Areas.HelpDesk.Models.AcquireEmail> AcquireEmails { get; set; }
+        public DbSet<AcquireEmail> AcquireEmails { get; set; }
+
+        public DbSet<Service> Services { get; set; }
+
+        public DbSet<Quote> Quotes { get; set; }
+
+        public DbSet<QuoteLine> QuoteLines { get; set; }
+
+        public DbSet<QuoteMember> QuoteMembers { get; set; }
+
+        public DbSet<Contract> Contracts { get; set; }
+
+        public DbSet<ContractedService> ContractedServices { get; set; }
+
+        public DbSet<ContractRate> ContractRates { get; set; }
     }
 }

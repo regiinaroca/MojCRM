@@ -95,7 +95,7 @@
 <div class="col-md-2">
     <div class="btn btn-group" role="group">
         <button data-target="#AssignManagement" data-toggle="modal" title="Pokreni dodijeljivanje kartica" type="button" class="btn btn-sm btn-default" href="#AssignManagement"><i class="fa fa-mail-reply-all"></i></button>
-        @if (User.IsInRole("Management") || User.IsInRole("Admin") || User.IsInRole("Superadmin"))
+        @if (User.IsInRole("Management") || User.IsInRole("Board") || User.IsInRole("Administrator") || User.IsInRole("Superadmin"))
         {
             <a id="send-report" method="post" class="btn btn-default btn-sm" onclick="javascript: SendReport()" title="Pošalji jutarnji report upravi">
                 <i class="fa fa-send"></i>

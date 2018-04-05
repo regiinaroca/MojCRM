@@ -1,0 +1,173 @@
+﻿@using GridMvc.Html
+@using MojCRM.Areas.Sales.Models
+@using System.Web.UI.WebControls
+@model IQueryable<Quote>
+@{
+    ViewBag.Title = "Popis ponuda";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+
+    var typeList = new List<ListItem>
+    {
+        new ListItem{ Value= @"0", Text = @"Ugovor - slobodno slanje"},
+        new ListItem{ Value= @"1", Text = @"Ugovor - paketi"},
+        new ListItem{ Value= @"2", Text = @"Avansna uplata"}
+    };
+}
+
+<h2>Popis ponuda</h2>
+
+@using (Html.BeginForm("Index", "Quotes", FormMethod.Get))
+{
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="quote-number">Broj ponude</label>
+            <div id="quote-number">
+                @Html.TextBox("QuoteNumber", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Broj ponude" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="organization-name">Naziv korisnika</label>
+            <div id="organization-name">
+                @Html.TextBox("OrganizationName", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Naziv korisnika" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="organization-vat">OIB korisnika</label>
+            <div id="organization-vat">
+                @Html.TextBox("OrganizationVat", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "OIB korisnika" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="quote-type-search">Tip ponude</label>
+            <div id="quote-type-search">
+                @Html.DropDownList("QuoteType", new SelectList(typeList, "Value", "Text"), "-- Tip ponude --", new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <div class="form-group" style="margin-bottom:0">
+        <input id="Search" type="submit" class="btn btn-primary btn-sm" value="Traži" />
+        <input id="btn-reset" type="reset" class="btn btn-warning btn-sm" value="Poništi" />
+    </div>
+</div>
+}
+<br/>
+<hr/>
+
+@Html.Grid(Model).Named("PopisPonuda").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
+{
+    columns.Add(m => m.QuoteNumber).Encoded(false).Sanitized(false).Titled("Broj ponude");
+    columns.Add().Encoded(false).Sanitized(false).RenderValueAs(m =>
+    {
+        if (m.QuoteStatus == Quote.QuoteStatusEnum.Created)
+        {
+            return @<div>
+        <span class="label label-default">@m.QuoteStatusString</span>
+    </div>;
+        }
+        if (m.QuoteStatus == Quote.QuoteStatusEnum.Sent || m.QuoteStatus == Quote.QuoteStatusEnum.Reviewed)
+        {
+            return @<div>
+    <span class="label label-primary">@m.QuoteStatusString</span>
+</div>;
+        }
+        if (m.QuoteStatus == Quote.QuoteStatusEnum.Accepted || m.QuoteStatus == Quote.QuoteStatusEnum.AcceptedAfterReview)
+        {
+            return @<div>
+    <span class="label label-success">@m.QuoteStatusString</span>
+</div>;
+        }
+        if (m.QuoteStatus == Quote.QuoteStatusEnum.Rejected || m.QuoteStatus == Quote.QuoteStatusEnum.Recalled)
+        {
+            return @<div>
+    <span class="label label-danger">@m.QuoteStatusString</span>
+</div>;
+        }
+        return @<div></div>;
+
+    });
+columns.Add(m => m.Organization.VAT).Encoded(false).Sanitized(false).Titled("Korisnik").RenderValueAs(x =>
+    Html.RouteLink(x.Organization.SubjectName + " (" + x.Organization.VAT + ") ", new { action = "Details", controller = "Organizations", area = "", id = x.Organization.MerId })).Sortable(true);
+columns.Add(m => m.StartDate).Encoded(false).Sanitized(false).Titled("Datum početka valjanosti").Sortable(false).RenderValueAs(m =>
+{
+    return @<div><span>@Html.Raw(m.StartDate.ToShortDateString())</span></div>;
+});
+columns.Add(m => m.EndDate).Encoded(false).Sanitized(false).Titled("Datum završetka valjanosti").Sortable(false).RenderValueAs(m =>
+{
+return @<div><span>@Html.Raw(m.EndDate.ToShortDateString())</span></div>;
+});
+    columns.Add(m => m.QuoteTypeString).Encoded(false).Sanitized(false).Titled("Tip ponude").Sortable(true);
+    columns.Add().Encoded(false).Sanitized(false).RenderValueAs(m =>
+    {
+        if (m.QuoteType == Quote.QuoteTypeEnum.AdvancePayment && m.QuoteStatus != Quote.QuoteStatusEnum.Accepted && (User.IsInRole("Management") || User.IsInRole("Board") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
+        {
+            return
+                @<div><a method="post" title="Označi ponudu plaćenom" class="fa fa-money fa-lg text-warning paid" data-quote-id="@Html.Raw(m.Id)" onclick="javascript: MarkPaid();"></a></div>;
+        }
+        if (m.QuoteType == Quote.QuoteTypeEnum.AdvancePayment && m.QuoteStatus == Quote.QuoteStatusEnum.Accepted && (User.IsInRole("Management") || User.IsInRole("Board") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
+        {
+            return
+            @<div><i title="Ponuda je plaćena" class="fa fa-money fa-lg text-success" ></i></div>;
+        }
+        if (m.QuoteType == Quote.QuoteTypeEnum.AdvancePayment && m.QuoteStatus != Quote.QuoteStatusEnum.Accepted && (!User.IsInRole("Management") || !User.IsInRole("Board") || !User.IsInRole("Administrator") || !User.IsInRole("Superadmin")))
+        {
+            return
+                @<div><i title="Ponuda nije plaćena" class="fa fa-money fa-lg text-warning"></i></div>;
+        }
+        if (m.QuoteType == Quote.QuoteTypeEnum.AdvancePayment && m.QuoteStatus == Quote.QuoteStatusEnum.Accepted && (!User.IsInRole("Management") || !User.IsInRole("Board") || !User.IsInRole("Administrator") || !User.IsInRole("Superadmin")))
+        {
+            return
+                @<div><i title="Ponuda je plaćena" class="fa fa-money fa-lg text-success"></i></div>;
+        }
+        return @<div></div>;
+    });
+    columns.Add().Encoded(false).Sanitized(false).RenderValueAs(m =>
+    {
+        return @<div>
+            <span>
+                <a href="@Url.RouteUrl(new { action = "Details", controller = "Quotes", area = "Sales", id=m.Id, returnUrl = Request.Url })" title="Detalji ponude"><i class="fa fa-list"></i></a>
+            </span>
+        </div>;
+                @*if (User.IsInRole("Administrator") || User.IsInRole("Superadmin"))
+                {
+                    return @<div>
+            <span>
+                <a href="@Url.RouteUrl(new { action = "Delete", controller = "Campaigns", area = "Campaigns", id=m.CampaignId, returnUrl = Request.Url })" title="Brisanje kampanje"><i class="fa fa-trash"></i></a>
+            </span>
+        </div>;
+                }*@
+            });
+}).WithPaging(20)
+<script>
+    function MarkPaid() {
+        $(document).on("click",
+            ".paid",
+            function(e) {
+                e.preventDefault();
+                if (window.confirm("Jeste li sigurni da želite označiti ovu ponudu kao plaćenu?"))
+                    $.ajax({
+                        method: 'POST',
+                        url: '@Url.RouteUrl(new {action = "MarkPaid", controller = "Quotes", area = "Sales"})',
+                        data: {
+                            quoteId: $(this).data("quote-id")
+                        },
+                        success: function(data) {
+                            if (data.Status === 'OK')
+                                alert("Ponuda je označena kao plaćena!");
+                            else
+                                alert("Greška!");
+                        },
+                        dataType: 'json'
+                    });
+                window.location.reload(true);
+            });
+    }
+</script>

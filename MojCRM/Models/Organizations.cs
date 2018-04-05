@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using MojCRM.Areas.CRM.Models;
+using MojCRM.Areas.Sales.Models;
 
 namespace MojCRM.Models
 {
@@ -72,6 +74,8 @@ namespace MojCRM.Models
         public virtual ICollection<MerIntegrationSoftware> IntegrationSoftware { get; set; }
         public virtual ICollection<MerDocumentExchangeHistory> DocumentExchanges { get; set; }
         public virtual ICollection<AcquireEmail> AqcuireEmails { get; set; }
+        public virtual ICollection<Quote> Quotes { get; set; }
+        public virtual ICollection<Contract> Contracts { get; set; }
 
         public enum LegalFormEnum
         {

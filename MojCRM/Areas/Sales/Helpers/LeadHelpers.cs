@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using static MojCRM.Areas.Sales.Models.Lead;
+﻿using static MojCRM.Areas.Sales.Models.Lead;
 
 namespace MojCRM.Areas.Sales.Helpers
 {
     public class LeadNoteHelper
     {
         public string[] NoteTemplates { get; set; }
-        public int? RelatedLeadId { get; set; }
+        public int RelatedLeadId { get; set; }
         public string User { get; set; }
         public string Contact { get; set; }
         public string Note { get; set; }

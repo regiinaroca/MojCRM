@@ -150,7 +150,13 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     break;
             }
 
-            return View(resultsNew);
+            var returnModel = new DeliveryIndexViewModel()
+            {
+                Tickets = resultsNew,
+                Users = _db.Users
+            };
+
+            return View(returnModel);
         }
 
         // GET: Delivery/CreateTicketsFirstTime
@@ -158,66 +164,66 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         //[Authorize(Roles = "Superadmin")]
         public JsonResult CreateTicketsFirstTime(Guid? user)
         {
-            var Credentials = new { MerUser = "", MerPass = "" };
-            string Agent;
+            var credentials = new { MerUser = "", MerPass = "" };
+            string agent;
             if (String.IsNullOrEmpty(user.ToString()))
             {
-                Credentials = (from u in _db.Users
+                credentials = (from u in _db.Users
                                where u.UserName == User.Identity.Name
                                select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
-                Agent = User.Identity.Name;
+                agent = User.Identity.Name;
             }
             else
             {
-                Credentials = (from u in _db.Users
+                credentials = (from u in _db.Users
                                where u.Id == user.ToString()
                                select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
-                Agent = user.ToString();
+                agent = user.ToString();
             }
 
-            int CreatedTickets = 0;
-            MerApiGetNondeliveredDocuments RequestFirstTime = new MerApiGetNondeliveredDocuments()
+            int createdTickets;
+            MerApiGetNondeliveredDocuments requestFirstTime = new MerApiGetNondeliveredDocuments()
             {
-                Id = Credentials.MerUser,
-                Pass = Credentials.MerPass,
+                Id = credentials.MerUser,
+                Pass = credentials.MerPass,
                 Oib = "99999999927",
                 PJ = "",
                 SoftwareId = "MojCRM-001",
                 Type = 1
             };
 
-            string MerRequestFirstTime = JsonConvert.SerializeObject(RequestFirstTime);
+            string merRequestFirstTime = JsonConvert.SerializeObject(requestFirstTime);
 
-            using (var Mer = new WebClient() { Encoding = Encoding.UTF8 })
+            using (var mer = new WebClient() { Encoding = Encoding.UTF8 })
             {
-                Mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-                Mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                var ResponseFirstTime = Mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getNondeliveredDocuments").ToString(), "POST", MerRequestFirstTime);
+                mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
+                var responseFirstTime = mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getNondeliveredDocuments").ToString(), "POST", merRequestFirstTime);
                 //ResponseFirstTime = ResponseFirstTime.Replace("[", "").Replace("]", "");
-                MerGetNondeliveredDocumentsResponse[] ResultsFirstTime = JsonConvert.DeserializeObject<MerGetNondeliveredDocumentsResponse[]>(ResponseFirstTime);
-                foreach (var Result in ResultsFirstTime)
+                MerGetNondeliveredDocumentsResponse[] resultsFirstTime = JsonConvert.DeserializeObject<MerGetNondeliveredDocumentsResponse[]>(responseFirstTime);
+                foreach (var result in resultsFirstTime)
                 {
                     _db.DeliveryTicketModels.Add(new Delivery
                     {
-                        SenderId = Result.PosiljateljId,
-                        ReceiverId = Result.PrimateljId,
-                        InvoiceNumber = Result.InterniBroj,
-                        MerElectronicId = Result.Id,
-                        SentDate = Result.DatumOtpreme,
-                        MerDocumentTypeId = Result.DokumentTypeId,
+                        SenderId = result.PosiljateljId,
+                        ReceiverId = result.PrimateljId,
+                        InvoiceNumber = result.InterniBroj,
+                        MerElectronicId = result.Id,
+                        SentDate = result.DatumOtpreme,
+                        MerDocumentTypeId = result.DokumentTypeId,
                         DocumentStatus = 30,
                         InsertDate = DateTime.Now,
-                        BuyerEmail = Result.EmailPrimatelja,
+                        BuyerEmail = result.EmailPrimatelja,
                         FirstInvoice = true,
                     });
                 }
                 _db.SaveChanges();
-                CreatedTickets = ResultsFirstTime.Count();
+                createdTickets = resultsFirstTime.Count();
             }
 
-            _helper.LogActivity("Kreirano kartica za prvi put: " + CreatedTickets, Agent, 0, ActivityLog.ActivityTypeEnum.System, ActivityLog.DepartmentEnum.MojCrm, ActivityLog.ModuleEnum.Delivery);
+            _helper.LogActivity("Kreirano kartica za prvi put: " + createdTickets, agent, 0, ActivityLog.ActivityTypeEnum.System, ActivityLog.DepartmentEnum.MojCrm, ActivityLog.ModuleEnum.Delivery);
 
-            return Json(new { Status = "OK", CreatedTickets = CreatedTickets }, JsonRequestBehavior.AllowGet);
+            return Json(new { Status = "OK", CreatedTickets = createdTickets }, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Delivery/CreateTickets
@@ -458,16 +464,16 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         }
 
         // GET: Delivery/UpdateStatusIndex/12345
-        public ActionResult UpdateStatusIndex(int Id)
+        public ActionResult UpdateStatusIndex(int id)
         {
-            var TicketForUpdate = _db.DeliveryTicketModels.Find(Id);
-            var MerString = "https://www.moj-eracun.hr/exchange/getstatus?id=" + TicketForUpdate.MerElectronicId + "&ver=5115e32c-6be4-4a92-8e92-afe122e99d1c";
+            var ticketForUpdate = _db.DeliveryTicketModels.First(x => x.Id == id);
+            var merString = "https://www.moj-eracun.hr/exchange/getstatus?id=" + ticketForUpdate.MerElectronicId + "&ver=5115e32c-6be4-4a92-8e92-afe122e99d1c";
 
-            MerDeliveryJsonResponse Response = ParseJson(MerString);
+            MerDeliveryJsonResponse response = ParseJson(merString);
 
-            TicketForUpdate.DocumentStatus = Response.Status;
-            TicketForUpdate.BuyerEmail = Response.EmailPrimatelja;
-            TicketForUpdate.UpdateDate = DateTime.Now;
+            ticketForUpdate.DocumentStatus = response.Status;
+            ticketForUpdate.BuyerEmail = response.EmailPrimatelja;
+            ticketForUpdate.UpdateDate = DateTime.Now;
             _db.SaveChanges();
 
             return RedirectToAction("Index");
@@ -505,19 +511,19 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         // GET: Delivery/UpdateAllStatuses
         public ActionResult UpdateAllStatusesSent()
         {
-            var OpenTickets = (from t in _db.DeliveryTicketModels
-                               where t.DocumentStatus == 30
-                               select t).AsEnumerable();
+            var openTickets = from t in _db.DeliveryTicketModels
+                              where t.DocumentStatus == 30
+                              select t;
 
-            foreach (var Ticket in OpenTickets)
+            foreach (var ticket in openTickets)
             {
                 //var TicketForUpdate = db.DeliveryTicketModels.Find(Ticket.Id);
-                var MerString = "https://www.moj-eracun.hr/exchange/getstatus?id=" + Ticket.MerElectronicId + "&ver=13ca6cad-60a4-4894-ba38-1a6f86b25a3c";
-                MerDeliveryJsonResponse Result = ParseJson(MerString);
+                var merString = "https://www.moj-eracun.hr/exchange/getstatus?id=" + ticket.MerElectronicId + "&ver=13ca6cad-60a4-4894-ba38-1a6f86b25a3c";
+                MerDeliveryJsonResponse result = ParseJson(merString);
 
-                Ticket.DocumentStatus = Result.Status;
-                Ticket.BuyerEmail = Result.EmailPrimatelja;
-                Ticket.UpdateDate = DateTime.Now;
+                ticket.DocumentStatus = result.Status;
+                ticket.BuyerEmail = result.EmailPrimatelja;
+                ticket.UpdateDate = DateTime.Now;
             }
             _db.SaveChanges();
 
@@ -603,14 +609,14 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         [Authorize]
         public ActionResult ChangeEmail(ChangeEmailHelper model)
         {
-            var Credentials = (from u in _db.Users
+            var credentials = (from u in _db.Users
                                where u.UserName == User.Identity.Name
                                select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
 
-            MerApiChangeEmail Request = new MerApiChangeEmail()
+            MerApiChangeEmail request = new MerApiChangeEmail()
             {
-                Id = Credentials.MerUser,
-                Pass = Credentials.MerPass,
+                Id = credentials.MerUser,
+                Pass = credentials.MerPass,
                 Oib = "99999999927",
                 PJ = "",
                 SoftwareId = "MojCRM-001",
@@ -618,13 +624,13 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 Email = model.NewEmail
             };
 
-            string MerRequest = JsonConvert.SerializeObject(Request);
+            string merRequest = JsonConvert.SerializeObject(request);
 
-            using (var Mer = new WebClient())
+            using (var mer = new WebClient())
             {
-                Mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-                Mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                Mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/changeEmail").ToString(), "POST", MerRequest);
+                mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
+                mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/changeEmail").ToString(), "POST", merRequest);
             }
 
             _helper.LogActivity(User.Identity.Name + " je izmijenio e-mail adresu za dostavu eDokumenta iz " + model.OldEmail + " u " + model.NewEmail + " i ponovno poslao obavijest za dokument broj: " + model.InvoiceNumber,
@@ -638,14 +644,14 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         [Authorize]
         public ActionResult ChangeEmailNoTicket(ChangeEmailHelper model)
         {
-            var Credentials = (from u in _db.Users
+            var credentials = (from u in _db.Users
                                where u.UserName == User.Identity.Name
                                select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
 
-            MerApiChangeEmail Request = new MerApiChangeEmail()
+            MerApiChangeEmail request = new MerApiChangeEmail()
             {
-                Id = Credentials.MerUser,
-                Pass = Credentials.MerPass,
+                Id = credentials.MerUser,
+                Pass = credentials.MerPass,
                 Oib = "99999999927",
                 PJ = "",
                 SoftwareId = "MojCRM-001",
@@ -653,13 +659,13 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 Email = model.NewEmail
             };
 
-            string MerRequest = JsonConvert.SerializeObject(Request);
+            string merRequest = JsonConvert.SerializeObject(request);
 
-            using (var Mer = new WebClient())
+            using (var mer = new WebClient())
             {
-                Mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-                Mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                Mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/changeEmail").ToString(), "POST", MerRequest);
+                mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
+                mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/changeEmail").ToString(), "POST", merRequest);
             }
 
             _helper.LogActivity(User.Identity.Name + " je izmijenio e-mail adresu za dostavu eDokumenta iz " + model.OldEmail + " u " + model.NewEmail + " i ponovno poslao obavijest za dokument broj: " + model.InvoiceNumber,
@@ -670,11 +676,11 @@ namespace MojCRM.Areas.HelpDesk.Controllers
 
         // POST Delivery/Remove/1125768
         [HttpPost]
-        public JsonResult Remove(int MerElectronicId, int TicketId)
+        public JsonResult Remove(int merElectronicId, int ticketId)
         {
-            var TicketForRemoval = _db.DeliveryTicketModels.Find(TicketId);
-            TicketForRemoval.DocumentStatus = 55;
-            TicketForRemoval.UpdateDate = DateTime.Now;
+            var ticketForRemoval = _db.DeliveryTicketModels.First(t => t.Id == ticketId);
+            ticketForRemoval.DocumentStatus = 55;
+            ticketForRemoval.UpdateDate = DateTime.Now;
             _db.SaveChanges();
 
             return Json(new { Status = "OK" });
@@ -740,20 +746,25 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                                         select t);
 
             var relatedDeliveryContacts = (from t in _db.Contacts
-                                            where t.Organization.MerId == receiverId && t.ContactType == Contact.ContactTypeEnum.DELIVERY
+                                            where t.Organization.MerId == receiverId && t.ContactType == Contact.ContactTypeEnum.Delivery
                                             select t);
 
             var relatedDeliveryDetails = (from t in _db.DeliveryDetails
                                            where t.Receiver.MerId == receiverId
-                                           select t).OrderByDescending(t => t.Id);
+                                           select t).OrderByDescending(t => t.Id).ToList();
+
+            relatedDeliveryDetails.RemoveAll(x =>
+                x.TicketId != id && x.DetailNote ==
+                @"Ovoj je kartici resetiran status zbog ponovnog slanja obavijesti o dostavi eRačuna");
 
             var importantComment = (from dd in _db.MerDeliveryDetails
                                      where dd.MerId == receiverId
                                      select dd.ImportantComments).First();
 
             var relatedActivities = (from a in _db.ActivityLogs
-                                      where a.ReferenceId == id
+                                      where a.ReferenceId == id && a.Module == ActivityLog.ModuleEnum.Delivery
                                       select a).OrderByDescending(a => a.Id);
+            var users = _db.Users;
 
             #region Postmark API
             MessagesOutboundOpenResponse openingHistoryResponse;
@@ -826,8 +837,10 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     MerDocumentTypeId = deliveryTicketModel.MerDocumentTypeId,
                     MerDocumentStatusId = deliveryTicketModel.DocumentStatus,
                     ReceiverEmail = deliveryTicketModel.BuyerEmail,
-                    MerDeliveryDetailComment = deliveryTicketModel.Receiver.MerDeliveryDetail.Comments,
+                    //MerDeliveryDetailComment = deliveryTicketModel.Receiver.MerDeliveryDetail.Comments,
                     MerDeliveryDetailTelephone = deliveryTicketModel.Receiver.MerDeliveryDetail.Telephone,
+                    TelephoneNumber = deliveryTicketModel.Receiver.OrganizationDetail.TelephoneNumber,
+                    MobilePhoneNumber = deliveryTicketModel.Receiver.OrganizationDetail.MobilePhoneNumber,
                     ImportantComment = importantComment,
                     MerElectronicId = deliveryTicketModel.MerElectronicId,
                     ReceiverId = deliveryTicketModel.ReceiverId,
@@ -835,13 +848,14 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     SenderVAT = deliveryTicketModel.Sender.VAT,
                     RelatedInvoices = relatedInvoicesList,
                     RelatedDeliveryContacts = relatedDeliveryContacts,
-                    RelatedDeliveryDetails = relatedDeliveryDetails,
+                    RelatedDeliveryDetails = relatedDeliveryDetails.AsQueryable(),
                     RelatedActivities = relatedActivities,
                     IsAssigned = deliveryTicketModel.IsAssigned,
                     AssignedTo = deliveryTicketModel.AssignedTo,
                     DocumentHistory = resultsDocumentHistory.Where(i => (i.DokumentStatusId != 10) && (/*i.DokumentTypeId != 6 && -- This was removed from API on Moj-eRačun*/ i.DokumentTypeId != 632)).AsQueryable(),
                     PostmarkOpenings = openingHistoryResponse,
-                    PostmarkBounces = bounces
+                    PostmarkBounces = bounces,
+                    Users = users
                 };
 
                 return View(deliveryDetails);
@@ -1055,7 +1069,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         // POST: Delivery/Contacts
         public ActionResult Contacts(string Organization, string ContactName, string Number, string Email)
         {
-            var Results = _db.Contacts.Where(c => c.ContactType == Contact.ContactTypeEnum.DELIVERY);
+            var Results = _db.Contacts.Where(c => c.ContactType == Contact.ContactTypeEnum.Delivery);
 
             if (!String.IsNullOrEmpty(Organization))
             {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using MojCRM.Areas.HelpDesk.Models;
 using MojCRM.Models;
 
@@ -11,16 +10,19 @@ namespace MojCRM.Areas.HelpDesk.Helpers
     {
         public int MerId { get; set; }
         public string AcquiredReceivingInformation { get; set; }
-        public string NewAcquiredReceivingInformation { get; set; }
+        public string NewAcquiredReceivingInformation1 { get; set; }
+        public string NewAcquiredReceivingInformation2 { get; set; }
+        public string NewAcquiredReceivingInformation3 { get; set; }
     }
 
     public class AcquireEmailExportModel
     {
+        public AcquireEmail Entity { get; set; }
         public string CampaignName { get; set; }
         public string VAT { get; set; }
         public string SubjectName { get; set; }
         public string AcquiredReceivingInformation { get; set; }
-        public string AcquiredEmailEntityStatus { get; set; }
+        public AcquireEmail.AcquireEmailEntityStatusEnum? AcquiredEmailEntityStatus { get; set; }
     }
 
     public class AcquireEmailExportForEmailNotificationModel
@@ -42,15 +44,19 @@ namespace MojCRM.Areas.HelpDesk.Helpers
     {
         public string CampaignName { get; set; }
         public string OrganizationName { get; set; }
-        public string TelephoneMail { get; set; }
+        public string TelephoneMobile { get; set; }
+        public string Mail { get; set; }
         public int? EmailStatusEnum { get; set; }
+        public int? EntityStatusEnum { get; set; }
     }
 
     public class AcquireEmailStatsPerAgentAndCampaign
     {
         public string Agent { get; set; }
+        public int CampaignId { get; set; }
         public string CampaignName { get; set; }
         public int NumberOfEntitiesForProcessing { get; set; }
+        public int NumberOfEntitiesWithoutPhoneNumber { get; set; }
     }
 
     public class AcquireEmailMethodHelpers
@@ -65,6 +71,45 @@ namespace MojCRM.Areas.HelpDesk.Helpers
             {
                 acquireEmail.AcquireEmailStatus = AcquireEmail.AcquireEmailStatusEnum.Verified;
                 acquireEmail.AcquireEmailEntityStatus = AcquireEmail.AcquireEmailEntityStatusEnum.ClosedOrganization;
+                acquireEmail.UpdateDate = DateTime.Now;
+            }
+            _db.SaveChanges();
+        }
+
+        public void UpdateStatus(AcquireEmail.AcquireEmailStatusEnum status, int organizationId)
+        {
+            var entities = _db.AcquireEmails.Where(x => x.RelatedOrganizationId == organizationId);
+
+            foreach (var acquireEmail in entities)
+            {
+                acquireEmail.AcquireEmailStatus = status;
+                acquireEmail.UpdateDate = DateTime.Now;
+            }
+            _db.SaveChanges();
+        }
+
+        public void UpdateWrongTelephoneNumberEntities(int? organizationId)
+        {
+            var entities = _db.AcquireEmails.Where(x => x.RelatedOrganizationId == organizationId);
+
+            foreach (var acquireEmail in entities)
+            {
+                acquireEmail.AcquireEmailStatus = AcquireEmail.AcquireEmailStatusEnum.Verified;
+                acquireEmail.AcquireEmailEntityStatus = AcquireEmail.AcquireEmailEntityStatusEnum.WrongTelephoneNumber;
+                acquireEmail.UpdateDate = DateTime.Now;
+            }
+            _db.SaveChanges();
+        }
+
+        public void ApplyToAllEntities(AcquireEmail.AcquireEmailEntityStatusEnum status, int entityId)
+        {
+            var organizationId = _db.AcquireEmails.First(x => x.Id == entityId);
+            var entities = _db.AcquireEmails.Where(x =>
+                x.RelatedOrganizationId == organizationId.RelatedOrganizationId && x.AcquireEmailEntityStatus != status);
+
+            foreach (var acquireEmail in entities)
+            {
+                acquireEmail.AcquireEmailEntityStatus = status;
                 acquireEmail.UpdateDate = DateTime.Now;
             }
             _db.SaveChanges();

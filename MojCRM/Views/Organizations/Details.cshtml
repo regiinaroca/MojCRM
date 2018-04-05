@@ -11,36 +11,39 @@
         <h5>OIB: @Model.Organization.VAT</h5>
     </div>
     <div class="col-md-3">
-        @if (Model.Organization.IsActive == true)
+        @if (Model.Organization.IsActive)
         {
             <span class="label label-success">Aktivna</span>
         }
-        @if (Model.Organization.IsActive == false)
+        @if (!Model.Organization.IsActive)
         {
             <span class="label label-danger">Brisana</span>
         }
     </div>
     <div class="col-md-5">
-        @foreach (var Attribute in Model.Attributes)
+        @foreach (var attribute in Model.Attributes)
         {
-            if (Attribute.AttributeClass == MojCRM.Models.OrganizationAttribute.AttributeClassEnum.MER)
+            if (attribute.IsActive)
             {
-                <span><i class="@Attribute.AttributeTypeIcon" title="@Attribute.AttributeClassString - @Attribute.AttributeTypeString" style="color:blue"></i> </span>
-            }
-            if (Attribute.AttributeClass == MojCRM.Models.OrganizationAttribute.AttributeClassEnum.FINA)
-            {
-                <i class="@Attribute.AttributeTypeIcon" title="@Attribute.AttributeClassString - @Attribute.AttributeTypeString" style="color:darkblue"></i>
-            }
-            if (Attribute.AttributeClass == MojCRM.Models.OrganizationAttribute.AttributeClassEnum.EFAKTURA)
-            {
-                <i class="@Attribute.AttributeTypeIcon" title="@Attribute.AttributeClassString - @Attribute.AttributeTypeString" style="color:lightgreen"></i>
+                if (attribute.AttributeClass == MojCRM.Models.OrganizationAttribute.AttributeClassEnum.MER)
+                {
+                    <span><i class="@attribute.AttributeTypeIcon" title="@attribute.AttributeClassString - @attribute.AttributeTypeString" style="color:blue"></i> </span>
+                }
+                if (attribute.AttributeClass == MojCRM.Models.OrganizationAttribute.AttributeClassEnum.FINA)
+                {
+                    <i class="@attribute.AttributeTypeIcon" title="@attribute.AttributeClassString - @attribute.AttributeTypeString" style="color:darkblue"></i>
+                }
+                if (attribute.AttributeClass == MojCRM.Models.OrganizationAttribute.AttributeClassEnum.EFAKTURA)
+                {
+                    <i class="@attribute.AttributeTypeIcon" title="@attribute.AttributeClassString - @attribute.AttributeTypeString" style="color:lightgreen"></i>
+                }   
             }
         }
     </div>
-    @if (User.IsInRole("Superadmin"))
+    @if (User.IsInRole("Superadmin") || User.IsInRole("Management") || User.IsInRole("Administrator"))
     {
         <div class="col-md-1">
-            <a href="@Url.RouteUrl(new { action = "UpdateOrganization", controller = "Organizations", area = "", MerId = Model.Organization.MerId })" title="Sinkroniziraj podatke sa servisom Moj-eRačun"><i class="fa fa-refresh"></i></a>
+            <a href="@Url.RouteUrl(new { action = "UpdateOrganization", controller = "Organizations", area = "", merId = Model.Organization.MerId })" title="Sinkroniziraj podatke sa servisom Moj-eRačun"><i class="fa fa-refresh"></i></a>
         </div>
     }
 </div>
@@ -59,9 +62,12 @@
                 <li><a href="#campaigns" data-toggle="tab"><i class="fa fa-phone"></i> Kampanje</a></li>
                 <li><a href="#opportunities" data-toggle="tab"><i class="fa fa-money"></i> Prodajne prilike <span class="badge element-bg-color-blue">@Model.OpportunitiesCount</span></a></li>
                 <li><a href="#leads" data-toggle="tab"><i class="fa fa-money"></i> Leadovi <span class="badge element-bg-color-blue">@Model.LeadsCount</span></a></li>
+                <li><a href="#quotes" data-toggle="tab"><i class="fa fa-book"></i> Ponude</a></li>
+                <li><a href="#contracts" data-toggle="tab"><i class="fa fa-file"></i> Ugovori</a></li>
                 <li><a href="#mer-delivery-data" data-toggle="tab"><img src="~/Content/ikona-preglednik.ico" style="height: 21px; width: 21px"/> Podaci za dostavu</a></li>
                 <li><a href="#tickets-as-receiver" data-toggle="tab"><i class="fa fa-ticket"></i> Kartice dostave (primatelj) <span class="badge element-bg-color-blue">@Model.TicketsAsReceiverCount</span></a></li>
                 <li><a href="#tickets-as-sender" data-toggle="tab"><i class="fa fa-ticket"></i> Kartice dostave (pošiljatelj) <span class="badge element-bg-color-blue">@Model.TicketsAsSenderCount</span></a></li>
+                <li><a href="#activities" data-toggle="tab"><i class="fa fa-history"></i> Aktivnosti <span class="badge element-bg-color-blue">@Model.ActivitiesCount</span></a></li>
             </ul>
             <div class="tab-content clearfix">
                 <div class="tab-pane fade in active" id="general-info">
@@ -92,6 +98,14 @@
                     <h5>Leadovi</h5>
                     @Html.Partial("_Leads", Model)
                 </div>
+                <div class="tab-pane fade" id="quotes">
+                    <h5>Ponude</h5>
+                    @Html.Partial("_Quotes", Model)
+                </div>
+                <div class="tab-pane fade" id="contracts">
+                    <h5>Ugovori</h5>
+                    @Html.Partial("_Contracts", Model)
+                </div>
                 <div class="tab-pane fade" id="mer-delivery-data">
                     <h5>Podaci za dostavu eDokumenata</h5>
                     @Html.Partial("_MerDeliveryData", Model)
@@ -103,6 +117,10 @@
                 <div class="tab-pane fade" id="tickets-as-sender">
                     <h5>Pregled kartica za dostavu (kao pošiljatelj)</h5>
                     @Html.Partial("_TicketsAsSender", Model)
+                </div>
+                <div class="tab-pane fade" id="activities">
+                    <h5>Pregled aktivnosti</h5>
+                    @Html.Partial("_Activities", Model)
                 </div>
             </div>
         </div>

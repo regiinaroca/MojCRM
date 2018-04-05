@@ -1,6 +1,7 @@
 ﻿using MojCRM.Areas.Campaigns.Models;
 using MojCRM.Models;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -22,7 +23,7 @@ namespace MojCRM.Areas.Sales.Models
         public string StatusDescription { get; set; }
         public LeadRejectReasonEnum? RejectReason { get; set; }
         public string RejectReasonDescription { get; set; }
-        public QuoteTypeEnum? QuoteType { get; set; }
+        public QuoteTypeLeadEnum? QuoteType { get; set; }
         public string CreatedBy { get; set; }
         public string AssignedTo { get; set; }
 
@@ -43,6 +44,7 @@ namespace MojCRM.Areas.Sales.Models
         public virtual Opportunity RelatedOpportunity { get; set; }
         [ForeignKey("RelatedOrganizationId")]
         public virtual Organizations RelatedOrganization { get; set; }
+        public virtual ICollection<Quote> RelatedQuotes { get; set; }
 
         public enum LeadStatusEnum
         {
@@ -95,7 +97,7 @@ namespace MojCRM.Areas.Sales.Models
             Other
         }
 
-        public enum QuoteTypeEnum
+        public enum QuoteTypeLeadEnum
         {
             [Description("PrePaid paket (Moj-eRačun)")]
             AdvanceeR,

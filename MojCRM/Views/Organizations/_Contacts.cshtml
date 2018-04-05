@@ -1,11 +1,118 @@
 ﻿@model MojCRM.ViewModels.OrganizationDetailsViewModel
 @{
     Layout = null;
+    var doNotCall = new List<SelectListItem>
+    {
+        new SelectListItem{ Value = "0", Text = @"Dozvoljeno zvanje svim agentima" },
+        new SelectListItem{ Value = "1", Text = @"Ne zvati" }
+    };
 }
+
+<!--Modal - CreateCampaign-->
+@using (Html.BeginForm("Create", "Contact", new { area = "" }, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="modal fade" id="createContact" tabindex="-1" role="dialog" aria-labelledby="createContact">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content" style="overflow:hidden">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4>Kreiraj kontakt</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="name">Ime:</label>
+                                <div id="name">
+                                    @Html.TextBox("ContactFirstName", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-12", @placeholder = "Ime" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="last-name">Prezime:</label>
+                                <div id="last-name">
+                                    @Html.TextBox("ContactLastName", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-12", @placeholder = "Prezime" })
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="telephone-number">Broj telefona:</label>
+                                <div id="telephone-number">
+                                    @Html.TextBox("TelephoneNumber", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-12", @placeholder = "Broj telefona" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="mobile-number">Broj mobitela:</label>
+                                <div id="mobile-number">
+                                    @Html.TextBox("MobilePhoneNumber", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-12", @placeholder = "Broj mobitela" })
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="email">Email:</label>
+                                <div id="email">
+                                    @Html.TextBox("Email", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-12", @placeholder = "Email" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="do-not-call">Dozvole zvanja:</label>
+                                <div id="do-not-call">
+                                    @Html.DropDownList("DoNotCall", new SelectList(doNotCall, "Value", "Text"), "-- Dozvole zvanja --", new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="user">Vlasnik kontakta:</label>
+                                <div id="user">
+                                    @Html.TextBox("User", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = User.Identity.Name })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="contact-type">Tip kontakta:</label>
+                                <div id="contact-type">
+                                    @Html.DropDownList("ContactType", Model.ContactTypeDropdown, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="hidden">
+                                <div id="organization-id">
+                                    @Html.TextBox("OrganizationId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Organization.MerId })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Footer ouside of content, new design. If reactions are bad return it one level up-->
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Kreiraj kontakt</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Prekini</button>
+            </div>
+        </div>
+    </div>
+}
+
 <div class="col-md-3">
 
 </div>
 <div class="col-md-9">
+    <div class="row">
+        <div class="col-md-11">
+            
+        </div>
+        @if (!User.IsInRole("Guest"))
+        {
+            <div class="col-md-1" title="Kreiraj kontakt">
+                <a href="#createContact" data-toggle="modal"><i class="fa fa-plus"></i></a>
+            </div>
+        }
+    </div>
+    <br />
     @if (Model.Contacts.Count() != 0)
     {
         <table class="table">
@@ -18,16 +125,16 @@
                 <th>Agent</th>
                 <th>Tip kontakta</th>
             </tr>
-            @foreach (var Contact in Model.Contacts)
+            @foreach (var contact in Model.Contacts)
             {
                 <tr>
-                    <td>@Contact.ContactFirstName</td>
-                    <td>@Contact.ContactLastName</td>
-                    <td>@Contact.Title</td>
-                    <td>@Contact.TelephoneNumber;@Contact.MobilePhoneNumber</td>
-                    <td>@Contact.Email</td>
-                    <td>@Contact.User</td>
-                    <td>@Contact.ContactTypeString</td>
+                    <td>@contact.ContactFirstName</td>
+                    <td>@contact.ContactLastName</td>
+                    <td>@contact.Title</td>
+                    <td>@contact.TelephoneNumber;@contact.MobilePhoneNumber</td>
+                    <td>@contact.Email</td>
+                    <td>@contact.User</td>
+                    <td>@contact.ContactTypeString</td>
                 </tr>
             }
         </table>
