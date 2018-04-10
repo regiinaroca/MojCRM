@@ -99,7 +99,10 @@ namespace MojCRM.Areas.HelpDesk.Models
             ToBeClosed,
 
             [Description("Žele primati eRačune poštom")]
-            Post
+            Post,
+
+            [Description("Inozemna tvrtka")]
+            Foreign
         }
 
         public string AcquireEmailEntityStatusString
@@ -122,6 +125,7 @@ namespace MojCRM.Areas.HelpDesk.Models
                     case AcquireEmailEntityStatusEnum.NoFinancialAccount: return "Subjekt nema žiro račun";
                     case AcquireEmailEntityStatusEnum.ToBeClosed: return "Najava brisanja subjekta";
                     case AcquireEmailEntityStatusEnum.Post: return "POŠTA";
+                    case AcquireEmailEntityStatusEnum.Foreign: return "Inozemna tvrtka";
                 }
                 return "Status unosa";
             }

@@ -766,27 +766,27 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                                       select a).OrderByDescending(a => a.Id);
             var users = _db.Users;
 
-            #region Postmark API
-            MessagesOutboundOpenResponse openingHistoryResponse;
-            BouncesResponse bounces;
-            string postmarkLinkOpeningHistory = @"https://api.postmarkapp.com/messages/outbound/opens?count=20&offset=0&recipient=" + deliveryTicketModel.BuyerEmail;
-            string postmarkBounces = @"https://api.postmarkapp.com/bounces?count=20&offset=0&emailFilter=" + deliveryTicketModel.BuyerEmail;
-            using (var postmark = new WebClient())
-            {
-                postmark.Headers.Add(HttpRequestHeader.Accept, "application/json");
-                postmark.Headers.Add("X-Postmark-Server-Token", "8ab33a3d-a800-405f-afad-9c75c2f08c0b");
-                var openingHistoryRequest = postmark.DownloadString(postmarkLinkOpeningHistory);
-                openingHistoryResponse = JsonConvert.DeserializeObject<MessagesOutboundOpenResponse>(openingHistoryRequest);
-            }
+            //#region Postmark API
+            //MessagesOutboundOpenResponse openingHistoryResponse;
+            //BouncesResponse bounces;
+            //string postmarkLinkOpeningHistory = @"https://api.postmarkapp.com/messages/outbound/opens?count=20&offset=0&recipient=" + deliveryTicketModel.BuyerEmail;
+            //string postmarkBounces = @"https://api.postmarkapp.com/bounces?count=20&offset=0&emailFilter=" + deliveryTicketModel.BuyerEmail;
+            //using (var postmark = new WebClient())
+            //{
+            //    postmark.Headers.Add(HttpRequestHeader.Accept, "application/json");
+            //    postmark.Headers.Add("X-Postmark-Server-Token", "8ab33a3d-a800-405f-afad-9c75c2f08c0b");
+            //    var openingHistoryRequest = postmark.DownloadString(postmarkLinkOpeningHistory);
+            //    openingHistoryResponse = JsonConvert.DeserializeObject<MessagesOutboundOpenResponse>(openingHistoryRequest);
+            //}
 
-            using (var postmark = new WebClient())
-            {
-                postmark.Headers.Add(HttpRequestHeader.Accept, "application/json");
-                postmark.Headers.Add("X-Postmark-Server-Token", "8ab33a3d-a800-405f-afad-9c75c2f08c0b");
-                var bouncesRequest = postmark.DownloadString(postmarkBounces);
-                bounces = JsonConvert.DeserializeObject<BouncesResponse>(bouncesRequest);
-            }
-            #endregion
+            //using (var postmark = new WebClient())
+            //{
+            //    postmark.Headers.Add(HttpRequestHeader.Accept, "application/json");
+            //    postmark.Headers.Add("X-Postmark-Server-Token", "8ab33a3d-a800-405f-afad-9c75c2f08c0b");
+            //    var bouncesRequest = postmark.DownloadString(postmarkBounces);
+            //    bounces = JsonConvert.DeserializeObject<BouncesResponse>(bouncesRequest);
+            //}
+            //#endregion
 
             var credentials = (from u in _db.Users
                                where u.UserName == User.Identity.Name
@@ -853,8 +853,8 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     IsAssigned = deliveryTicketModel.IsAssigned,
                     AssignedTo = deliveryTicketModel.AssignedTo,
                     DocumentHistory = resultsDocumentHistory.Where(i => (i.DokumentStatusId != 10) && (/*i.DokumentTypeId != 6 && -- This was removed from API on Moj-eRačun*/ i.DokumentTypeId != 632)).AsQueryable(),
-                    PostmarkOpenings = openingHistoryResponse,
-                    PostmarkBounces = bounces,
+                    //PostmarkOpenings = openingHistoryResponse,
+                    //PostmarkBounces = bounces,
                     Users = users
                 };
 

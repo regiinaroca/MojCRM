@@ -333,6 +333,15 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     _helper.LogActivity("Promijenjen status obrade. Novi status: Žele primati eRačune poštom", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
+                case 14:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.Foreign;
+                    entity.UpdateDate = DateTime.Now;
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.Foreign, entityId);
+                    _acquireEmailMethodHelpers.UpdateStatus(AcquireEmailStatusEnum.Verified, entity.Organization.MerId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Inozemna tvrtka", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+
             }
             return Redirect(Request.UrlReferrer?.ToString());
         }
