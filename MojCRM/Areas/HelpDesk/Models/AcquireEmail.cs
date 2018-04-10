@@ -102,7 +102,10 @@ namespace MojCRM.Areas.HelpDesk.Models
             Post,
 
             [Description("Inozemna tvrtka")]
-            Foreign
+            Foreign,
+
+            [Description("Tvrtka u mirovanju")]
+            OnHold
         }
 
         public string AcquireEmailEntityStatusString
@@ -126,6 +129,7 @@ namespace MojCRM.Areas.HelpDesk.Models
                     case AcquireEmailEntityStatusEnum.ToBeClosed: return "Najava brisanja subjekta";
                     case AcquireEmailEntityStatusEnum.Post: return "POŠTA";
                     case AcquireEmailEntityStatusEnum.Foreign: return "Inozemna tvrtka";
+                    case AcquireEmailEntityStatusEnum.OnHold: return "Tvrtka u mirovanju";
                 }
                 return "Status unosa";
             }
