@@ -41,11 +41,17 @@ namespace MojCRM.Areas.HelpDesk.ViewModels
         [Display(Name = "E-mail adresa primatelja:")]
         public string ReceiverEmail { get; set; }
 
-        [Display(Name = "Napomena:")]
-        public string MerDeliveryDetailComment { get; set; }
+        //[Display(Name = "Napomena:")]
+        //public string MerDeliveryDetailComment { get; set; }
 
         [Display(Name = "Kontakt podaci:")]
         public string MerDeliveryDetailTelephone { get; set; }
+
+        [Display(Name = "Broj telefona:")]
+        public string TelephoneNumber { get; set; }
+
+        [Display(Name = "Broj mobitela:")]
+        public string MobilePhoneNumber { get; set; }
 
         [Display(Name = "Napomene za dostavu eRačuna ovom primatelju: ")]
         public string ImportantComment { get; set; }
@@ -145,23 +151,22 @@ namespace MojCRM.Areas.HelpDesk.ViewModels
         public IQueryable<DeliveryDetail> RelatedDeliveryDetails { get; set; }
         public IQueryable<ActivityLog> RelatedActivities { get; set; }
         public IQueryable<MerGetSentDocumentsResponse> DocumentHistory { get; set; }
-        public MessagesOutboundOpenResponse PostmarkOpenings { get; set; }
-        public BouncesResponse PostmarkBounces { get; set; }
-        public IList<SelectListItem> RelatedDeliveryContactsForDetails
+        //public MessagesOutboundOpenResponse PostmarkOpenings { get; set; }
+        //public BouncesResponse PostmarkBounces { get; set; }
+        public IQueryable<SelectListItem> RelatedDeliveryContactsForDetails
         {
             get
             {
                 var list = (from t in RelatedDeliveryContacts
                             select new SelectListItem()
                             {
-                                Text = t.ContactFirstName + " " + t.ContactLastName,
+                                Text = t.ContactFirstName + @" " + t.ContactLastName,
                                 Value = t.ContactId.ToString()
                             }).ToList();
-                return list;
+                return list.AsQueryable();
             }
-            set { }
         }
-        public IList<SelectListItem> DeliveryDetailsIds
+        public IQueryable<SelectListItem> DeliveryDetailsIds
         {
             get
             {
@@ -171,9 +176,23 @@ namespace MojCRM.Areas.HelpDesk.ViewModels
                                 Text = t.DetailNote,
                                 Value = t.Id.ToString()
                             }).ToList();
+                return list.AsQueryable();
+            }
+        }
+        public virtual IQueryable<ApplicationUser> Users { get; set; }
+        public IQueryable<SelectListItem> DeliveryAgents
+        {
+            get
+            {
+                var list = (from u in Users
+                    where u.Email != String.Empty
+                    select new SelectListItem()
+                    {
+                        Text = u.UserName,
+                        Value = u.UserName
+                    });
                 return list;
             }
-            set { }
         }
     }
 }

@@ -3,11 +3,14 @@ using MojCRM.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Mvc;
+using MojCRM.Areas.Campaigns.Models;
 using static MojCRM.Areas.HelpDesk.Models.AcquireEmail;
 using MojCRM.Areas.HelpDesk.Helpers;
 using MojCRM.Areas.HelpDesk.ViewModels;
+using MojCRM.Helpers;
 using OfficeOpenXml;
 
 namespace MojCRM.Areas.HelpDesk.Controllers
@@ -15,6 +18,8 @@ namespace MojCRM.Areas.HelpDesk.Controllers
     public class AcquireEmailController : Controller
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        private readonly HelperMethods _helper = new HelperMethods();
+        private readonly AcquireEmailMethodHelpers _acquireEmailMethodHelpers = new AcquireEmailMethodHelpers();
         // GET: HelpDesk/AcquireEmail
         [Authorize]
         public ActionResult Index(AcquireEmailSearchModel model)
@@ -26,7 +31,11 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             }
             else
             {
-                list = _db.AcquireEmails.Where(ae => ae.AcquireEmailStatus != AcquireEmailStatusEnum.Verified && ae.AssignedTo == User.Identity.Name);
+                //list = _db.AcquireEmails.Where(ae => ae.AcquireEmailStatus != AcquireEmailStatusEnum.Verified && ae.AssignedTo == User.Identity.Name);
+                list = _db.AcquireEmails.Where(x => x.AcquireEmailStatus != AcquireEmailStatusEnum.Verified
+                && x.AssignedTo == User.Identity.Name
+                && (!(x.Organization.OrganizationDetail.TelephoneNumber == String.Empty || x.Organization.OrganizationDetail.TelephoneNumber == null)
+                || !(x.Organization.OrganizationDetail.MobilePhoneNumber == String.Empty || x.Organization.OrganizationDetail.MobilePhoneNumber == null)));
             }
 
             //Search Engine
@@ -38,11 +47,66 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             {
                 list = list.Where(x => x.Organization.SubjectName.Contains(model.OrganizationName));
             }
-            if (!String.IsNullOrEmpty(model.TelephoneMail))
+            if (!String.IsNullOrEmpty(model.TelephoneMobile))
             {
-                list = list.Where(x => x.Organization.MerDeliveryDetail.Telephone.Contains(model.TelephoneMail) || x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains(model.TelephoneMail));
+                list = list.Where(x => x.Organization.OrganizationDetail.TelephoneNumber.EndsWith(model.TelephoneMobile) || x.Organization.OrganizationDetail.MobilePhoneNumber.EndsWith(model.TelephoneMobile));
             }
-            list = list.Where(x => x.AcquireEmailStatus == model.EmailStatusEnum);
+            if (!String.IsNullOrEmpty(model.Mail))
+            {
+                list = list.Where(x => x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains(model.Mail));
+            }
+            if (model.EmailStatusEnum != null)
+            {
+                var tempStatus = (AcquireEmailStatusEnum) model.EmailStatusEnum;
+                list = list.Where(x => x.AcquireEmailStatus == tempStatus);
+            }
+            if (model.EntityStatusEnum != null)
+            {
+                var tempStatus = (AcquireEmailEntityStatusEnum)model.EntityStatusEnum;
+                list = list.Where(x => x.AcquireEmailEntityStatus == tempStatus);
+            }
+
+            return View(list.OrderByDescending(x => x.Id));
+        }
+
+        [Authorize]
+        public ActionResult IndexTemp(AcquireEmailSearchModel model)
+        {
+            var list = _db.AcquireEmails.Where(x =>
+                           (x.Organization.OrganizationDetail.TelephoneNumber == String.Empty ||
+                           x.Organization.OrganizationDetail.TelephoneNumber == null)
+                       && (x.Organization.OrganizationDetail.MobilePhoneNumber == String.Empty ||
+                           x.Organization.OrganizationDetail.MobilePhoneNumber == null)
+                           && x.AcquireEmailStatus == AcquireEmailStatusEnum.Created);
+
+            //Search Engine
+            if (!String.IsNullOrEmpty(model.CampaignName))
+            {
+                list = list.Where(x => x.Campaign.CampaignName.Contains(model.CampaignName));
+            }
+            if (!String.IsNullOrEmpty(model.OrganizationName))
+            {
+                list = list.Where(x => x.Organization.SubjectName.Contains(model.OrganizationName));
+            }
+            if (!String.IsNullOrEmpty(model.TelephoneMobile))
+            {
+                //list = list.Where(x => x.Organization.MerDeliveryDetail.Telephone.Contains(model.TelephoneMail) || x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains(model.TelephoneMail));
+                list = list.Where(x => x.Organization.OrganizationDetail.TelephoneNumber.EndsWith(model.TelephoneMobile) || x.Organization.OrganizationDetail.MobilePhoneNumber.EndsWith(model.TelephoneMobile));
+            }
+            if (!String.IsNullOrEmpty(model.Mail))
+            {
+                list = list.Where(x => x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains(model.Mail));
+            }
+            if (model.EmailStatusEnum != null)
+            {
+                var tempStatus = (AcquireEmailStatusEnum)model.EmailStatusEnum;
+                list = list.Where(x => x.AcquireEmailStatus == tempStatus);
+            }
+            if (model.EntityStatusEnum != null)
+            {
+                var tempStatus = (AcquireEmailEntityStatusEnum)model.EntityStatusEnum;
+                list = list.Where(x => x.AcquireEmailEntityStatus == tempStatus);
+            }
 
             return View(list.OrderByDescending(x => x.Id));
         }
@@ -50,13 +114,14 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         public ActionResult Details(int id)
         {
             var entity = _db.AcquireEmails.Find(id);
+            
             var activities = _db.ActivityLogs.Where(al =>
                 al.Department == ActivityLog.DepartmentEnum.DatabaseUpdate && al.ReferenceId == id);
 
             var model = new AcquireEmailViewModel
             {
                 Entity = entity,
-                Activities = activities
+                Activities = activities.OrderByDescending(x => x.Id)
             };
 
             return View(model);
@@ -65,7 +130,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         [HttpPost]
         public JsonResult LogActivity(int entityId, int identifier)
         {
-            var entity = _db.AcquireEmails.Find(entityId);
+            var entity = _db.AcquireEmails.First(x => x.Id == entityId);
             switch (identifier)
             {
                 case 1:
@@ -106,7 +171,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         [HttpPost]
         public JsonResult ChangeStatus(int entityId, int identifier)
         {
-            var entity = _db.AcquireEmails.Find(entityId);
+            var entity = _db.AcquireEmails.First(x => x.Id == entityId);
             switch (identifier)
             {
                 case 1:
@@ -131,9 +196,14 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         [HttpPost]
         public ActionResult ChangeStatusAdmin(int entityId, int identifier)
         {
-            var entity = _db.AcquireEmails.Find(entityId);
+            var entity = _db.AcquireEmails.First(x => x.Id == entityId);
             switch (identifier)
             {
+                case 0:
+                    entity.AcquireEmailStatus = AcquireEmailStatusEnum.Created;
+                    entity.UpdateDate = DateTime.Now;
+                    _db.SaveChanges();
+                    break;
                 case 1:
                     entity.AcquireEmailStatus = AcquireEmailStatusEnum.Checked;
                     entity.UpdateDate = DateTime.Now;
@@ -150,61 +220,210 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     _db.SaveChanges();
                     break;
             }
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
+        [HttpPost]
+        public ActionResult ChangeEntityStatus(int entityId, int identifier)
+        {
+            var entity = _db.AcquireEmails.First(x => x.Id == entityId);
+            int indetifierTemp;
+
+            if (entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains("@") && entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation != null)
+                indetifierTemp = 1; //check if agent inserted an email and set identifier to AcquiredInformation by default
+            else if (String.IsNullOrEmpty(entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation))
+                indetifierTemp = 99; //check if the information IsNullOrEmpty and if true don't change the EntityStatus
+            else
+                indetifierTemp = identifier;
+
+            switch (indetifierTemp)
+            {
+                case 0:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.Created;
+                    entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Kreirano", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 1:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.AcquiredInformation;
+                    entity.UpdateDate = DateTime.Now;
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.AcquiredInformation, entityId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Dobivena povratna informacija", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 2:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.NoAnswer;
+                    entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Nema odgovora / Ne javlja se", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 3:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.ClosedOrganization;
+                    entity.UpdateDate = DateTime.Now;
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.ClosedOrganization, entityId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Zatvoren subjekt", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 4:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.OldPartner;
+                    entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Ne posluju s korisnikom", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 5:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.PartnerWillContactUser;
+                    entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Partner će se javiti korisniku samostalno", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 6:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.WrittenConfirmationRequired;
+                    entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Potrebno poslati pisanu suglasnost", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 7:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.WrongTelephoneNumber;
+                    entity.UpdateDate = DateTime.Now;
+                    //entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation = "NEMA ISPRAVNOG BROJA TELEFONA";
+                    //entity.Organization.MerDeliveryDetail.AcquiredReceivingInformationIsVerified = true;
+                    _acquireEmailMethodHelpers.UpdateWrongTelephoneNumberEntities(entity.RelatedOrganizationId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Neispravan kontakt broj", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 8:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.PoslovnaHrvatska;
+                    entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Poslovna Hrvatska", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 9:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.NoTelehoneNumber;
+                    entity.UpdateDate = DateTime.Now;
+                    entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation = "NEMA ISPRAVNOG BROJA TELEFONA";
+                    entity.Organization.MerDeliveryDetail.AcquiredReceivingInformationIsVerified = true;
+                    _acquireEmailMethodHelpers.UpdateWrongTelephoneNumberEntities(entity.RelatedOrganizationId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Ne postoji ispravan kontakt broj", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 10:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.Bankruptcy;
+                    entity.UpdateDate = DateTime.Now;
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.Bankruptcy, entityId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Subjekt u stečaju / likvidaciji", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 11:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.NoFinancialAccount;
+                    entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Subjekt nema žiro račun", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 12:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.ToBeClosed;
+                    entity.UpdateDate = DateTime.Now;
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Najava brisanja subjekta", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 13:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.Post;
+                    entity.UpdateDate = DateTime.Now;
+                    entity.Organization.MerDeliveryDetail.RequiredPostalService = true;
+                    entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation = "ŽELE POŠTOM";
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.Post, entityId);
+                    _acquireEmailMethodHelpers.UpdateStatus(AcquireEmailStatusEnum.Verified, entity.Organization.MerId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Žele primati eRačune poštom", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 14:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.Foreign;
+                    entity.UpdateDate = DateTime.Now;
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.Foreign, entityId);
+                    _acquireEmailMethodHelpers.UpdateStatus(AcquireEmailStatusEnum.Verified, entity.Organization.MerId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Inozemna tvrtka", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 15:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.OnHold;
+                    entity.UpdateDate = DateTime.Now;
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.OnHold, entityId);
+                    _acquireEmailMethodHelpers.UpdateStatus(AcquireEmailStatusEnum.Verified, entity.Organization.MerId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Tvrtka u mirovanju", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 99:
+                    break;
+
+            }
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         [HttpPost]
         public ActionResult CheckEntitiesForImport(HttpPostedFileBase file, int campaignId)
         {
-            int importedEntities = 0;
-            int validEntities = 0;
-            List<string> validVATs = new List<string>();
-            int invalidEntities = 0;
-            List<string> invalidVATs = new List<string>();
-
-            //string filepath = Path.Combine(Server.MapPath("~/ImportFiles"), "ImportAcquireEmail.xls");
-            //if(!create)
-            //    file.SaveAs(filepath);
-
-            var wb = new ExcelPackage(file.InputStream);
-            var ws = wb.Workbook.Worksheets[1];
-
-            for (int i = ws.Dimension.Start.Row; i <= ws.Dimension.End.Row; i++)
+            try
             {
-                string VAT = ws.Cells[i, 1].Value.ToString();
+                int importedEntities = 0;
+                int validEntities = 0;
+                List<string> validVats = new List<string>();
+                int invalidEntities = 0;
+                List<string> invalidVats = new List<string>();
 
-                if (VAT != "")
+                //string filepath = Path.Combine(Server.MapPath("~/ImportFiles"), "ImportAcquireEmail.xls");
+                //if(!create)
+                //    file.SaveAs(filepath);
+
+                var wb = new ExcelPackage(file.InputStream);
+                var ws = wb.Workbook.Worksheets[1];
+
+                for (int i = ws.Dimension.Start.Row; i <= ws.Dimension.End.Row; i++)
                 {
-                    if (_db.Organizations.Any(o => o.SubjectBusinessUnit == "" && o.VAT == VAT))
-                    {
-                        validVATs.Add(VAT);
-                        ImportEntities(campaignId, VAT);
-                        importedEntities++;
+                    object vat;
 
-                        validEntities++;
+                    if ((vat = ws.Cells[i, 1].Value) != null)
+                    {
+                        string vatTemp = vat.ToString();
+
+                        if (_db.Organizations.Any(o => (o.SubjectBusinessUnit == "" || o.SubjectBusinessUnit == "11"/*DHL hack/fix*/) && o.VAT == vatTemp))
+                        {
+                            validVats.Add(vatTemp);
+                            ImportEntities(campaignId, vatTemp);
+                            importedEntities++;
+
+                            validEntities++;
+                        }
+                        else
+                        {
+                            invalidVats.Add(vatTemp);
+                            invalidEntities++;
+                        }
                     }
                     else
                     {
-                        invalidVATs.Add(VAT);
-                        invalidEntities++;
+                        continue;
                     }
                 }
+
+                var model = new AcquireEmailCheckResults
+                {
+                    CampaignId = campaignId,
+                    ValidEntities = validEntities,
+                    InvalidEntities = invalidEntities,
+                    ImportedEntities = importedEntities,
+                    ValidVATs = validVats,
+                    InvalidVATs = invalidVats
+                };
+
+                //if(create)
+                //    System.IO.File.Delete(filepath);
+
+                wb.Dispose();
+                return View(model);
             }
-            
-            var model = new AcquireEmailCheckResults
+            catch (COMException)
             {
-                CampaignId = campaignId,
-                ValidEntities = validEntities,
-                InvalidEntities = invalidEntities,
-                ImportedEntities = importedEntities,
-                ValidVATs = validVATs,
-                InvalidVATs = invalidVATs
-            };
-
-            //if(create)
-            //    System.IO.File.Delete(filepath);
-
-            return View(model);
+                return View("ErrorOldExcel");
+            }
         }
 
         [HttpPost]
@@ -212,7 +431,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         {
             if (VAT != "")
             {
-                var relatedOrganization = _db.Organizations.First(o => o.SubjectBusinessUnit == "" && o.VAT == VAT);
+                var relatedOrganization = _db.Organizations.First(o => (o.SubjectBusinessUnit == "" || o.SubjectBusinessUnit == "11"/*DHL hack/fix*/) && o.VAT == VAT);
 
                 if (relatedOrganization.MerDeliveryDetail.AcquiredReceivingInformationIsVerified)
                 {
@@ -271,6 +490,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             ws.Cells[1, 2].Value = "OIB partnera";
             ws.Cells[1, 3].Value = "Naziv partnera";
             ws.Cells[1, 4].Value = "Informacija o zaprimanju eRačuna";
+            ws.Cells[1, 5].Value = "Status obrade";
 
             foreach (var res in results)
             {
@@ -278,6 +498,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 ws.Cells[cell, 2].Value = res.VAT;
                 ws.Cells[cell, 3].Value = res.SubjectName;
                 ws.Cells[cell, 4].Value = res.AcquiredReceivingInformation;
+                ws.Cells[cell, 5].Value = res.Entity.AcquireEmailEntityStatusString;
                 cell++;
             }
 
@@ -287,7 +508,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 cell++;
             }
 
-            return File(wb.GetAsByteArray(), "application/vnd.ms-excel", "Rezultati.xls");
+            return File(wb.GetAsByteArray(), "application/vnd.ms-excel", "Rezultati.xlsx");
         }
 
         public ActionResult ExportEntitiesForEmailNotification(int campaignId)
@@ -312,16 +533,41 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 cell++;
             }
 
-            return File(wb.GetAsByteArray(), "application/vnd.ms-excel", campaignName + ".xls");
+            return File(wb.GetAsByteArray(), "application/vnd.ms-excel", campaignName + ".xlsx");
         }
 
         public void CreateEntity(Organizations organization, AcquireEmailStatusEnum status, int campaignId)
         {
+            AcquireEmailEntityStatusEnum entityStatusEnum = AcquireEmailEntityStatusEnum.Created;
+            switch (status)
+            {
+                case AcquireEmailStatusEnum.Created:
+                    entityStatusEnum = AcquireEmailEntityStatusEnum.Created;
+                    break;
+                case AcquireEmailStatusEnum.Checked:
+                    entityStatusEnum = AcquireEmailEntityStatusEnum.Created;
+                    break;
+                case AcquireEmailStatusEnum.Verified:
+                    //entityStatusEnum = organization.MerDeliveryDetail.AcquiredReceivingInformation == "ZATVORENA TVRTKA" ? AcquireEmailEntityStatusEnum.ClosedOrganization : AcquireEmailEntityStatusEnum.AcquiredInformation;
+                    if (organization.MerDeliveryDetail.AcquiredReceivingInformation == "ZATVORENA TVRTKA")
+                        entityStatusEnum = AcquireEmailEntityStatusEnum.ClosedOrganization;
+                    else if (organization.MerDeliveryDetail.AcquiredReceivingInformation ==
+                             "NEMA ISPRAVNOG BROJA TELEFONA")
+                        entityStatusEnum = AcquireEmailEntityStatusEnum.WrongTelephoneNumber;
+                    else if (organization.MerDeliveryDetail.AcquiredReceivingInformation ==
+                             "ŽELE POŠTOM")
+                        entityStatusEnum = AcquireEmailEntityStatusEnum.Post;
+                    else
+                        entityStatusEnum = AcquireEmailEntityStatusEnum.AcquiredInformation;
+                    break;
+            }
+
             _db.AcquireEmails.Add(new AcquireEmail
             {
                 RelatedOrganizationId = organization.MerId,
                 RelatedCampaignId = campaignId,
                 AcquireEmailStatus = status,
+                AcquireEmailEntityStatus = entityStatusEnum,
                 InsertDate = DateTime.Now
             });
             _db.SaveChanges();
@@ -367,29 +613,108 @@ namespace MojCRM.Areas.HelpDesk.Controllers
 
         public ActionResult AdminAssignEntities(int campaignId, int number, string agent)
         {
-            var entites = _db.AcquireEmails.Where(c => c.RelatedCampaignId == campaignId && c.IsAssigned == false).Take(number);
+            var entites = _db.AcquireEmails.Where(c => c.RelatedCampaignId == campaignId 
+            && c.AcquireEmailStatus == AcquireEmailStatusEnum.Created 
+            && c.IsAssigned == false
+            && (!(c.Organization.OrganizationDetail.TelephoneNumber == String.Empty || c.Organization.OrganizationDetail.TelephoneNumber == null)
+            || !(c.Organization.OrganizationDetail.MobilePhoneNumber == String.Empty || c.Organization.OrganizationDetail.MobilePhoneNumber == null))).Take(number);
 
             foreach (var entity in entites)
             {
                 entity.IsAssigned = true;
                 entity.AssignedTo = agent;
                 entity.UpdateDate = DateTime.Now;
+                _helper.LogActivity("Predmet je dodijeljen agentu: " + agent + ". Dodijelio: " + User.Identity.Name, User.Identity.Name, entity.Id, ActivityLog.ActivityTypeEnum.AcquireEmailAssignement, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+            }
+
+            var campaign = _db.Campaigns.First(c => c.CampaignId == campaignId);
+
+            if (campaign.CampaignStatus == Campaign.CampaignStatusEnum.Start)
+                campaign.CampaignStatus = Campaign.CampaignStatusEnum.InProgress;
+
+            _db.SaveChanges();
+
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
+        public ActionResult UpdateEntityStatusToCreated(int campaignId)
+        {
+            var entites = _db.AcquireEmails.Where(c => c.RelatedCampaignId == campaignId
+            && c.AcquireEmailEntityStatus == AcquireEmailEntityStatusEnum.WrongTelephoneNumber);
+
+            foreach (var entity in entites)
+            {
+                entity.AcquireEmailStatus = AcquireEmailStatusEnum.Created;
+                entity.UpdateDate = DateTime.Now;
+            }
+
+            _db.SaveChanges();
+
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
+        public ActionResult AdminUnassignEntities(int campaignId, string agent)
+        {
+            var entites = _db.AcquireEmails.Where(c => c.RelatedCampaignId == campaignId && c.AssignedTo == agent);
+
+            foreach (var entity in entites)
+            {
+                entity.IsAssigned = false;
+                entity.AssignedTo = string.Empty;
+                entity.UpdateDate = DateTime.Now;
+                _helper.LogActivity("Uklonjena dodjela agentu: " + agent + ". Dodjelu uklonio: " + User.Identity.Name, User.Identity.Name, entity.Id, ActivityLog.ActivityTypeEnum.AcquireEmailAssignement, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
             }
             _db.SaveChanges();
 
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
+        public ActionResult AcquireEmailsAssignedStats()
+        {
+            var entities = _db.AcquireEmails.Where(x => x.AcquireEmailStatus == AcquireEmailStatusEnum.Created && x.IsAssigned)
+                .GroupBy(x => new { x.AssignedTo, x.Campaign.CampaignName, x.Campaign.CampaignId});
+            var list = new List<AcquireEmailStatsPerAgentAndCampaign>();
+
+            foreach (var entity in entities)
+            {
+                var entitiesWithoutPhone = _db.AcquireEmails.Where(x =>
+                    (x.Organization.OrganizationDetail.TelephoneNumber == String.Empty || x.Organization.OrganizationDetail.TelephoneNumber == null)
+                    && (x.Organization.OrganizationDetail.MobilePhoneNumber == String.Empty || x.Organization.OrganizationDetail.MobilePhoneNumber == null)
+                    && x.RelatedCampaignId == entity.Key.CampaignId
+                    && x.AcquireEmailStatus == AcquireEmailStatusEnum.Created
+                    && x.AssignedTo == entity.Key.AssignedTo);
+                var temp = new AcquireEmailStatsPerAgentAndCampaign
+                {
+                    Agent = entity.Key.AssignedTo,
+                    CampaignName = entity.Key.CampaignName,
+                    CampaignId = entity.Key.CampaignId,
+                    NumberOfEntitiesForProcessing = entity.Count(),
+                    NumberOfEntitiesWithoutPhoneNumber = entitiesWithoutPhone.Count()
+                };
+                list.Add(temp);
+            }
+
+            var model = new AcquireEmailStatsPerAgentViewModel()
+            {
+                Campaigns = list.AsQueryable()
+            };
+
+            return View(model);
         }
 
         public IList<AcquireEmailExportModel> GetEntityList(int campaignId)
         {
             var entityList = (from ae in _db.AcquireEmails
-                              where ae.RelatedCampaignId == campaignId && (ae.AcquireEmailStatus == AcquireEmailStatusEnum.Reviewed || ae.AcquireEmailStatus == AcquireEmailStatusEnum.Verified)
+                              where ae.RelatedCampaignId == campaignId && (ae.AcquireEmailStatus == AcquireEmailStatusEnum.Reviewed 
+                              || ae.AcquireEmailStatus == AcquireEmailStatusEnum.Verified || ae.AcquireEmailStatus == AcquireEmailStatusEnum.Checked /*Ptiček request - temporary!*/)
                               select new AcquireEmailExportModel
                               {
+                                  Entity = ae,
                                   CampaignName = ae.Campaign.CampaignName,
                                   VAT = ae.Organization.VAT,
                                   SubjectName = ae.Organization.SubjectName,
-                                  AcquiredReceivingInformation = ae.Organization.MerDeliveryDetail.AcquiredReceivingInformation
+                                  AcquiredReceivingInformation = ae.Organization.MerDeliveryDetail.AcquiredReceivingInformation,
+                                  AcquiredEmailEntityStatus = ae.AcquireEmailEntityStatus
                               }).ToList();
             return entityList;
         }
@@ -399,10 +724,12 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 where ae.RelatedCampaignId == campaignId && ae.AcquireEmailStatus == AcquireEmailStatusEnum.Reviewed
                 select new AcquireEmailExportModel
                 {
+                    Entity = ae,
                     CampaignName = ae.Campaign.CampaignName,
                     VAT = ae.Organization.VAT,
                     SubjectName = ae.Organization.SubjectName,
-                    AcquiredReceivingInformation = ae.Organization.MerDeliveryDetail.AcquiredReceivingInformation
+                    AcquiredReceivingInformation = ae.Organization.MerDeliveryDetail.AcquiredReceivingInformation,
+                    AcquiredEmailEntityStatus = ae.AcquireEmailEntityStatus
                 }).ToList();
             return entityList;
         }

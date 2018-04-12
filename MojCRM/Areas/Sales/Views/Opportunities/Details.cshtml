@@ -1,4 +1,5 @@
 ﻿@using System.Web.UI.WebControls
+@using MojCRM.Areas.Sales.Models
 @model MojCRM.Areas.Sales.ViewModels.OpportunityDetailViewModel
 
 @{
@@ -17,6 +18,7 @@
             new ListItem{ Value= "7", Text = "FINA korisnik"},
             new ListItem{ Value = "8", Text = "eFaktura korisnik"},
             //new ListItem{ Value= "3", Text = "Odbijeno"}
+            new ListItem{ Value= @"9", Text = @"Zatvorena tvrtka"}
         };
 }
 
@@ -384,7 +386,7 @@
                             <div class="col-md-12">
                                 <label for="assign">Dodijeli prodajnu priliku agentu</label>
                                 <div id="assign">
-                                    @Html.DropDownList("AssignedTo", Model.SalesAgents, new { @class = "form-control" })
+                                    @Html.DropDownList("AssignedTo", Model.SalesAgents, "-- Odaberi agenta --", new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="hidden">
@@ -435,7 +437,7 @@
                             <div class="col-md-12">
                                 <label for="reassign">Dodijeli priliku drugom agentu</label>
                                 <div id="unassign">
-                                    @Html.DropDownList("AssignedTo", Model.SalesAgents, new { @class = "form-control" })
+                                    @Html.DropDownList("AssignedTo", Model.SalesAgents, "-- Odaberi agenta --", new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="hidden">
@@ -804,7 +806,7 @@
     {
         <h4 style="text-align:center; color:red">Ova prodajna prilika je dodijeljena agentu: <strong>@Model.AssignedTo</strong></h4>
     }
-    @if (Model.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.LEAD)
+    @if (Model.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Lead)
     {
         <h4 style="text-align:center">Na temelju ove prilike kreiran je <a href="@Url.RouteUrl(new { action = "Details", controller = "Leads", area = "Sales", id = Model.RelatedLeadId})">lead</a>.</h4>
     }
@@ -819,7 +821,7 @@
                     {
                         <button type="button" title="Dodijeli prodajnu priliku" class="btn btn-sm btn-default" data-toggle="modal" data-target="#Assign" href="#Assign"><i class="fa fa-mail-reply-all"></i></button>
                     }
-                    @if (Model.OpportunityStatus != MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.LEAD && Model.OpportunityStatus != MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.REJECTED)
+                    @if (Model.OpportunityStatus != MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Lead && Model.OpportunityStatus != MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Rejected || Model.OpportunityStatus == Opportunity.OpportunityStatusEnum.ClosedSubject)
                     {
                         if (Model.IsAssigned && (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
                         {
@@ -829,7 +831,7 @@
                         <button type="button" title="Kreiraj lead" class="btn btn-sm btn-default" data-toggle="modal" href="#CreateLead"><i class="fa fa-check text-success"></i></button>
                         <button type="button" title="Označi kao odbijeno" class="btn btn-sm btn-default" data-toggle="modal" href="#MarkRejected"><i class="fa fa-times text-danger"></i></button>
                     }
-                    @if ((Model.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.LEAD && Model.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.REJECTED) && User.IsInRole("Superadmin"))
+                    @if ((Model.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Lead || Model.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Rejected || Model.OpportunityStatus == Opportunity.OpportunityStatusEnum.ClosedSubject) && User.IsInRole("Superadmin"))
                     {
                         <button type="button" title="Promijeni dodjelu" class="btn btn-sm btn-default" data-toggle="modal" data-target="#Reassign" href="#Reassign"><i class="fa fa-mail-reply-all"></i></button>
                         <button type="button" title="Promijeni status prodajne prilike" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangeStatus"><i class="fa fa-refresh"></i></button>
@@ -912,7 +914,7 @@
                 <strong>Status prodajne prilike:</strong>
                 @Model.OpportunityStatusString
             </div>
-            @if (Model.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.REJECTED)
+            @if (Model.OpportunityStatus == MojCRM.Areas.Sales.Models.Opportunity.OpportunityStatusEnum.Rejected)
             {
                 <div class="col-md-4">
                     <strong>Razlog odbijanja prodajne prilike:</strong>

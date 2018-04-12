@@ -52,7 +52,21 @@
 
 <h2 style="text-align:center"><strong>Statistike odjela dostave</strong ></h2>
 <h3 style="text-align:center"><strong>Statistika kreiranih kartica</strong></h3>
-
+<br />
+<div class="alert alert-info">
+    <p style="text-align: justify">
+        Ovaj statistički pregled donosi podatke o kreiranim karticama za pojedini dan. Statistika prikazuje podatke o:
+        <ul>
+            <li>broju kreiranih kartica za pojedini dan slanja s pregledom koliko je kartica kreirano za postojeće primatelje, a koliko za primatelje koji prvi puta preuzimaju neki dokument</li>
+            <li>broju dodijeljenih kartica s podatkom o agentu kome su dodijeljene</li>
+            <li>broju kartica u pojedinom statusu</li>
+            <li>broju kartica koje je potrebno obraditi</li>
+        </ul>
+        <br />
+        Podaci prikazani u statistici se grupiraju po datumu slanja dokumenta te po agentu kojem su neke kartice dodijeljene.<br />
+        Dodatno, kroz ovaj statistički pregled moguće je pokrenuti slanje dnevnog izvještaja o stanju u odjelu dostave.
+    </p>
+</div>
 <hr />
 
 <div class="col-md-10">
@@ -81,7 +95,7 @@
 <div class="col-md-2">
     <div class="btn btn-group" role="group">
         <button data-target="#AssignManagement" data-toggle="modal" title="Pokreni dodijeljivanje kartica" type="button" class="btn btn-sm btn-default" href="#AssignManagement"><i class="fa fa-mail-reply-all"></i></button>
-        @if (User.IsInRole("Management") || User.IsInRole("Admin") || User.IsInRole("Superadmin"))
+        @if (User.IsInRole("Management") || User.IsInRole("Board") || User.IsInRole("Administrator") || User.IsInRole("Superadmin"))
         {
             <a id="send-report" method="post" class="btn btn-default btn-sm" onclick="javascript: SendReport()" title="Pošalji jutarnji report upravi">
                 <i class="fa fa-send"></i>
@@ -191,7 +205,7 @@
         var email = "matej@moj-eracun.hr; alen.jedud@moj-eracun.hr";
         var subject = "Moj-CRM -- Dnevni izvještaj -- Odjel dostave";
         var body = "Poštovani," + "%0D%0A" + "%0D%0A" + "danas je kreirano @Model.CreatedTicketsTodayCount kartica, od toga @Model.CreatedTicketsTodayFirstTimeCount za prvi puta." + "%0D%0A" + "%0D%0A" + "Uključujući stare kartice, ukupno se mora obraditi @ViewBag.TotalOpenedTickets kartica. Zbog toga će raspored na dostavi biti:" + "%0D%0A" + "%0D%0A"
-            + "Darko Glatki: " + "%0D%0A" + "Tomislav Ptiček: " + "%0D%0A" + "Filip Troskot: " + "%0D%0A" + "Filip Karmazen: " + "%0D%0A" + "Katarina Ceković: " + "%0D%0A" + "Nikolina Ćosić: " + "%0D%0A" + "Matija Ekart: " + "%0D%0A" + "Ana Šimac: " + "%0D%0A" + "Filip Klarić: " + "%0D%0A" + "%0D%0A" + "Lijep pozdrav,";
+            + "Darko Glatki: " + "%0D%0A" + "Tomislav Ptiček: " + "%0D%0A" + "Filip Troskot: " + "%0D%0A" + "Filip Karmazen: " + "%0D%0A" + "Katarina Ceković: " + "%0D%0A" + "Matija Ekart: " + "%0D%0A" + "Ana Šimac: " + "%0D%0A" + "Filip Klarić: " + "%0D%0A" + "%0D%0A" + "Lijep pozdrav,";
         window.location = 'mailto:' + email + '?subject=' + subject + '&body=' + body;
     });
 </script>

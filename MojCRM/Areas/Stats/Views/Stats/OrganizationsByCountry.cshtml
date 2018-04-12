@@ -1,0 +1,50 @@
+﻿@model IQueryable<MojCRM.Areas.Stats.ViewModels.OrganizationsByCountryViewModel>
+@{
+    ViewBag.Title = "Statistika - tvrtke po državama";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+}
+
+<h2>Statistički pregled broja tvrtki po državama</h2>
+<br/>
+<div class="alert alert-info">
+    <p style="text-align: justify">
+        Ovaj statistički pregled donosi podatke o broju tvrtki po državi u našoj bazi podataka.
+    </p>
+</div>
+<hr />
+<div class="row">
+    <div class="widget widget-table">
+        <div class="widget-header">
+            <h3><i class="fa fa-globe"></i> Pregled podataka</h3> <em>- Broj tvrtki po državi sjedišta</em>
+            <div class="btn-group widget-header-toolbar">
+                <a href="#" title="Fokusiraj" class="btn-borderless btn-focus"><i class="fa fa-eye"></i></a>
+                <a href="#" title="Proširi/Sažmi" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a>
+                @*<a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a>*@
+            </div>
+        </div>
+        <div class="widget-content">
+            <table id="ticket-table" class="table table-sorting">
+                <thead>
+                    <tr>
+                        <th>Država</th>
+                        <th>Broj tvrtki</th>
+                        <th>Postotak u ukupnom broju</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var organizations in Model)
+                    {
+                        <tr>
+                            <td>@organizations.CountryIdentificationCode</td>
+                            <td>@organizations.NumberOfOrganizations</td>
+                            <td>@organizations.PercentOfOrganizations %</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+

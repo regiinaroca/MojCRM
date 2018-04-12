@@ -10,6 +10,8 @@ using MojCRM.Areas.Sales.ViewModels;
 using MojCRM.Areas.Sales.Helpers;
 using System.Text;
 using System.Web.UI.WebControls;
+using MojCRM.Areas.Campaigns.Models;
+using MojCRM.Helpers;
 using static MojCRM.Models.ActivityLog;
 
 namespace MojCRM.Areas.Sales.Controllers
@@ -17,66 +19,50 @@ namespace MojCRM.Areas.Sales.Controllers
     public class OpportunitiesController : Controller
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        private readonly HelperMethods _helper = new HelperMethods();
 
         // GET: Sales/Opportunities
         [Authorize]
         public ActionResult Index(OpportunitySearchHelper model)
         {
-            var opportunities = from o in _db.Opportunities
-                                select o;
+            var opportunities = _db.Opportunities.Select(o => o);
             if (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Board") || User.IsInRole("Superadmin"))
             {
                 //Search Engine -- Admin
                 if (!String.IsNullOrEmpty(model.Campaign))
                 {
                     opportunities = opportunities.Where(op => op.RelatedCampaign.CampaignName.Contains(model.Campaign));
-                    ViewBag.SearchResults = opportunities.Count();
-                    ViewBag.SearchResultsAssigned = opportunities.Count(op => op.IsAssigned);
                 }
                 if (!String.IsNullOrEmpty(model.Opportunity))
                 {
                     opportunities = opportunities.Where(op => op.OpportunityTitle.Contains(model.Opportunity));
-                    ViewBag.SearchResults = opportunities.Count();
-                    ViewBag.SearchResultsAssigned = opportunities.Count(op => op.IsAssigned);
                 }
                 if (!String.IsNullOrEmpty(model.Organization))
                 {
                     opportunities = opportunities.Where(op => op.RelatedOrganization.SubjectName.Contains(model.Organization) || op.RelatedOrganization.VAT.Contains(model.Organization));
-                    ViewBag.SearchResults = opportunities.Count();
-                    ViewBag.SearchResultsAssigned = opportunities.Count(op => op.IsAssigned);
                 }
                 if (!String.IsNullOrEmpty(model.OpportunityStatus.ToString()))
                 {
                     opportunities = opportunities.Where(op => op.OpportunityStatus == model.OpportunityStatus);
-                    ViewBag.SearchResults = opportunities.Count();
-                    ViewBag.SearchResultsAssigned = opportunities.Count(op => op.IsAssigned);
                 }
                 if (!String.IsNullOrEmpty(model.RejectReason.ToString()))
                 {
                     opportunities = opportunities.Where(op => op.RejectReason == model.RejectReason);
-                    ViewBag.SearchResults = opportunities.Count();
-                    ViewBag.SearchResultsAssigned = opportunities.Count(op => op.IsAssigned);
                 }
                 if (!String.IsNullOrEmpty(model.Assigned))
                 {
                     if (model.Assigned == "1")
                     {
                         opportunities = opportunities.Where(op => op.IsAssigned == false);
-                        ViewBag.SearchResults = opportunities.Count();
-                        ViewBag.SearchResultsAssigned = opportunities.Count(op => op.IsAssigned);
                     }
                     if (model.Assigned == "2")
                     {
                         opportunities = opportunities.Where(op => op.IsAssigned);
-                        ViewBag.SearchResults = opportunities.Count();
-                        ViewBag.SearchResultsAssigned = opportunities.Count(op => op.IsAssigned);
                     }
                 }
                 if (!String.IsNullOrEmpty(model.AssignedTo))
                 {
                     opportunities = opportunities.Where(op => op.AssignedTo == model.AssignedTo);
-                    ViewBag.SearchResults = opportunities.Count();
-                    ViewBag.SearchResultsAssigned = opportunities.Count(op => op.IsAssigned);
                 }
             }
             else
@@ -86,32 +72,22 @@ namespace MojCRM.Areas.Sales.Controllers
                 if (!String.IsNullOrEmpty(model.Campaign))
                 {
                     opportunities = opportunities.Where(op => op.RelatedCampaign.CampaignName.Contains(model.Campaign));
-                    ViewBag.SearchResults = opportunities.Count();
-                    ViewBag.SearchResultsAssigned = opportunities.Count(op => op.IsAssigned);
                 }
                 if (!String.IsNullOrEmpty(model.Opportunity))
                 {
                     opportunities = opportunities.Where(op => op.OpportunityTitle.Contains(model.Opportunity));
-                    ViewBag.SearchResults = opportunities.Count();
-                    ViewBag.SearchResultsAssigned = opportunities.Count(op => op.IsAssigned);
                 }
                 if (!String.IsNullOrEmpty(model.Organization))
                 {
                     opportunities = opportunities.Where(op => op.RelatedOrganization.SubjectName.Contains(model.Organization) || op.RelatedOrganization.VAT.Contains(model.Organization));
-                    ViewBag.SearchResults = opportunities.Count();
-                    ViewBag.SearchResultsAssigned = opportunities.Count(op => op.IsAssigned);
                 }
                 if (!String.IsNullOrEmpty(model.OpportunityStatus.ToString()))
                 {
                     opportunities = opportunities.Where(op => op.OpportunityStatus == model.OpportunityStatus);
-                    ViewBag.SearchResults = opportunities.Count();
-                    ViewBag.SearchResultsAssigned = opportunities.Count(op => op.IsAssigned);
                 }
                 if (!String.IsNullOrEmpty(model.RejectReason.ToString()))
                 {
                     opportunities = opportunities.Where(op => op.RejectReason == model.RejectReason);
-                    ViewBag.SearchResults = opportunities.Count();
-                    ViewBag.SearchResultsAssigned = opportunities.Count(op => op.IsAssigned);
                 }
             }
 
@@ -119,16 +95,16 @@ namespace MojCRM.Areas.Sales.Controllers
             ViewBag.SearchResultsAssigned = opportunities.Count(op => op.IsAssigned);
 
             ViewBag.UsersAssigned = opportunities.Count(op => op.AssignedTo == User.Identity.Name);
-            ViewBag.UsersCreated = opportunities.Count(op => op.AssignedTo == User.Identity.Name && op.OpportunityStatus == Opportunity.OpportunityStatusEnum.START);
-            ViewBag.UsersInContact = opportunities.Count(op => op.AssignedTo == User.Identity.Name && op.OpportunityStatus == Opportunity.OpportunityStatusEnum.INCONTACT);
-            ViewBag.UsersLead = opportunities.Count(op => op.AssignedTo == User.Identity.Name && op.OpportunityStatus == Opportunity.OpportunityStatusEnum.LEAD);
-            ViewBag.UsersRejected = opportunities.Count(op => op.AssignedTo == User.Identity.Name && op.OpportunityStatus == Opportunity.OpportunityStatusEnum.REJECTED);
+            ViewBag.UsersCreated = opportunities.Count(op => op.AssignedTo == User.Identity.Name && op.OpportunityStatus == Opportunity.OpportunityStatusEnum.Start);
+            ViewBag.UsersInContact = opportunities.Count(op => op.AssignedTo == User.Identity.Name && op.OpportunityStatus == Opportunity.OpportunityStatusEnum.Incontact);
+            ViewBag.UsersLead = opportunities.Count(op => op.AssignedTo == User.Identity.Name && op.OpportunityStatus == Opportunity.OpportunityStatusEnum.Lead);
+            ViewBag.UsersRejected = opportunities.Count(op => op.AssignedTo == User.Identity.Name && op.OpportunityStatus == Opportunity.OpportunityStatusEnum.Rejected);
 
             if (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Board") || User.IsInRole("Superadmin"))
             {
                 return View(opportunities.OrderByDescending(op => op.InsertDate));
             }
-            return View(opportunities.Where(op => op.OpportunityStatus != Opportunity.OpportunityStatusEnum.LEAD || op.OpportunityStatus != Opportunity.OpportunityStatusEnum.REJECTED).OrderByDescending(op => op.InsertDate));
+            return View(opportunities.Where(op => op.OpportunityStatus != Opportunity.OpportunityStatusEnum.Lead || op.OpportunityStatus != Opportunity.OpportunityStatusEnum.Rejected).OrderByDescending(op => op.InsertDate));
         }
 
         // GET: Sales/Opportunities/Details/5
@@ -137,32 +113,28 @@ namespace MojCRM.Areas.Sales.Controllers
             try
             {
                 Opportunity opportunity = _db.Opportunities.Find(id);
+                string relatedCampaignName = String.Empty;
                 if (opportunity == null)
                 {
                     return HttpNotFound();
                 }
 
-                var relatedSalesContacts = (from c in _db.Contacts
-                                             where c.Organization.MerId == opportunity.RelatedOrganizationId && c.ContactType == Contact.ContactTypeEnum.SALES
-                                             select c);
-                var relatedOpportunityNotes = (from n in _db.OpportunityNotes
-                                                where n.RelatedOpportunityId == opportunity.OpportunityId
-                                                select n).OrderByDescending(n => n.InsertDate);
-                var relatedOpportunityActivities = (from a in _db.ActivityLogs
-                                                     where a.ReferenceId == id && a.Module == ModuleEnum.Opportunities
-                                                     select a).OrderByDescending(a => a.InsertDate);
-                var relatedOrganization = (from o in _db.Organizations
-                                            where o.MerId == opportunity.RelatedOrganizationId
-                                            select o).First();
-                var relatedOrganizationDetail = (from od in _db.OrganizationDetails
-                                                  where od.MerId == opportunity.RelatedOrganizationId
-                                                  select od).First();
-                var relatedCampaign = (from c in _db.Campaigns
-                                        where c.CampaignId == opportunity.RelatedCampaignId
-                                        select c).First();
+                var relatedSalesContacts = _db.Contacts.Where(c =>
+                    c.Organization.MerId == opportunity.RelatedOrganizationId &&
+                    c.ContactType == Contact.ContactTypeEnum.Sales);
+                var relatedOpportunityNotes = _db.OpportunityNotes.Where(n =>
+                    n.RelatedOpportunityId == opportunity.OpportunityId).OrderByDescending(n => n.InsertDate);
+                var relatedOpportunityActivities = _db.ActivityLogs.Where(a =>
+                    a.ReferenceId == id && a.Module == ModuleEnum.Opportunities).OrderByDescending(a => a.InsertDate);
+                var relatedOrganization = _db.Organizations.First(o => o.MerId == opportunity.RelatedOrganizationId);
+                if (opportunity.RelatedCampaignId != null)
+                {
+                    var relatedCampaign = _db.Campaigns.First(c => c.CampaignId == opportunity.RelatedCampaignId);
+                    relatedCampaignName = relatedCampaign.CampaignName;
+                }
                 var users = _db.Users;
                 var relatedLeadId = 0;
-                if (opportunity.OpportunityStatus == Opportunity.OpportunityStatusEnum.LEAD)
+                if (opportunity.OpportunityStatus == Opportunity.OpportunityStatusEnum.Lead)
                 {
                     relatedLeadId = _db.Leads.Where(l => l.RelatedOpportunityId == id).Select(l => l.LeadId).First();
                 }
@@ -213,14 +185,14 @@ namespace MojCRM.Areas.Sales.Controllers
                     OrganizationId = opportunity.RelatedOrganizationId,
                     OrganizationName = relatedOrganization.SubjectName,
                     OrganizationVAT = relatedOrganization.VAT,
-                    TelephoneNumber = relatedOrganizationDetail.TelephoneNumber,
-                    MobilePhoneNumber = relatedOrganizationDetail.MobilePhoneNumber,
-                    Email = relatedOrganizationDetail.EmailAddress,
-                    ERP = relatedOrganizationDetail.ERP,
-                    NumberOfInvoicesSent = relatedOrganizationDetail.NumberOfInvoicesSent,
-                    NumberOfInvoicesReceived = relatedOrganizationDetail.NumberOfInvoicesReceived,
+                    TelephoneNumber = relatedOrganization.OrganizationDetail.TelephoneNumber,
+                    MobilePhoneNumber = relatedOrganization.OrganizationDetail.MobilePhoneNumber,
+                    Email = relatedOrganization.OrganizationDetail.EmailAddress,
+                    ERP = relatedOrganization.OrganizationDetail.ERP,
+                    NumberOfInvoicesSent = relatedOrganization.OrganizationDetail.NumberOfInvoicesSent,
+                    NumberOfInvoicesReceived = relatedOrganization.OrganizationDetail.NumberOfInvoicesReceived,
                     RelatedCampaignId = opportunity.RelatedCampaignId,
-                    RelatedCampaignName = relatedCampaign.CampaignName,
+                    RelatedCampaignName = relatedCampaignName,
                     IsAssigned = opportunity.IsAssigned,
                     AssignedTo = opportunity.AssignedTo,
                     LastContactedDate = opportunity.LastContactDate,
@@ -255,9 +227,7 @@ namespace MojCRM.Areas.Sales.Controllers
         [HttpPost]
         public ActionResult AddNote(OpportunityNoteHelper model)
         {
-            var relatedOpportunity = (from o in _db.Opportunities
-                                       where o.OpportunityId == model.RelatedOpportunityId
-                                       select o).First();
+            var relatedOpportunity = _db.Opportunities.First(o => o.OpportunityId == model.RelatedOpportunityId);
             var noteString = new StringBuilder();
 
             relatedOpportunity.LastContactDate = DateTime.Now;
@@ -300,43 +270,13 @@ namespace MojCRM.Areas.Sales.Controllers
             switch (model.Identifier)
             {
                 case 1:
-                    _db.ActivityLogs.Add(new ActivityLog
-                    {
-                        Description = User.Identity.Name + " je obavio uspješan poziv vezan za prodajnu priliku: " + relatedOpportunity.OpportunityTitle,
-                        User = User.Identity.Name,
-                        ReferenceId = model.RelatedOpportunityId,
-                        ActivityType = ActivityTypeEnum.Succall,
-                        Department = DepartmentEnum.Sales,
-                        Module = ModuleEnum.Opportunities,
-                        InsertDate = DateTime.Now
-                    });
-                    _db.SaveChanges();
+                    _helper.LogActivity(User.Identity.Name + " je obavio uspješan poziv vezan za prodajnu priliku: " + relatedOpportunity.OpportunityTitle, User.Identity.Name, model.RelatedOpportunityId, ActivityTypeEnum.Succall, DepartmentEnum.Sales, ModuleEnum.Opportunities);
                     break;
                 case 2:
-                    _db.ActivityLogs.Add(new ActivityLog
-                    {
-                        Description = User.Identity.Name + " je obavio kraći informativni poziv vezano za prodajnu priliku: " + relatedOpportunity.OpportunityTitle,
-                        User = User.Identity.Name,
-                        ReferenceId = model.RelatedOpportunityId,
-                        ActivityType = ActivityTypeEnum.Succalshort,
-                        Department = DepartmentEnum.Sales,
-                        Module = ModuleEnum.Opportunities,
-                        InsertDate = DateTime.Now,
-                    });
-                    _db.SaveChanges();
+                    _helper.LogActivity(User.Identity.Name + " je obavio kraći informativni poziv vezano za prodajnu priliku: " + relatedOpportunity.OpportunityTitle, User.Identity.Name, model.RelatedOpportunityId, ActivityTypeEnum.Succalshort, DepartmentEnum.Sales, ModuleEnum.Opportunities);
                     break;
                 case 3:
-                    _db.ActivityLogs.Add(new ActivityLog
-                    {
-                        Description = model.User + " je pokušao obaviti telefonski poziv vezano za prodajnu priliku: " + relatedOpportunity.OpportunityTitle,
-                        User = model.User,
-                        ReferenceId = model.RelatedOpportunityId,
-                        ActivityType = ActivityTypeEnum.Unsuccal,
-                        Department = DepartmentEnum.Sales,
-                        Module = ModuleEnum.Opportunities,
-                        InsertDate = DateTime.Now,
-                    });
-                    _db.SaveChanges();
+                    _helper.LogActivity(model.User + " je pokušao obaviti telefonski poziv vezano za prodajnu priliku: " + relatedOpportunity.OpportunityTitle, User.Identity.Name, model.RelatedOpportunityId, ActivityTypeEnum.Unsuccal, DepartmentEnum.Sales, ModuleEnum.Opportunities);
                     break;
             }
 
@@ -348,9 +288,7 @@ namespace MojCRM.Areas.Sales.Controllers
         [Authorize]
         public ActionResult EditNote(OpportunityNoteHelper model)
         {
-            var noteForEdit = (from n in _db.OpportunityNotes
-                               where n.Id == model.NoteId
-                               select n).First();
+            var noteForEdit = _db.OpportunityNotes.First(n => n.Id == model.NoteId);
 
             noteForEdit.Note = model.Note;
             noteForEdit.Contact = model.Contact;
@@ -366,7 +304,7 @@ namespace MojCRM.Areas.Sales.Controllers
         [Authorize(Roles = "Superadmin")]
         public ActionResult DeleteNote(OpportunityNoteHelper model)
         {
-            OpportunityNote opportunityNote = _db.OpportunityNotes.Find(model.NoteId);
+            OpportunityNote opportunityNote = _db.OpportunityNotes.First(on => on.Id == model.NoteId);
             _db.OpportunityNotes.Remove(opportunityNote);
             _db.SaveChanges();
             return RedirectToAction("Details", new { id = model.RelatedOpportunityId });
@@ -374,42 +312,26 @@ namespace MojCRM.Areas.Sales.Controllers
 
         public void LogEmail(OpportunityNoteHelper model)
         {
-            var relatedOpportunity = (from o in _db.Opportunities
-                                       where o.OpportunityId == model.RelatedOpportunityId
-                                       select o).First();
+            var relatedOpportunity = _db.Opportunities.First(o => o.OpportunityId == model.RelatedOpportunityId);
 
             relatedOpportunity.LastContactDate = DateTime.Now;
             relatedOpportunity.LastContactedBy = model.User;
-            _db.ActivityLogs.Add(new ActivityLog
-            {
-                Description = model.User + " je poslao e-mail na adresu: " + model.Email + " na temu prezentacije usluge u sklopu prodajne prilike: " + relatedOpportunity.OpportunityTitle,
-                User = model.User,
-                ReferenceId = model.RelatedOpportunityId,
-                ActivityType = ActivityTypeEnum.Email,
-                Department = DepartmentEnum.Sales,
-                Module = ModuleEnum.Opportunities,
-                InsertDate = DateTime.Now,
-            });
-            _db.SaveChanges();
+            _helper.LogActivity(model.User + " je poslao e-mail na adresu: " + model.Email + " na temu prezentacije usluge u sklopu prodajne prilike: " + relatedOpportunity.OpportunityTitle, User.Identity.Name, model.RelatedOpportunityId, ActivityTypeEnum.Email, DepartmentEnum.Sales, ModuleEnum.Opportunities);
         }
 
         public ActionResult Assign(OpportunityAssignHelper model)
         {
-            var opportunity = (from o in _db.Opportunities
-                               where o.OpportunityId == model.RelatedOpportunityId
-                               select o).First();
+            var opportunity = _db.Opportunities.First(o => o.OpportunityId == model.RelatedOpportunityId);
             opportunity.IsAssigned = true;
             opportunity.AssignedTo = model.AssignedTo;
             _db.SaveChanges();
 
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         public ActionResult Reassign(OpportunityAssignHelper model)
         {
-            var opportunity = (from o in _db.Opportunities
-                               where o.OpportunityId == model.RelatedOpportunityId
-                               select o).First();
+            var opportunity = _db.Opportunities.First(o => o.OpportunityId == model.RelatedOpportunityId);
             if (model.Unassign)
             {
                 opportunity.IsAssigned = false;
@@ -422,7 +344,29 @@ namespace MojCRM.Areas.Sales.Controllers
                 _db.SaveChanges();
             }
 
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
+        // POST: Sales/Opportunities/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(CreateOpportunityViewModel model)
+        {
+            _db.Opportunities.Add(new Opportunity
+            {
+                OpportunityTitle = model.OpportunityTitle,
+                OpportunityDescription = model.OpportunityDescription,
+                RelatedOrganizationId = model.RelatedCompanyId,
+                OpportunityStatus = Opportunity.OpportunityStatusEnum.Start,
+                OpportunityEntryChannel = model.OpportunityEntryChanel,
+                CreatedBy = model.CreatedBy,
+                AssignedTo = model.CreatedBy,
+                IsAssigned = true,
+                InsertDate = DateTime.Now
+            });
+            _db.SaveChanges();
+
+            return RedirectToAction("Index");
         }
 
         // GET: Sales/Opportunities/Edit/5
@@ -456,7 +400,7 @@ namespace MojCRM.Areas.Sales.Controllers
             };
             if (ModelState.IsValid)
             {
-                var opportunityNew = _db.Opportunities.Find(model.OpportunityId);
+                var opportunityNew = _db.Opportunities.First(o => o.OpportunityId == model.OpportunityId);
                 opportunityNew.OpportunityDescription = model.OpportunityDescription;
                 opportunityNew.OpportunityStatus = model.OpportunityStatus;
                 opportunityNew.RejectReason = model.RejectReason;
@@ -470,76 +414,75 @@ namespace MojCRM.Areas.Sales.Controllers
 
         public ActionResult ConvertToLead(ConvertToLeadHelper model)
         {
-            var lastOpportunityNote = _db.OpportunityNotes
+            try
+            {
+                var lastOpportunityNote = _db.OpportunityNotes
                 .Where(on => on.RelatedOpportunityId == model.OpportunityId)
                 .OrderByDescending(on => on.Id)
                 .First();
 
-            _db.Leads.Add(new Lead()
-            {
-                LeadTitle = model.OrganizationName,
-                LeadDescription = model.OpportunityDescription,
-                RelatedCampaignId = model.RelatedCampaignId,
-                RelatedOpportunityId = model.OpportunityId,
-                RelatedOrganizationId = model.OrganizationId,
-                LeadStatus = Lead.LeadStatusEnum.START,
-                CreatedBy = User.Identity.Name,
-                AssignedTo = User.Identity.Name,
-                IsAssigned = model.IsAssigned,
-                InsertDate = DateTime.Now
-            });
-            _db.ActivityLogs.Add(new ActivityLog()
-            {
-                Description = User.Identity.Name + " je kreirao lead za tvrtku: " + model.OrganizationName + " (Kampanja: " + model.RelatedCampaignName + ")",
-                User = User.Identity.Name,
-                ReferenceId = model.OpportunityId,
-                ActivityType = ActivityTypeEnum.Createdlead,
-                Department = DepartmentEnum.Sales,
-                Module = ModuleEnum.Opportunities,
-                InsertDate = DateTime.Now
-            });
-            var opportunity = _db.Opportunities.Find(model.OpportunityId);
-            opportunity.OpportunityStatus = Opportunity.OpportunityStatusEnum.LEAD;
-            opportunity.UpdateDate = DateTime.Now;
-            opportunity.LastUpdatedBy = User.Identity.Name;
-            _db.SaveChanges();
+                _db.Leads.Add(new Lead()
+                {
+                    LeadTitle = model.OrganizationName,
+                    LeadDescription = model.OpportunityDescription,
+                    RelatedCampaignId = model.RelatedCampaignId,
+                    RelatedOpportunityId = model.OpportunityId,
+                    RelatedOrganizationId = model.OrganizationId,
+                    LeadStatus = Lead.LeadStatusEnum.Start,
+                    CreatedBy = User.Identity.Name,
+                    AssignedTo = User.Identity.Name,
+                    IsAssigned = model.IsAssigned,
+                    InsertDate = DateTime.Now
+                });
+                _helper.LogActivity(User.Identity.Name + " je kreirao lead za tvrtku: " + model.OrganizationName + " (Kampanja: " + model.RelatedCampaignName + ")", User.Identity.Name, model.OpportunityId, ActivityTypeEnum.Createdlead, DepartmentEnum.Sales, ModuleEnum.Opportunities);
 
-            var leadId = _db.Leads.Where(l => l.RelatedCampaignId == model.RelatedCampaignId && l.RelatedOpportunityId == model.OpportunityId).Select(l => l.LeadId).First();
-            _db.LeadNotes.Add(new LeadNote
+                var opportunity = _db.Opportunities.First(o => o.OpportunityId == model.OpportunityId);
+                opportunity.OpportunityStatus = Opportunity.OpportunityStatusEnum.Lead;
+                opportunity.UpdateDate = DateTime.Now;
+                opportunity.LastUpdatedBy = User.Identity.Name;
+                _db.SaveChanges();
+
+                var leadId = _db.Leads.Where(l => l.RelatedCampaignId == model.RelatedCampaignId && l.RelatedOpportunityId == model.OpportunityId).Select(l => l.LeadId).First();
+                _db.LeadNotes.Add(new LeadNote
+                {
+                    RelatedLeadId = leadId,
+                    User = lastOpportunityNote.User,
+                    Note = "ZADNJA BILJEŠKA IZ PRODAJNE PRILIKE: " + lastOpportunityNote.Note,
+                    InsertDate = DateTime.Now,
+                    Contact = lastOpportunityNote.Contact
+                });
+                _db.SaveChanges();
+                return Redirect(Request.UrlReferrer?.ToString());
+            }
+            catch (InvalidOperationException)
             {
-                RelatedLeadId = leadId,
-                User = lastOpportunityNote.User,
-                Note = "ZADNJA BILJEŠKA IZ PRODAJNE PRILIKE: " + lastOpportunityNote.Note,
-                InsertDate = DateTime.Now,
-                Contact = lastOpportunityNote.Contact
-            });
-            _db.SaveChanges();
-            return Redirect(Request.UrlReferrer.ToString());
+                return View("_ErrorNoNote");
+            }
         }
 
         public ActionResult ChangeStatus(OpportunityChangeStatusHelper model)
         {
-            var opportunity = _db.Opportunities.Find(model.RelatedOpportunityId);
+            var opportunity = _db.Opportunities.First(o => o.OpportunityId == model.RelatedOpportunityId);
             opportunity.OpportunityStatus = model.NewStatus;
             opportunity.StatusDescription = model.StatusDescription;
             opportunity.UpdateDate = DateTime.Now;
             opportunity.LastUpdatedBy = User.Identity.Name;
             _db.SaveChanges();
 
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         public ActionResult MarkRejected(OpportunityMarkRejectedHelper model)
         {
-            var opportunity = _db.Opportunities.Find(model.RelatedOpportunityId);
-            opportunity.OpportunityStatus = Opportunity.OpportunityStatusEnum.REJECTED;
+            var opportunity = _db.Opportunities.First(o => o.OpportunityId == model.RelatedOpportunityId);
+            opportunity.OpportunityStatus = Opportunity.OpportunityStatusEnum.Rejected;
             opportunity.RejectReason = model.RejectReason;
             opportunity.RejectReasonDescription = model.RejectReasonDescription;
             opportunity.UpdateDate = DateTime.Now;
             opportunity.LastUpdatedBy = User.Identity.Name;
             _db.SaveChanges();
 
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         public void ImportOpportunities()
@@ -551,16 +494,16 @@ namespace MojCRM.Areas.Sales.Controllers
             string filepath = @"C:\Temp\Test.xlsx";
 
             //pass that to workbook object  
-            Excel.Workbook WB = oExcel.Workbooks.Open(filepath);
+            Excel.Workbook wb = oExcel.Workbooks.Open(filepath);
 
 
             // statement get the workbookname  
-            string ExcelWorkbookname = WB.Name;
+            string excelWorkbookname = wb.Name;
 
             // statement get the worksheet count  
-            int worksheetcount = WB.Worksheets.Count;
+            int worksheetcount = wb.Worksheets.Count;
 
-            Excel.Worksheet wks = (Excel.Worksheet)WB.Worksheets[1];
+            Excel.Worksheet wks = (Excel.Worksheet)wb.Worksheets[1];
 
             // statement get the firstworksheetname  
 

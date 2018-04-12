@@ -1,8 +1,8 @@
-﻿using MojCRM.Areas.Cooperation.Models;
-using MojCRM.Helpers;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MojCRM.Areas.Cooperation.Models;
+using MojCRM.Helpers;
 
 namespace MojCRM.Models
 {
@@ -58,7 +58,125 @@ namespace MojCRM.Models
             Hr,
 
             [Description("Slovenija")]
-            Si
+            Si,
+
+            [Description("Austrija")]
+            At,
+
+            [Description("Poljska")]
+            Pl,
+
+            [Description("Italija")]
+            It,
+
+            [Description("Njemačka")]
+            De,
+
+            [Description("Belgija")]
+            Be,
+
+            [Description("Bugarska")]
+            Bg,
+
+            [Description("Cipar")]
+            Cy,
+
+            [Description("Češka")]
+            Cz,
+
+            [Description("Danska")]
+            Dk,
+
+            [Description("Estonija")]
+            Ee,
+
+            [Description("Grčka")]
+            El,
+
+            [Description("Španjolska")]
+            Es,
+
+            [Description("Finska")]
+            Fi,
+
+            [Description("Francuska")]
+            Fr,
+
+            [Description("Ujedinjena Kraljevina")]
+            Gb,
+
+            [Description("Mađarska")]
+            Hu,
+
+            [Description("Irska")]
+            Ie,
+
+            [Description("Litva")]
+            Lt,
+
+            [Description("Luksemburg")]
+            Lu,
+
+            [Description("Latvija")]
+            Lv,
+
+            [Description("Malta")]
+            Mt,
+
+            [Description("Nizozemska")]
+            Nl,
+
+            [Description("Portugal")]
+            Pt,
+
+            [Description("Rumunjska")]
+            Ro,
+
+            [Description("Švedska")]
+            Se,
+
+            [Description("Slovačka")]
+            Sk
+        }
+
+        public string CountryIdentificationCode
+        {
+            get
+            {
+                switch (MainCountry)
+                {
+                    case CountryIdentificationCodeEnum.Noinfo: return "Nema podatka";
+                    case CountryIdentificationCodeEnum.Hr: return "Hrvatska";
+                    case CountryIdentificationCodeEnum.Si: return "Slovenija";
+                    case CountryIdentificationCodeEnum.At: return "Austrija";
+                    case CountryIdentificationCodeEnum.Pl: return "Poljska";
+                    case CountryIdentificationCodeEnum.It: return "Italija";
+                    case CountryIdentificationCodeEnum.De: return "Njemačka";
+                    case CountryIdentificationCodeEnum.Be: return "Belgija";
+                    case CountryIdentificationCodeEnum.Bg: return "Bugarska";
+                    case CountryIdentificationCodeEnum.Cy: return "Cipar";
+                    case CountryIdentificationCodeEnum.Cz: return "Češka";
+                    case CountryIdentificationCodeEnum.Dk: return "Danska";
+                    case CountryIdentificationCodeEnum.Ee: return "Estonija";
+                    case CountryIdentificationCodeEnum.El: return "Grčka";
+                    case CountryIdentificationCodeEnum.Es: return "Španjolska";
+                    case CountryIdentificationCodeEnum.Fi: return "Finska";
+                    case CountryIdentificationCodeEnum.Fr: return "Francuska";
+                    case CountryIdentificationCodeEnum.Gb: return "Ujedinjena Kraljevina";
+                    case CountryIdentificationCodeEnum.Hu: return "Mađarska";
+                    case CountryIdentificationCodeEnum.Ie: return "Irska";
+                    case CountryIdentificationCodeEnum.Lt: return "Litva";
+                    case CountryIdentificationCodeEnum.Lu: return "Luksemburg";
+                    case CountryIdentificationCodeEnum.Lv: return "Latvija";
+                    case CountryIdentificationCodeEnum.Mt: return "Malta";
+                    case CountryIdentificationCodeEnum.Nl: return "Nizozemska";
+                    case CountryIdentificationCodeEnum.Pt: return "Portugal";
+                    case CountryIdentificationCodeEnum.Ro: return "Rumunjska";
+                    case CountryIdentificationCodeEnum.Se: return "Švedska";
+                    case CountryIdentificationCodeEnum.Sk: return "Slovačka";
+                }
+                return "Nema podatka";
+            }
         }
 
         public string OrganizationGroupString

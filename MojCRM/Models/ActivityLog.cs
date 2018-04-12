@@ -52,7 +52,19 @@ namespace MojCRM.Models
             Organizationupdate,
 
             [Description("Prikupljene e-mail adrese")]
-            Acquiredemails
+            Acquiredemails,
+
+            [Description("Poslana ponuda")]
+            QuoteSent,
+
+            [Description("Ostvarena prodaja")]
+            AchievedSales,
+
+            [Description("Dodjela predmeta za obradu baze")]
+            AcquireEmailAssignement,
+
+            [Description("Promjena statusa obrade za baze")]
+            AcquireEmailEntityStatusChange
         }
         public enum DepartmentEnum
         {
@@ -86,7 +98,13 @@ namespace MojCRM.Models
             Organizations,
 
             [Description("Ažuriranje baza")]
-            AqcuireEmail
+            AqcuireEmail,
+
+            [Description("Ponude")]
+            Quotes,
+
+            [Description("CRM")]
+            Crm
         }
 
         public string ActivityTypeString
@@ -106,6 +124,10 @@ namespace MojCRM.Models
                     case ActivityTypeEnum.Createdlead: return "Kreiran lead";
                     case ActivityTypeEnum.Ticketassign: return "Zaključana kartica";
                     case ActivityTypeEnum.Acquiredemails: return "Prikupljene e-mail adrese";
+                    case ActivityTypeEnum.QuoteSent: return "Poslana ponuda";
+                    case ActivityTypeEnum.AchievedSales: return "Ostvarena prodaja";
+                    case ActivityTypeEnum.AcquireEmailAssignement: return "Dodjela predmeta za obradu baze";
+                    case ActivityTypeEnum.AcquireEmailEntityStatusChange: return "Promjena statusa obrade za baze";
                 }
                 return "Tip aktivnosti";
             }
@@ -137,6 +159,8 @@ namespace MojCRM.Models
                     case ModuleEnum.Opportunities: return "Prodajne prilike";
                     case ModuleEnum.Leads: return "Leadovi";
                     case ModuleEnum.AqcuireEmail: return "Ažuriranje baza";
+                    case ModuleEnum.Quotes: return "Ponude";
+                    case ModuleEnum.Crm: return "CRM";
                 }
                 return "Modul";
             }
@@ -145,8 +169,21 @@ namespace MojCRM.Models
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
         public bool CheckSuspiciousActivity(string user, ActivityTypeEnum activityType)
         {
-            var reference = _db.ActivityLogs.OrderByDescending(a => a.InsertDate).First(a =>
-                a.User == user && a.ActivityType == activityType);
+            ActivityLog reference;
+            try
+            {
+                reference = _db.ActivityLogs.OrderByDescending(a => a.InsertDate).First(a =>
+                    a.User == user && a.ActivityType == activityType);
+            }
+            catch (InvalidOperationException)
+            {
+                reference = new ActivityLog()
+                {
+                    User = user,
+                    InsertDate = DateTime.Now.AddMinutes(-5)
+                };
+            }
+            
 
             if (reference != null)
                 if ((int)DateTime.Now.Subtract(reference.InsertDate).TotalMinutes < 1)

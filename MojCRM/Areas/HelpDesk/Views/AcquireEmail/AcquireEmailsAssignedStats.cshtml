@@ -1,0 +1,42 @@
+﻿@model MojCRM.Areas.HelpDesk.ViewModels.AcquireEmailStatsPerAgentViewModel
+
+@{
+    ViewBag.Title = "Statistika - Dodijeljeni predmeti u kampanjama za ažuriranje baza korisnika";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+}
+
+<h2>Statistika - Dodijeljeni predmeti u kampanjama za ažuriranje baza korisnika</h2>
+<br />
+<div class="alert alert-info">
+    <p style="text-align: justify">
+        Ovaj statistički pregled donosi podatke o dodijeljenim predmetima u kampanjama za ažuriranje baza korisnika. Statistika prikazuje podatke o
+        kampanji i broju pokrenutih predmeta po toj kampanji za pojedinog agenta.<br/>
+        U zbroj predmeta u ovoj statistici su ubrojani samo predmeti koji čekaju obradu, odnosno koji još nisu obrađeni.
+    </p>
+</div>
+<hr />
+<div class="row">
+    <table id="ticket-table" class="table table-sorting">
+        <thead>
+        <tr>
+            <th>Agent</th>
+            <th>Kampanja</th>
+            <th>Broj predmeta</th>
+            <th>Broj predmeta bez broja telefona</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var entity in Model.Campaigns)
+        {
+            <tr>
+                <td>@entity.Agent</td>
+                <td>@entity.CampaignName</td>
+                <td>@entity.NumberOfEntitiesForProcessing</td>
+                <td>@entity.NumberOfEntitiesWithoutPhoneNumber</td>
+                <td><a href="@Url.RouteUrl(new { action = "AdminUnassignEntities", controller = "AcquireEmail", area = "HelpDesk", campaignId=entity.CampaignId, agent = entity.Agent, returnUrl = Request.Url })" title="Makni dodjelu za ovog agenta"><i class="fa fa-remove" style="color: red"></i></a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

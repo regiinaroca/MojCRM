@@ -154,25 +154,34 @@
 
 @Html.Grid(Model).Named("PopisLeadova").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
 {
-columns.Add(m => m.RelatedCampaign.CampaignName).Encoded(false).Sanitized(false).Titled("Naziv kampanje").Sortable(true);
-columns.Add(m => m.LeadTitle).Encoded(false).Sanitized(false).Titled("Naziv leada").Sortable(false);
-columns.Add(m => m.RelatedOrganization.SubjectName).Encoded(false).Sanitized(false).Titled("Naziv tvrtke").Sortable(false).RenderValueAs(m =>
-Html.RouteLink(m.RelatedOrganization.SubjectName, new { action = "Details", controller = "Organizations", area = "", id = m.RelatedOrganizationId }));
-columns.Add(m => m.LeadStatus).Encoded(false).Sanitized(false).Titled("Status leada").Sortable(true).RenderValueAs(m =>
-{
-    if (m.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.START)
+    columns.Add(m => m.RelatedCampaign.CampaignName).Encoded(false).Sanitized(false).Titled("Naziv kampanje").Sortable(true).RenderValueAs(m =>
     {
-        return @<div><span class="label label-default">@Html.Raw(m.LeadStatusString)</span></div>;
+    if (m.RelatedCampaignId == null)
+        return @<div>
+        <span>Slobodni unos - @m.RelatedOpportunity.OpportunityEntryChannelString</span>
+    </div>;
+        return @<div>
+        <span>@m.RelatedCampaign.CampaignName</span>
+    </div>;
+    });
+    columns.Add(m => m.LeadTitle).Encoded(false).Sanitized(false).Titled("Naziv leada").Sortable(false);
+    columns.Add(m => m.RelatedOrganization.SubjectName).Encoded(false).Sanitized(false).Titled("Naziv tvrtke").Sortable(false).RenderValueAs(m =>
+    Html.RouteLink(m.RelatedOrganization.SubjectName, new { action = "Details", controller = "Organizations", area = "", id = m.RelatedOrganizationId }));
+    columns.Add(m => m.LeadStatus).Encoded(false).Sanitized(false).Titled("Status leada").Sortable(true).RenderValueAs(m =>
+    {
+        if (m.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.Start)
+        {
+            return @<div><span class="label label-default">@Html.Raw(m.LeadStatusString)</span></div>;
         }
-        if (m.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.INCONTACT)
+        if (m.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.Incontact)
         {
             return @<div><span class="label label-primary">@Html.Raw(m.LeadStatusString)</span></div>;
         }
-        if (m.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.QOUTESENT)
+        if (m.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.Quotesent)
         {
             return @<div><span class="label label-primary">@Html.Raw(m.LeadStatusString)</span></div>;
         }
-        if (m.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.ACCEPTED)
+        if (m.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.Accepted)
         {
             return @<div><span class="label label-success">@Html.Raw(m.LeadStatusString)</span></div>;
         }

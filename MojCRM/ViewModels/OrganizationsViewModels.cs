@@ -6,9 +6,80 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
+using MojCRM.Areas.CRM.Models;
 
 namespace MojCRM.ViewModels
 {
+    public class OrganizationIndexViewModel
+    {
+        public IQueryable<Organizations> OrganizationList { get; set; }
+        public IList<SelectListItem> LegalStatusDropdown
+        {
+            get
+            {
+                var legalStatusList = new List<SelectListItem>
+                {
+                    new SelectListItem{ Value = null, Text = @"-- Odaberi pravni status --"},
+                    new SelectListItem{ Value = "0", Text = @"Brisana" },
+                    new SelectListItem{ Value = "1", Text = @"Aktivna" }
+                };
+                return legalStatusList;
+            }
+        }
+        public IList<SelectListItem> LegalFormDropdown
+        {
+            get
+            {
+                var legalFormList = new List<SelectListItem>
+                {
+                    new SelectListItem{ Value = null, Text = @"-- Odaberi pravni oblik --"},
+                    new SelectListItem{ Value = "0", Text = @"Nije navedeno" },
+                    new SelectListItem{ Value = "1", Text = @"Društvo s ograničenom odgovornošću" },
+                    new SelectListItem{ Value = "2", Text = @"Jednostavno društvo s ograničenom odgovornošću" },
+                    new SelectListItem{ Value = "3", Text = @"Dioničko društvo" },
+                    new SelectListItem{ Value = "4", Text = @"Ostala trgovačka društva (Komanditno društvo, Javno trgovačko društvo)" },
+                    new SelectListItem{ Value = "5", Text = @"Obrt" },
+                    new SelectListItem{ Value = "6", Text = @"Ostali pravni oblici (Zadruge, OPG, Udruge, Ustanove i sl.)" },
+                };
+                return legalFormList;
+            }
+        }
+        public IList<SelectListItem> OrganizationGroupDropdown
+        {
+            get
+            {
+                var organizationGroupList = new List<SelectListItem>
+                {
+                    new SelectListItem{ Value = null, Text = @"-- Odaberi grupaciju --"},
+                    new SelectListItem{ Value = "0", Text = @"Ne pripada grupaciji" },
+                    new SelectListItem{ Value = "1", Text = @"Adris Grupa" },
+                    new SelectListItem{ Value = "2", Text = @"Koncern Agrokor" },
+                    new SelectListItem{ Value = "3", Text = @"Atlantic Grupa" },
+                    new SelectListItem{ Value = "4", Text = @"Poslovna grupacija Auto Hrvatska" },
+                    new SelectListItem{ Value = "5", Text = @"Babić Pekare" },
+                    new SelectListItem{ Value = "21", Text = @"C.I.A.K. Grupa"},
+                    new SelectListItem{ Value = "6", Text = @"COMET" },
+                    new SelectListItem{ Value = "7", Text = @"CIOS" },
+                    new SelectListItem{ Value = "8", Text = @"CVH" },
+                    new SelectListItem{ Value = "9", Text = @"Holcim Grupa" },
+                    new SelectListItem{ Value = "10", Text = @"MSAN Grupa" },
+                    new SelectListItem{ Value = "11", Text = @"NEXE Grupa" },
+                    new SelectListItem{ Value = "12", Text = @"NTL Grupa" },
+                    new SelectListItem{ Value = "13", Text = @"Pivac Grupa" },
+                    new SelectListItem{ Value = "14", Text = @"Rijeka Holding" },
+                    new SelectListItem{ Value = "15", Text = @"STRABAG" },
+                    new SelectListItem{ Value = "16", Text = @"Styria Grupa" },
+                    new SelectListItem{ Value = "17", Text = @"Koncern Sunce" },
+                    new SelectListItem{ Value = "18", Text = @"Ultra Gros" },
+                    new SelectListItem{ Value = "19", Text = @"Žito Grupa" },
+                    new SelectListItem{ Value = "20", Text = @"Zagrebački Holding" }
+            };
+                return organizationGroupList;
+            }
+        }
+        public int ResultsCount { get; set; }
+    }
+
     public class OrganizationDetailsViewModel
     {
         public Organizations Organization { get; set; }
@@ -22,11 +93,15 @@ namespace MojCRM.ViewModels
         public int OpportunitiesCount { get; set; }
         public IQueryable<Lead> Leads { get; set; }
         public int LeadsCount { get; set; }
+        public IQueryable<Quote> Quotes { get; set; }
+        public IQueryable<Contract> Contracts { get; set; }
         public IQueryable<Delivery> TicketsAsReceiver { get; set; }
         public int TicketsAsReceiverCount { get; set; }
         public IQueryable<Delivery> TicketsAsSender { get; set; }
         public int TicketsAsSenderCount { get; set; }
         public IQueryable<OrganizationAttribute> Attributes { get; set; }
+        public IQueryable<ActivityLog> Activities { get; set; }
+        public int ActivitiesCount { get; set; }
 
         public string LegalFormString
         {
@@ -54,6 +129,32 @@ namespace MojCRM.ViewModels
                     case OrganizationDetail.CountryIdentificationCodeEnum.Noinfo: return "Nema podatka";
                     case OrganizationDetail.CountryIdentificationCodeEnum.Hr: return "Hrvatska";
                     case OrganizationDetail.CountryIdentificationCodeEnum.Si: return "Slovenija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.At: return "Austrija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Pl: return "Poljska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.It: return "Italija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.De: return "Njemačka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Be: return "Belgija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Bg: return "Bugarska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Cy: return "Cipar";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Cz: return "Češka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Dk: return "Danska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Ee: return "Estonija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.El: return "Grčka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Es: return "Španjolska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Fi: return "Finska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Fr: return "Francuska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Gb: return "Ujedinjena Kraljevina";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Hu: return "Mađarska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Ie: return "Irska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Lt: return "Litva";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Lu: return "Luksemburg";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Lv: return "Latvija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Mt: return "Malta";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Nl: return "Nizozemska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Pt: return "Portugal";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Ro: return "Rumunjska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Se: return "Švedska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Sk: return "Slovačka";
                 }
                 return "Nema podatka";
             }
@@ -66,7 +167,33 @@ namespace MojCRM.ViewModels
                 {
                     case OrganizationDetail.CountryIdentificationCodeEnum.Noinfo: return "Nema podatka";
                     case OrganizationDetail.CountryIdentificationCodeEnum.Hr: return "Hrvatska";
-                    case OrganizationDetail.CountryIdentificationCodeEnum.Si: return"Slovenija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Si: return "Slovenija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.At: return "Austrija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Pl: return "Poljska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.It: return "Italija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.De: return "Njemačka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Be: return "Belgija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Bg: return "Bugarska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Cy: return "Cipar";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Cz: return "Češka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Dk: return "Danska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Ee: return "Estonija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.El: return "Grčka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Es: return "Španjolska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Fi: return "Finska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Fr: return "Francuska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Gb: return "Ujedinjena Kraljevina";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Hu: return "Mađarska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Ie: return "Irska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Lt: return "Litva";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Lu: return "Luksemburg";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Lv: return "Latvija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Mt: return "Malta";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Nl: return "Nizozemska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Pt: return "Portugal";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Ro: return "Rumunjska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Se: return "Švedska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Sk: return "Slovačka";
                 }
                 return "Nema podatka";
             }
@@ -256,12 +383,40 @@ namespace MojCRM.ViewModels
             {
                 var campaignTypeList = new List<SelectListItem>
                 {
-                    new SelectListItem{ Value = null, Text = @"-- Odaberi tip kampanje" },
+                    new SelectListItem{ Value = null, Text = @"-- Odaberi tip kampanje --" },
                     new SelectListItem{ Value = "1", Text = @"Ažuriranje baza kupaca" },
                     new SelectListItem{ Value = "2", Text = @"Prodajna kampanja" },
                     new SelectListItem{ Value = "3", Text = @"CRM kampanja" }
                 };
                 return campaignTypeList;
+            }
+        }
+        public IList<SelectListItem> OrganizationEntryChannelDropdown
+        {
+            get
+            {
+                var entryChannelList = new List<SelectListItem>
+                {
+                    new SelectListItem{ Value = null, Text = @"-- Odaberi ulazni kanal --" },
+                    new SelectListItem{ Value = "0", Text = @"Web-forma" },
+                    new SelectListItem{ Value = "1", Text = @"Info telefon" },
+                    new SelectListItem{ Value = "2", Text = @"Info mail" }
+                };
+                return entryChannelList;
+            }
+        }
+        public IList<SelectListItem> ContactTypeDropdown
+        {
+            get
+            {
+                var contactTypeList = new List<SelectListItem>
+                {
+                    new SelectListItem{ Value = null, Text = @"-- Odaberi tip kontakta --" },
+                    new SelectListItem{ Value = "0", Text = @"Općeniti" },
+                    new SelectListItem{ Value = "1", Text = @"Dostava" },
+                    new SelectListItem{ Value = "2", Text = @"Prodaja" }
+                };
+                return contactTypeList;
             }
         }
     }

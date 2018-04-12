@@ -21,23 +21,23 @@
             {
                 <tr>
                     <td>@Lead.RelatedCampaign.CampaignName</td>
-                    @if (Lead.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.START)
+                    @if (Lead.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.Start)
                     {
                         <td><span class="label label-default">@Html.Raw(Lead.LeadStatusString)</span></td>
                     }
-                    @if (Lead.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.INCONTACT)
+                    @if (Lead.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.Incontact)
                     {
                         <td><span class="label label-primary">@Html.Raw(Lead.LeadStatusString)</span></td>
                     }
-                    @if (Lead.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.QOUTESENT)
+                    @if (Lead.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.Quotesent)
                     {
                         <td><span class="label label-primary">@Html.Raw(Lead.LeadStatusString)</span></td>
                     }
-                    @if (Lead.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.ACCEPTED)
+                    @if (Lead.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.Accepted)
                     {
                         <td><span class="label label-success">@Html.Raw(Lead.LeadStatusString)</span></td>
                     }
-                    @if (Lead.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.REJECTED)
+                    @if (Lead.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.Rejected)
                     {
                         <td><span class="label label-danger">@Html.Raw(Lead.LeadStatusString)</span><br /><span style="color:red">@Html.Raw(Lead.LeadRejectReasonString)</span></td>
                     }

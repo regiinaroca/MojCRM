@@ -16,6 +16,7 @@ namespace MojCRM.Areas.HelpDesk.Models
         public bool IsAssigned { get; set; }
         public string AssignedTo { get; set; }
         public AcquireEmailStatusEnum AcquireEmailStatus { get; set; }
+        public AcquireEmailEntityStatusEnum? AcquireEmailEntityStatus { get; set; }
         public string LastContactedBy { get; set; }
         public DateTime InsertDate { get; set; }
         public DateTime? UpdateDate { get; set; }
@@ -53,6 +54,84 @@ namespace MojCRM.Areas.HelpDesk.Models
                     case AcquireEmailStatusEnum.Reviewed: return "Revidirano";
                 }
                 return "Status provjere";
+            }
+        }
+
+        public enum AcquireEmailEntityStatusEnum
+        {
+            [Description("Kreirano")]
+            Created,
+
+            [Description("Dobivena povratna informacija")]
+            AcquiredInformation,
+
+            [Description("Nema odgovora / Ne javlja se")]
+            NoAnswer,
+
+            [Description("Zatvoren subjekt")]
+            ClosedOrganization,
+
+            [Description("Ne posluju s korisnikom")]
+            OldPartner,
+
+            [Description("Partner će se javiti korisniku samostalno")]
+            PartnerWillContactUser,
+
+            [Description("Potrebno poslati pisanu suglasnost")]
+            WrittenConfirmationRequired,
+
+            [Description("Neispravan kontakt broj")]
+            WrongTelephoneNumber,
+
+            [Description("Poslovna Hrvatska")]
+            PoslovnaHrvatska,
+
+            [Description("Ne postoji ispravan kontakt broj")]
+            NoTelehoneNumber,
+
+            [Description("Subjekt u stečaju / likvidaciji")]
+            Bankruptcy,
+
+            [Description("Subjekt nema žiro račun")]
+            NoFinancialAccount,
+
+            [Description("Najava brisanja subjekta")]
+            ToBeClosed,
+
+            [Description("Žele primati eRačune poštom")]
+            Post,
+
+            [Description("Inozemna tvrtka")]
+            Foreign,
+
+            [Description("Tvrtka u mirovanju")]
+            OnHold
+        }
+
+        public string AcquireEmailEntityStatusString
+        {
+            get
+            {
+                switch (AcquireEmailEntityStatus)
+                {
+                    case AcquireEmailEntityStatusEnum.Created: return "Kreirano";
+                    case AcquireEmailEntityStatusEnum.AcquiredInformation: return "Prikupljena povratna informacija";
+                    case AcquireEmailEntityStatusEnum.NoAnswer: return "Nema odgovora / Ne javlja se";
+                    case AcquireEmailEntityStatusEnum.ClosedOrganization: return "Zatvorena tvrtka";
+                    case AcquireEmailEntityStatusEnum.OldPartner: return "Ne poslujus s korisnikom";
+                    case AcquireEmailEntityStatusEnum.PartnerWillContactUser: return "Partner će se javiti korisniku samostalno";
+                    case AcquireEmailEntityStatusEnum.WrittenConfirmationRequired: return "Potrebno poslati pisanu suglasnost";
+                    case AcquireEmailEntityStatusEnum.WrongTelephoneNumber: return "Neispravan kontakt broj";
+                    case AcquireEmailEntityStatusEnum.PoslovnaHrvatska: return "Kontakt u bazi";
+                    case AcquireEmailEntityStatusEnum.NoTelehoneNumber: return "Ne postoji ispravan kontakt broj";
+                    case AcquireEmailEntityStatusEnum.Bankruptcy: return "Subjekt u stečaju / likvidaciji";
+                    case AcquireEmailEntityStatusEnum.NoFinancialAccount: return "Subjekt nema žiro račun";
+                    case AcquireEmailEntityStatusEnum.ToBeClosed: return "Najava brisanja subjekta";
+                    case AcquireEmailEntityStatusEnum.Post: return "POŠTA";
+                    case AcquireEmailEntityStatusEnum.Foreign: return "Inozemna tvrtka";
+                    case AcquireEmailEntityStatusEnum.OnHold: return "Tvrtka u mirovanju";
+                }
+                return "Status unosa";
             }
         }
     }

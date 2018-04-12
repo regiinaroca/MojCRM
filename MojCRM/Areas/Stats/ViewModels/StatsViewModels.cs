@@ -69,6 +69,8 @@ namespace MojCRM.Areas.Stats.ViewModels
         public int? NumberTicketsAssigned { get; set; }
         [Display(Name = "Broj prikupljenih e-mail adresa")]
         public int? NumberAcquiredEmails { get; set; }
+        [Display(Name = "Broj prikupljenih kontakt podataka")]
+        public int? NumberAcquiredTelephoneNumbers { get; set; }
         [Display(Name = "Vrijeme od zadnjeg poziva")]
         public int? TimeFromLastCall { get; set; }
     }
@@ -125,6 +127,8 @@ namespace MojCRM.Areas.Stats.ViewModels
         public int? SumTicketsAssigned { get; set; }
         [Display(Name = "Broj prikupljenih e-mail adresa")]
         public int? SumAcquiredEmails { get; set; }
+        [Display(Name = "Broj prikupljenih kontakt podataka")]
+        public int? SumAcquiredTelephoneNumbers { get; set; }
 
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
         public IQueryable<CallCenterDaily> GetActivitiesForDashboard()
@@ -194,6 +198,8 @@ namespace MojCRM.Areas.Stats.ViewModels
         public int? NumberTicketsAssigned { get; set; }
         [Display(Name = "Broj prikupljenih e-mail adresa")]
         public int? NumberAcquiredEmails { get; set; }
+        [Display(Name = "Broj prikupljenih kontakt podataka")]
+        public int? NumberAcquiredTelephoneNumbers { get; set; }
     }
     public class CallCenterWeeklyByDepartment
     {
@@ -248,6 +254,8 @@ namespace MojCRM.Areas.Stats.ViewModels
         public int? SumTicketsAssigned { get; set; }
         [Display(Name = "Broj prikupljenih e-mail adresa")]
         public int? SumAcquiredEmails { get; set; }
+        [Display(Name = "Broj prikupljenih kontakt podataka")]
+        public int? SumAcquiredTelephoneNumbers { get; set; }
     }
 
     public class PersonalDailyActivitiesViewModel
@@ -266,6 +274,10 @@ namespace MojCRM.Areas.Stats.ViewModels
         public int? SumMailchange { get; set; }
         [Display(Name = "Ukupno ponovno poslanih obavijesti o dostavi")]
         public int? SumResend { get; set; }
+        [Display(Name = "Ukupno prikupljenih e-mail adresa (ažuriranje baza)")]
+        public int? SumAcquiredEmails { get; set; }
+        [Display(Name = "Ukupno prikupljenih brojeva telefona (ažuriranje baza)")]
+        public int? SumAcquiredPhoneNumbers { get; set; }
         public IList<SelectListItem> AgentList
         {
             get
@@ -353,4 +365,88 @@ namespace MojCRM.Areas.Stats.ViewModels
         public int Count { get; set; }
     }
 
+    #region OrganizationStats
+
+    public class OrganizationsByCountryViewModel
+    {
+        public OrganizationDetail.CountryIdentificationCodeEnum Country { get; set; }
+        public int NumberOfOrganizations { get; set; }
+        public decimal PercentOfOrganizations { get; set; }
+        public string CountryIdentificationCode
+        {
+            get
+            {
+                switch (Country)
+                {
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Noinfo: return "Nema podatka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Hr: return "Hrvatska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Si: return "Slovenija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.At: return "Austrija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Pl: return "Poljska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.It: return "Italija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.De: return "Njemačka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Be: return "Belgija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Bg: return "Bugarska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Cy: return "Cipar";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Cz: return "Češka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Dk: return "Danska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Ee: return "Estonija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.El: return "Grčka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Es: return "Španjolska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Fi: return "Finska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Fr: return "Francuska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Gb: return "Ujedinjena Kraljevina";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Hu: return "Mađarska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Ie: return "Irska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Lt: return "Litva";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Lu: return "Luksemburg";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Lv: return "Latvija";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Mt: return "Malta";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Nl: return "Nizozemska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Pt: return "Portugal";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Ro: return "Rumunjska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Se: return "Švedska";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Sk: return "Slovačka";
+                }
+                return "Nema podatka";
+            }
+        }
+    }
+    #endregion
+
+    #region SalesStats
+
+    public class OpportunityEntryChannelViewModel
+    {
+        public Opportunity.OpportunityEntryChannelEnum OpportunityEntryChannel { get; set; }
+        public int NumberOfOpportunities { get; set; }
+        public decimal PercentOfOpportunities { get; set; }
+        public string OpportunityEntryChannelString
+        {
+            get
+            {
+                switch (OpportunityEntryChannel)
+                {
+                    case Opportunity.OpportunityEntryChannelEnum.Web: return "Web-forma";
+                    case Opportunity.OpportunityEntryChannelEnum.InfoTelephone: return "Info telefon";
+                    case Opportunity.OpportunityEntryChannelEnum.InfoMail: return "Info email";
+                }
+                return "Nije poznato";
+            }
+        }
+    }
+
+    public class CampaignLeadsAgentEfficiency
+    {
+        public string Agent { get; set; }
+        public int NumberOfOpportunitiesTotal { get; set; }
+        public int AssignedTotalCount { get; set; }
+        public decimal ConverionPercent { get; set; }
+        public int AcceptedCount { get; set; }
+        public decimal AcceptedPercent { get; set; }
+        public int RejectedCount { get; set; }
+        public decimal RejectedPercent { get; set; }
+    }
+
+    #endregion
 }

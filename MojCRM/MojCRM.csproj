@@ -211,6 +211,7 @@
     <Reference Include="Microsoft.Owin.Security.Twitter, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.Security.Twitter.3.1.0\lib\net45\Microsoft.Owin.Security.Twitter.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.Web.Infrastructure">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -328,6 +329,13 @@
     <Compile Include="Areas\Campaigns\ViewModels\CampaignStatsViewModel.cs" />
     <Compile Include="Areas\Cooperation\CooperationAreaRegistration.cs" />
     <Compile Include="Areas\Cooperation\Models\MerIntegrationSoftware.cs" />
+    <Compile Include="Areas\CRM\Controllers\ContractController.cs" />
+    <Compile Include="Areas\CRM\Controllers\UserReportController.cs" />
+    <Compile Include="Areas\CRM\CRMAreaRegistration.cs" />
+    <Compile Include="Areas\CRM\Helpers\ContractHelpers.cs" />
+    <Compile Include="Areas\CRM\Models\Contract.cs" />
+    <Compile Include="Areas\CRM\Models\ContractedService.cs" />
+    <Compile Include="Areas\CRM\Models\ContractRate.cs" />
     <Compile Include="Areas\HelpDesk\Controllers\AcquireEmailController.cs" />
     <Compile Include="Areas\HelpDesk\HelpDeskAreaRegistration.cs" />
     <Compile Include="Areas\HelpDesk\Helpers\AcquireEmailHelpers.cs" />
@@ -363,15 +371,22 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Areas\Sales\Controllers\LeadsController.cs" />
     <Compile Include="Areas\Sales\Controllers\OpportunitiesController.cs" />
+    <Compile Include="Areas\Sales\Controllers\QuotesController.cs" />
     <Compile Include="Areas\Sales\Helpers\LeadHelpers.cs" />
     <Compile Include="Areas\Sales\Helpers\OpportunityHelpers.cs" />
+    <Compile Include="Areas\Sales\Helpers\QuoteHelpers.cs" />
     <Compile Include="Areas\Sales\Models\Lead.cs" />
     <Compile Include="Areas\Sales\Models\LeadNote.cs" />
     <Compile Include="Areas\Sales\Models\Opportunity.cs" />
     <Compile Include="Areas\Sales\Models\OpportunityNote.cs" />
+    <Compile Include="Areas\Sales\Models\Quote.cs" />
+    <Compile Include="Areas\Sales\Models\QuoteLine.cs" />
+    <Compile Include="Areas\Sales\Models\QuoteMember.cs" />
+    <Compile Include="Areas\Sales\Models\Service.cs" />
     <Compile Include="Areas\Sales\SalesAreaRegistration.cs" />
     <Compile Include="Areas\Sales\ViewModels\LeadDetailViewModel.cs" />
     <Compile Include="Areas\Sales\ViewModels\OpportunityDetailViewModel.cs" />
+    <Compile Include="Areas\Sales\ViewModels\QuoteViewModels.cs" />
     <Compile Include="Areas\Stats\Models\MerDocumentExchangeHistory.cs" />
     <Compile Include="Areas\Stats\StatsAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -385,6 +400,7 @@
     <Compile Include="Areas\Stats\Controllers\StatsController.cs" />
     <Compile Include="GlimpseSecurityPolicy.cs" />
     <Compile Include="Areas\HelpDesk\Helpers\DeliveryHelpers.cs" />
+    <Compile Include="Helpers\ContactHelpers.cs" />
     <Compile Include="Helpers\Helpers.cs" />
     <Compile Include="Helpers\MerApiRequests.cs" />
     <Compile Include="Helpers\MerApiResponses.cs" />
@@ -567,6 +583,30 @@
     <Compile Include="Migrations\201711191729100_Nov11Update.Designer.cs">
       <DependentUpon>201711191729100_Nov11Update.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711232224594_Nov23Update.cs" />
+    <Compile Include="Migrations\201711232224594_Nov23Update.Designer.cs">
+      <DependentUpon>201711232224594_Nov23Update.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712112041186_Dec11Update.cs" />
+    <Compile Include="Migrations\201712112041186_Dec11Update.Designer.cs">
+      <DependentUpon>201712112041186_Dec11Update.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712122018508_Dec12Update.cs" />
+    <Compile Include="Migrations\201712122018508_Dec12Update.Designer.cs">
+      <DependentUpon>201712122018508_Dec12Update.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712251920362_Dec25Update.cs" />
+    <Compile Include="Migrations\201712251920362_Dec25Update.Designer.cs">
+      <DependentUpon>201712251920362_Dec25Update.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801210914494_Jan21Update.cs" />
+    <Compile Include="Migrations\201801210914494_Jan21Update.Designer.cs">
+      <DependentUpon>201801210914494_Jan21Update.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802241746034_Feb24Update.cs" />
+    <Compile Include="Migrations\201802241746034_Feb24Update.Designer.cs">
+      <DependentUpon>201802241746034_Feb24Update.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ActivityLog.cs" />
@@ -662,6 +702,7 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="Content\tpribic.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -732,6 +773,20 @@
     <Content Include="Areas\HelpDesk\Views\AcquireEmail\CheckEntitiesForImport.cshtml" />
     <Content Include="Areas\Stats\Views\Stats\SalesStat.cshtml" />
     <Content Include="Areas\Stats\Views\Stats\CallCenterWeekly.cshtml" />
+    <Content Include="Areas\Campaigns\Views\Campaigns\EmailBasesStats.cshtml" />
+    <Content Include="Areas\HelpDesk\Views\AcquireEmail\ErrorOldExcel.cshtml" />
+    <Content Include="Areas\HelpDesk\Views\AcquireEmail\AcquireEmailsAssignedStats.cshtml" />
+    <Content Include="Areas\Sales\Views\Quotes\CreateFromLead.cshtml" />
+    <Content Include="Areas\Sales\Views\Quotes\Create.cshtml" />
+    <Content Include="Areas\Sales\Views\Quotes\Index.cshtml" />
+    <Content Include="Areas\Sales\Views\Quotes\Details.cshtml" />
+    <Content Include="Areas\HelpDesk\Views\AcquireEmail\IndexTemp.cshtml" />
+    <Content Include="Areas\CRM\Views\web.config" />
+    <Content Include="Areas\Sales\Views\Opportunities\_ErrorNoNote.cshtml" />
+    <Content Include="Areas\CRM\Views\Contract\Index.cshtml" />
+    <Content Include="Areas\Stats\Views\Stats\OrganizationsByCountry.cshtml" />
+    <Content Include="Areas\Stats\Views\Stats\OpportunityEntryChannel.cshtml" />
+    <None Include="Properties\PublishProfiles\MerDeployCIS.pubxml" />
     <None Include="Scripts\jquery-3.2.1-vsdoc.js" />
     <Content Include="Scripts\daterangepicker.js" />
     <Content Include="Scripts\jquery-3.2.1.js" />
@@ -887,12 +942,18 @@
     <Content Include="Views\Organizations\_Campaigns.cshtml" />
     <Content Include="Scripts\jquery-3.2.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.2.1.min.map" />
+    <Content Include="Views\Organizations\_Activities.cshtml" />
+    <Content Include="Views\Organizations\_Quotes.cshtml" />
+    <Content Include="Views\Shared\ErrorWrongInputFormat.cshtml" />
+    <Content Include="Views\Organizations\_Contracts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Campaigns\Views\Shared\" />
     <Folder Include="Areas\Cooperation\Controllers\" />
     <Folder Include="Areas\Cooperation\Views\Shared\" />
+    <Folder Include="Areas\CRM\Views\Shared\" />
+    <Folder Include="Areas\CRM\Views\UserReport\" />
     <Folder Include="Areas\HelpDesk\Views\Shared\" />
     <Folder Include="Areas\Sales\Views\Shared\" />
     <Folder Include="Areas\Stats\Views\Shared\" />
@@ -1041,26 +1102,24 @@
     <EmbeddedResource Include="Migrations\201711191729100_Nov11Update.resx">
       <DependentUpon>201711191729100_Nov11Update.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="Microsoft.Office.Core">
-      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>8</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="VBIDE">
-      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>5</VersionMajor>
-      <VersionMinor>3</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
+    <EmbeddedResource Include="Migrations\201711232224594_Nov23Update.resx">
+      <DependentUpon>201711232224594_Nov23Update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712112041186_Dec11Update.resx">
+      <DependentUpon>201712112041186_Dec11Update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712122018508_Dec12Update.resx">
+      <DependentUpon>201712122018508_Dec12Update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712251920362_Dec25Update.resx">
+      <DependentUpon>201712251920362_Dec25Update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801210914494_Jan21Update.resx">
+      <DependentUpon>201801210914494_Jan21Update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802241746034_Feb24Update.resx">
+      <DependentUpon>201802241746034_Feb24Update.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

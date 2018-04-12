@@ -1,28 +1,25 @@
 ﻿using MojCRM.Areas.HelpDesk.Helpers;
 using MojCRM.Areas.Sales.Helpers;
-using MojCRM.Helpers;
 using MojCRM.Models;
 using MojCRM.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Web;
 using System.Web.Mvc;
+using MojCRM.Helpers;
 
 namespace MojCRM.Controllers
 {
     public class ContactController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
         // GET: Contact
+        [Authorize]
         public ActionResult Index()
         {
-            var contacts = from c in db.Contacts
+            var contacts = from c in _db.Contacts
                            select c;
             return View(contacts.ToList());
         }
@@ -35,16 +32,29 @@ namespace MojCRM.Controllers
 
         // POST: Contact/Create
         [HttpPost]
-        public ActionResult Create([Bind(Include = "Id,Organization,ContactFirstName,ContactLastName,Title,TelephoneNumber,MobilePhoneNumber,Email,User,InsertDate,UpdateDate,ContactType")] Contact newContact)
+        public ActionResult Create(CreateContact newContact)
         {
-            if (ModelState.IsValid)
-            {
-                db.Contacts.Add(newContact);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+            bool doNotCall = newContact.DoNotCall == 1;
 
-            return View();
+            var contactType = (Contact.ContactTypeEnum) newContact.ContactType;
+
+            _db.Contacts.Add(new Contact
+            {
+                OrganizationId = newContact.OrganizationId,
+                ContactFirstName = newContact.ContactFirstName,
+                ContactLastName = newContact.ContactLastName,
+                Title = newContact.Title,
+                TelephoneNumber = newContact.TelephoneNumber,
+                MobilePhoneNumber = newContact.MobilePhoneNumber,
+                Email = newContact.Email,
+                User = newContact.User,
+                DoNotCall = doNotCall,
+                ContactType = contactType,
+                InsertDate = DateTime.Now
+            });
+            _db.SaveChanges();
+
+            return RedirectToAction("Index");
         }
 
         // POST: Contact/CreateFromDelivery
@@ -53,7 +63,7 @@ namespace MojCRM.Controllers
         {
             try
             {
-                db.Contacts.Add(new Contact
+                _db.Contacts.Add(new Contact
                 {
                     OrganizationId = model.ReceiverId,
                     ContactFirstName = model.FirstName,
@@ -64,32 +74,32 @@ namespace MojCRM.Controllers
                     Email = model.Email,
                     User = User.Identity.Name,
                     InsertDate = DateTime.Now,
-                    ContactType = Contact.ContactTypeEnum.DELIVERY,
+                    ContactType = Contact.ContactTypeEnum.Delivery,
                 });
 
-                db.SaveChanges();
+                _db.SaveChanges();
 
-                return Redirect(Request.UrlReferrer.ToString());
+                return Redirect(Request.UrlReferrer?.ToString());
             }
             // TO DO: This catch part throws DbEntityValidationException in first foreach... I need to check why...
             catch (DbEntityValidationException e)
             {
                 foreach (var eve in e.EntityValidationErrors)
                 {
-                    db.LogError.Add(new LogError
+                    _db.LogError.Add(new LogError
                     {
                         Method = @"Contact - CreateFromDelivery",
                         Parameters = @"Id = " + model.ReceiverId + @" FirstName = '" + model.FirstName + @"' LastName = '" + model.LastName + @"' TelephoneNumber = '" + model.Telephone + @"' MobilePhoneNumber = '" + model.Mobile + @"' Email = '" + model.Email + @"' User = '" + User.Identity.Name + @"'",
-                        Message = @"Entity of type '" + eve.Entry.Entity.GetType().Name.ToString() + @"' in state '" + eve.Entry.State.ToString() + @"' has following validation errors",
+                        Message = @"Entity of type '" + eve.Entry.Entity.GetType().Name + @"' in state '" + eve.Entry.State + @"' has following validation errors",
                         InnerException = "",
                         Request = "",
                         User = User.Identity.Name,
                         InsertDate = DateTime.Now
                     });
-                    db.SaveChanges();
+                    _db.SaveChanges();
                     foreach (var ve in eve.ValidationErrors)
                     {
-                        db.LogError.Add(new LogError
+                        _db.LogError.Add(new LogError
                         {
                             Method = @"Contact - CreateFromDelivery",
                             Parameters = "",
@@ -99,7 +109,7 @@ namespace MojCRM.Controllers
                             User = User.Identity.Name,
                             InsertDate = DateTime.Now
                         });
-                        db.SaveChanges();
+                        _db.SaveChanges();
                     }
                 }
                 throw;
@@ -108,76 +118,72 @@ namespace MojCRM.Controllers
 
         // POST: Contact/CreateFromDelivery
         [HttpPost]
-        public ActionResult CreateFromSales(SalesContactHelper Model)
+        public ActionResult CreateFromSales(SalesContactHelper model)
         {
-            var _OrganizationId = (from o in db.Opportunities
-                                   where o.OpportunityId == Model.RelatedEntityId
+            var organizationId = (from o in _db.Opportunities
+                                   where o.OpportunityId == model.RelatedEntityId
                                    select o.RelatedOrganizationId).First().ToString();
 
-            db.Contacts.Add(new Contact
+            _db.Contacts.Add(new Contact
             {
-                OrganizationId = Int32.Parse(_OrganizationId),
-                ContactFirstName = Model.FirstName,
-                ContactLastName = Model.LastName,
-                Title = Model.TitleFunction,
-                TelephoneNumber = Model.Telephone,
-                MobilePhoneNumber = Model.Mobile,
-                Email = Model.ContactEmail,
+                OrganizationId = Int32.Parse(organizationId),
+                ContactFirstName = model.FirstName,
+                ContactLastName = model.LastName,
+                Title = model.TitleFunction,
+                TelephoneNumber = model.Telephone,
+                MobilePhoneNumber = model.Mobile,
+                Email = model.ContactEmail,
                 User = User.Identity.Name,
                 InsertDate = DateTime.Now,
-                ContactType = Contact.ContactTypeEnum.SALES,
+                ContactType = Contact.ContactTypeEnum.Sales,
             });
 
-            db.SaveChanges();
+            _db.SaveChanges();
 
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         // POST: Contact/CreateFromDelivery
         [HttpPost]
-        public ActionResult CreateFromSalesLead(SalesContactHelper Model)
+        public ActionResult CreateFromSalesLead(SalesContactHelper model)
         {
-            var _OrganizationId = (from o in db.Leads
-                                   where o.LeadId == Model.RelatedEntityId
+            var organizationId = (from o in _db.Leads
+                                   where o.LeadId == model.RelatedEntityId
                                    select o.RelatedOrganizationId).First().ToString();
 
-            db.Contacts.Add(new Contact
+            _db.Contacts.Add(new Contact
             {
-                OrganizationId = Int32.Parse(_OrganizationId),
-                ContactFirstName = Model.FirstName,
-                ContactLastName = Model.LastName,
-                Title = Model.TitleFunction,
-                TelephoneNumber = Model.Telephone,
-                MobilePhoneNumber = Model.Mobile,
-                Email = Model.ContactEmail,
+                OrganizationId = Int32.Parse(organizationId),
+                ContactFirstName = model.FirstName,
+                ContactLastName = model.LastName,
+                Title = model.TitleFunction,
+                TelephoneNumber = model.Telephone,
+                MobilePhoneNumber = model.Mobile,
+                Email = model.ContactEmail,
                 User = User.Identity.Name,
                 InsertDate = DateTime.Now,
-                ContactType = Contact.ContactTypeEnum.SALES,
+                ContactType = Contact.ContactTypeEnum.Sales,
             });
 
-            db.SaveChanges();
+            _db.SaveChanges();
 
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         // GET: Contact/Details
-        public ActionResult Details(int ContactId)
+        public ActionResult Details(int contactId)
         {
-            if (ContactId == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Contact contactModel = db.Contacts.Find(ContactId);
+            Contact contactModel = _db.Contacts.Find(contactId);
             if (contactModel == null)
             {
                 return HttpNotFound();
             }
 
-            var _DeliveryDetails = (from d in db.DeliveryDetails
+            var deliveryDetails = (from d in _db.DeliveryDetails
                                     where d.Contact == (contactModel.ContactFirstName + " " + contactModel.ContactLastName)
                                     select d).AsEnumerable();
 
-            var ContactDetails = new ContactDetailsViewModel
+            var contactDetails = new ContactDetailsViewModel
             {
                 ContactId = contactModel.ContactId,
                 ContactFirstName = contactModel.ContactFirstName,
@@ -190,20 +196,20 @@ namespace MojCRM.Controllers
                 InsertDate = contactModel.InsertDate,
                 UpdateDate = contactModel.UpdateDate,
                 ContactType = contactModel.ContactType,
-                DeliveryDetails = _DeliveryDetails
+                DeliveryDetails = deliveryDetails
             };
 
-            return View(ContactDetails);
+            return View(contactDetails);
         }
 
         // GET: Coontact/Delete/5
-        public ActionResult Delete(int? ContactId)
+        public ActionResult Delete(int? contactId)
         {
-            if (ContactId == null)
+            if (contactId == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Contact contact = db.Contacts.Find(ContactId);
+            Contact contact = _db.Contacts.Find(contactId);
             if (contact == null)
             {
                 return HttpNotFound();
@@ -214,11 +220,11 @@ namespace MojCRM.Controllers
         // POST: Contact/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int ContactId)
+        public ActionResult DeleteConfirmed(int contactId)
         {
-            Contact contact = db.Contacts.Find(ContactId);
-            db.Contacts.Remove(contact);
-            db.SaveChanges();
+            Contact contact = _db.Contacts.Find(contactId);
+            _db.Contacts.Remove(contact ?? throw new InvalidOperationException());
+            _db.SaveChanges();
             return View("Index");
         }
 
@@ -229,12 +235,12 @@ namespace MojCRM.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Contact Contact = db.Contacts.Find(id);
-            if (Contact == null)
+            Contact contact = _db.Contacts.Find(id);
+            if (contact == null)
             {
                 return HttpNotFound();
             }
-            return View(Contact);
+            return View(contact);
         }
 
         // POST: Contact/Edit/5
@@ -246,7 +252,7 @@ namespace MojCRM.Controllers
         {
             if (ModelState.IsValid)
             {
-                var editedContact = (from c in db.Contacts
+                var editedContact = (from c in _db.Contacts
                                      where c.ContactId == contact.ContactId
                                      select c).First();
                 editedContact.ContactFirstName = contact.ContactFirstName;
@@ -257,7 +263,7 @@ namespace MojCRM.Controllers
                 editedContact.Email = contact.Email;
                 editedContact.User = contact.User;
                 editedContact.UpdateDate = DateTime.Now;
-                db.SaveChanges();
+                _db.SaveChanges();
                 return RedirectToAction("Contacts", "Delivery");
             }
             return View(contact);
@@ -267,63 +273,63 @@ namespace MojCRM.Controllers
         [HttpPost]
         public ActionResult EditFromDelivery(DeliveryContactHelper model)
         {
-            var ContactForUpdate = db.Contacts.Find(model.ContactId);
+            var contactForUpdate = _db.Contacts.First(c => c.ContactId == model.ContactId);
 
             if (!String.IsNullOrEmpty(model.FirstName))
-                ContactForUpdate.ContactFirstName = model.FirstName;
+                contactForUpdate.ContactFirstName = model.FirstName;
             if (!String.IsNullOrEmpty(model.LastName))
-                ContactForUpdate.ContactLastName = model.LastName;
+                contactForUpdate.ContactLastName = model.LastName;
             if (!String.IsNullOrEmpty(model.Telephone))
-                ContactForUpdate.TelephoneNumber = model.Telephone;
+                contactForUpdate.TelephoneNumber = model.Telephone;
             if (!String.IsNullOrEmpty(model.Mobile))
-                ContactForUpdate.MobilePhoneNumber = model.Mobile;
+                contactForUpdate.MobilePhoneNumber = model.Mobile;
             if (!String.IsNullOrEmpty(model.Email))
-                ContactForUpdate.Email = model.Email;
+                contactForUpdate.Email = model.Email;
             if (!String.IsNullOrEmpty(model.TitleFunction))
-                ContactForUpdate.Title = model.TitleFunction;
+                contactForUpdate.Title = model.TitleFunction;
 
-            ContactForUpdate.UpdateDate = DateTime.Now;
-            ContactForUpdate.User = User.Identity.Name;
-            db.SaveChanges();
+            contactForUpdate.UpdateDate = DateTime.Now;
+            contactForUpdate.User = User.Identity.Name;
+            _db.SaveChanges();
 
             return RedirectToAction("Details", "Delivery", new { area = "HelpDesk", id = model.TicketId, receiverId = model.ReceiverId });
         }
 
         // POST: Contact/EditFromSales
         [HttpPost]
-        public ActionResult EditFromSales(SalesContactHelper Model)
+        public ActionResult EditFromSales(SalesContactHelper model)
         {
-            var contactId = Int32.Parse(Model.ContactId);
-            var ContactForUpdate = db.Contacts.Find(contactId);
+            var contactId = Int32.Parse(model.ContactId);
+            var contactForUpdate = _db.Contacts.First(c => c.ContactId == contactId);
 
-            if (!String.IsNullOrEmpty(Model.FirstName))
+            if (!String.IsNullOrEmpty(model.FirstName))
             {
-                ContactForUpdate.ContactFirstName = Model.FirstName;
+                contactForUpdate.ContactFirstName = model.FirstName;
             }
-            if (!String.IsNullOrEmpty(Model.LastName))
+            if (!String.IsNullOrEmpty(model.LastName))
             {
-                ContactForUpdate.ContactLastName = Model.LastName;
+                contactForUpdate.ContactLastName = model.LastName;
             }
-            if (!String.IsNullOrEmpty(Model.Telephone))
+            if (!String.IsNullOrEmpty(model.Telephone))
             {
-                ContactForUpdate.TelephoneNumber = Model.Telephone;
+                contactForUpdate.TelephoneNumber = model.Telephone;
             }
-            if (!String.IsNullOrEmpty(Model.Mobile))
+            if (!String.IsNullOrEmpty(model.Mobile))
             {
-                ContactForUpdate.MobilePhoneNumber = Model.Mobile;
+                contactForUpdate.MobilePhoneNumber = model.Mobile;
             }
-            if (!String.IsNullOrEmpty(Model.ContactEmail))
+            if (!String.IsNullOrEmpty(model.ContactEmail))
             {
-                ContactForUpdate.Email = Model.ContactEmail;
+                contactForUpdate.Email = model.ContactEmail;
             }
-            if (!String.IsNullOrEmpty(Model.TitleFunction))
+            if (!String.IsNullOrEmpty(model.TitleFunction))
             {
-                ContactForUpdate.Title = Model.TitleFunction;
+                contactForUpdate.Title = model.TitleFunction;
             }
-            ContactForUpdate.User = User.Identity.Name;
-            db.SaveChanges();
+            contactForUpdate.User = User.Identity.Name;
+            _db.SaveChanges();
 
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         //// POST: Contact/EditFromSales
@@ -366,13 +372,24 @@ namespace MojCRM.Controllers
 
         public JsonResult GetOrganization(string term = "")
         {
-            var OrganizationList = db.Organizations.Where(
+            var organizationList = _db.Organizations.Where(
                 c => 
                     c.SubjectName.Contains(term) || 
                     c.VAT.Contains(term)
                     )
                     .Select(c => new { Naziv = c.SubjectName, OIB = c.VAT }).Distinct().ToList();
-            return Json(OrganizationList, JsonRequestBehavior.AllowGet);
+            return Json(organizationList, JsonRequestBehavior.AllowGet);
+        }
+
+        //get org by oib -- By: Tomislav Pribić
+        public JsonResult GetOrganizationByOib(string term = "")
+        {
+            var organizationList = _db.Organizations.Where(
+                    c =>
+                        c.VAT.Contains(term)
+                )
+                .Select(c => new { Naziv = c.SubjectName, OIB = c.VAT }).Distinct().ToList();
+            return Json(organizationList, JsonRequestBehavior.AllowGet);
         }
     }
 }

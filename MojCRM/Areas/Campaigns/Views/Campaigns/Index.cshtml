@@ -1,9 +1,26 @@
-﻿@using GridMvc.Html
-@model IQueryable<MojCRM.Areas.Campaigns.Models.Campaign>
+﻿@using System.Web.UI.WebControls
+@using GridMvc.Html
+@using MojCRM.Areas.Campaigns.Models
+@model IQueryable<Campaign>
 
 @{
     ViewBag.Title = "Pregled kampanja";
     Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+
+    var statusList = new List<ListItem>
+    {
+        new ListItem{ Value= @"0", Text = @"Pokrenuto"},
+        new ListItem{ Value= @"1", Text = @"U tijeku"},
+        new ListItem{ Value= @"2", Text = @"Privremeno zaustavljeno"},
+        new ListItem{ Value= @"3", Text = @"Prekinuto"},
+        new ListItem{ Value= @"4", Text = @"Završeno"}
+    };
+    var typeList = new List<ListItem>
+    {
+        new ListItem{ Value= @"1", Text = @"Ažuriranje baze korisnika"},
+        new ListItem{ Value= @"2", Text = @"Prodajna kampanja"},
+        new ListItem{ Value= @"3", Text = @"CRM kampanja"}
+    };
 }
 
 <h2 style="text-align:center"><strong>Pregled kampanja</strong></h2>
@@ -22,7 +39,7 @@
     </div>
 </div>*@
 
-@if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Management"))
+@if (User.IsInRole("Administrator") || User.IsInRole("Board") || User.IsInRole("Superadmin") || User.IsInRole("Management"))
 {
     <hr />
     using (Html.BeginForm("Index", "Campaigns", FormMethod.Get))
@@ -41,6 +58,22 @@
                     <label for="campaign-name">Naziv kampanje</label>
                     <div id="campaign-name">
                         @Html.TextBox("CampaignName", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Naziv kampanje" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="campaign-status">Tip kampanje</label>
+                    <div id="campaign-status">
+                        @Html.DropDownList("CampaignType", new SelectList(typeList, "Value", "Text"), "-- Svi tipovi --", new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="campaign-status">Status kampanje</label>
+                    <div id="campaign-status">
+                        @Html.DropDownList("CampaignStatus", new SelectList(statusList, "Value", "Text"), "-- Svi statusi --", new { @class = "form-control" })
                     </div>
                 </div>
             </div>
@@ -65,7 +98,36 @@ columns.Add(m => m.CampaignName).Encoded(false).Sanitized(false).Titled("Naziv k
 columns.Add(m => m.CampaignDescription).Encoded(false).Sanitized(false).Titled("Opis kampanje").Sortable(false);
 columns.Add(m => m.CampaignInitiatior).Encoded(false).Sanitized(false).Titled("Pokrenuo").Sortable(false);
 columns.Add(m => m.CampaignTypeString).Encoded(false).Sanitized(false).Titled("Tip kampanje").Sortable(false);
-columns.Add(m => m.CampaignStatusString).Encoded(false).Sanitized(false).Titled("Status").Sortable(true);
+columns.Add(m => m.CampaignStatusString).Encoded(false).Sanitized(false).Titled("Status").Sortable(true).RenderValueAs(m =>
+{
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.Start)
+    {
+        return @<div><span class="label label-critical">@m.CampaignStatusString</span>
+               </div>;
+    }
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.InProgress)
+    {
+        return @<div><span class="label label-medium">@m.CampaignStatusString</span>
+               </div>;
+    }
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.Hold)
+    {
+        return @<div><span class="label label-low">@m.CampaignStatusString</span>
+               </div>;
+    }
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.Ended)
+    {
+        return @<div><span class="label label-default">@m.CampaignStatusString</span>
+               </div>;
+    }
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.Completed)
+    {
+        return @<div><span class="label label-success" title="@m.CampaignAttributes">@m.CampaignStatusString</span>
+               </div>;
+    }
+
+    return @<div></div>;
+});
 columns.Add(m => m.CampaignStartDate).Encoded(false).Sanitized(false).Titled("Datum početka").Sortable(false).RenderValueAs(m =>
 {
     return @<div><span>@Html.Raw(m.CampaignStartDate.ToShortDateString())</span></div>;
@@ -73,11 +135,11 @@ columns.Add(m => m.CampaignStartDate).Encoded(false).Sanitized(false).Titled("Da
 columns.Add(m => m.CampaignPlannedEndDate).Encoded(false).Sanitized(false).Titled("Planirani završetak").Sortable(false).RenderValueAs(m =>
 {
 return @<div><span>@Html.Raw(m.CampaignPlannedEndDate.ToShortDateString())</span></div>;
-}); ;
+});
     columns.Add(m => m.CampaignEndDate).Encoded(false).Sanitized(false).Titled("Datum završetka").Sortable(false);
     columns.Add().Encoded(false).Sanitized(false).RenderValueAs(m =>
     {
-        if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || (m.CampaignInitiatior == User.Identity.Name))
+        if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Management") || m.CampaignInitiatior == User.Identity.Name)
         {
             return @<div><span>
                        <a href="@Url.RouteUrl(new { action = "Details", controller = "Campaigns", area = "Campaigns", id=m.CampaignId, returnUrl = Request.Url })" title="Detalji kampanje"><i class="fa fa-list"></i></a>

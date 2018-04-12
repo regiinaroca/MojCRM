@@ -4,6 +4,12 @@
 @{
     ViewBag.Title = "Detalji kampanje";
     Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+    var minConversion = 25;
+    var maxConversion = 75;
+    var minAccepted = 15;
+    var maxAccepted = 75;
+    var minRejected = 15;
+    var maxRejected = 50;
 }
 
 <!--Modal - Change Status-->
@@ -173,6 +179,11 @@
                                 Preostali broj predmeta za dodjelu: <strong>@Model.NumberOfUnassignedEntities</strong>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12" style="text-align: center">
+                                Preostali broj predmeta za dodjelu bez broja telefona: <strong>@Model.NumberOfUnassignedEntitiesWithoutTelephone</strong>
+                            </div>
+                        </div>
                         <hr />
                         <div class="row">
                             <div class="col-md-6">
@@ -203,6 +214,7 @@
                                     <tr>
                                         <th>Agent</th>
                                         <th>Broj dodijeljenih predmeta</th>
+                                        <th></th>
                                     </tr>
                                     @foreach (var agent in Model.AssignedAgents)
                                     {
@@ -211,6 +223,7 @@
                                              <tr>
                                                  <td>@agent.Agent</td>
                                                  <td>@agent.NumberOfAssignedEntities</td>
+                                                 <td><a href="@Url.RouteUrl(new { action = "AdminUnassignEntities", controller = "AcquireEmail", area = "HelpDesk", campaignId=Model.Campaign.CampaignId, agent = agent.Agent, returnUrl = Request.Url })" title="Makni dodjelu za ovog agenta"><i class="fa fa-remove" style="color: red"></i></a></td>
                                              </tr>   
                                          }
                                     }
@@ -233,30 +246,56 @@
 <div>
     <h4 style="text-align:center">Kampanja - @Html.Raw(Model.Campaign.CampaignName)</h4>
     <div>
-        <div class="row" style="text-align:center">
-            <div class="col-md-12">
-                <div class="btn-group" role="group">
-                    @if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Management"))
-                    {
-                        <a href="@Url.RouteUrl(new {action = "Edit", controller = "Campaigns", area = "Campaigns", id = Model.Campaign.CampaignId, returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Uređivanje kampanje"><i class="fa fa-edit"></i></a>
+    <div class="row" style="text-align:center">
+        <div class="col-md-12">
+            <div class="btn-group" role="group">
+                @if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Management"))
+                {
+                    <a href="@Url.RouteUrl(new {action = "Edit", controller = "Campaigns", area = "Campaigns", id = Model.Campaign.CampaignId, returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Uređivanje kampanje"><i class="fa fa-edit"></i></a>
                         <button type="button" title="Promijeni status kampanje" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangeStatus"><i class="fa fa-refresh"></i></button>
                         <button type="button" title="Dodijeli agenta kampanji" class="btn btn-sm btn-default" data-toggle="modal" href="#AddAgent"><i class="fa fa-plus"></i> <i class="fa fa-user"></i></button>
-                        if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EMAILBASES)
-                         {
-                             <button type="button" title="Dodijeli predmete" class="btn btn-default btn-sm" data-toggle="modal" href="#adminAssign"><i class="fa fa-reply-all"></i></button>
-                             <button type="button" title="Kreiraj unose za ažuriranje baze" class="btn btn-sm btn-default" data-toggle="modal" href="#checkEntities"><i class="fa fa-plus"></i></button>
-                             <a href="@Url.RouteUrl(new {action = "ExportEntities", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId, identifier = 1 })" class="btn btn-sm btn-default" title="Preuzmi sve rezultate"><i class="fa fa-file-excel-o" style="color: lightgreen"></i></a>
-                             <a href="@Url.RouteUrl(new {action = "ExportEntities", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId, identifier = 2 })" class="btn btn-sm btn-default" title="Preuzmi samo revidirane rezultate"><i class="fa fa-file-excel-o" style="color: blue"></i></a>
-                             <a href="@Url.RouteUrl(new {action = "ExportEntitiesForEmailNotification", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId })" class="btn btn-sm btn-default" title="Preuzmi rezultate formirane za tipsku obavijest"><i class="fa fa-file-excel-o" style="color: yellow"></i></a>
-                        }
-                        <a href="@Url.RouteUrl(new {action = "Index", controller = "Campaigns", area = "Campaigns", returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Povratak na popis kampanja"><i class="fa fa-arrow-left"></i></a>   
+                    if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases)
+                    {
+                        <button type="button" title="Dodijeli predmete" class="btn btn-default btn-sm" data-toggle="modal" href="#adminAssign"><i class="fa fa-reply-all"></i></button>
+                            <button type="button" title="Kreiraj unose za ažuriranje baze" class="btn btn-sm btn-default" data-toggle="modal" href="#checkEntities"><i class="fa fa-plus"></i></button>
+                            <a href="@Url.RouteUrl(new {action = "UpdateEntityStatusToCreated", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId })" class="btn btn-sm btn-default" title="Vrati statuse obrade u kreirano za predmete u ovoj kampanji"><i class="fa fa-repeat" style="color: yellow"></i></a>
+                            <a href="@Url.RouteUrl(new {action = "ExportEntities", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId, identifier = 1 })" class="btn btn-sm btn-default" title="Preuzmi sve rezultate"><i class="fa fa-file-excel-o" style="color: lightgreen"></i></a>
+                            <a href="@Url.RouteUrl(new {action = "ExportEntities", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId, identifier = 2 })" class="btn btn-sm btn-default" title="Preuzmi samo revidirane rezultate"><i class="fa fa-file-excel-o" style="color: blue"></i></a>
+                            <a href="@Url.RouteUrl(new {action = "ExportEntitiesForEmailNotification", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId })" class="btn btn-sm btn-default" title="Preuzmi rezultate formirane za tipsku obavijest"><i class="fa fa-file-excel-o" style="color: yellow"></i></a>
+                            <a href="@Url.RouteUrl(new {action = "Index", controller = "AcquireEmail", area = "HelpDesk", CampaignName = Model.Campaign.CampaignName ,returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Pregled predmeta za ovu kampanju"><i class="fa fa-bars"></i> <i class="fa fa-arrow-right"></i></a>
                     }
-                </div>
+                    <a href="@Url.RouteUrl(new {action = "Index", controller = "Campaigns", area = "Campaigns", returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Povratak na popis kampanja"><i class="fa fa-arrow-left"></i></a>
+                }
             </div>
         </div>
     </div>
+    @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases)
+    {
+        <hr />
+            <div class="row" style="text-align: center">
+                <div class="col-md-2">
+                    <h5>Dodaj atribut kampanji</h5>
+                </div>
+                <div class="col-md-2">
+                    <div class="btn-group" role="group">
+                        <a href="@Url.RouteUrl(new {action = "AddAttribute", controller = "Campaigns", area = "Campaigns", campaignId = Model.Campaign.CampaignId, attribute = "Poslana tipska obavijest"})" class="btn btn-sm btn-default" title="Dodaj atribut o poslanoj tipskoj obavijesti"><i class="fa fa-sign-out"></i></a>
+                        <a href="@Url.RouteUrl(new {action = "AddAttribute", controller = "Campaigns", area = "Campaigns", campaignId = Model.Campaign.CampaignId, attribute = "Baza je dostavljena klijentu"})" class="btn btn-sm btn-default" title="Dodaj atribut o dostavljenoj bazi klijentu"><i class="fa fa-check"></i></a>
+                    </div>
+                </div>
+            </div>
+        if (Model.Campaign.CampaignAttributes != null)
+        {
+            <br/>
+            <table class="table" style="word-break:break-word;">
+                <tr>
+                    <th>Dodijeljeni atributi: @Model.CampaignAttributes</th>
+                </tr>
+            </table>
+        }
+    }
+    </div>
     <hr />
-    @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.SALES && Model.SalesStats.TotalCount != 0)
+    @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.Sales && Model.SalesStats.TotalCount != 0)
     {
         <label for="bases-progress" title="Broj obrađenih prodajnih prilika">Status obrade: @Model.SalesStats.NotStartedCount / @Model.SalesStats.TotalCount</label>
         <div id="bases-progress" class="progress">
@@ -265,7 +304,7 @@
             </div>
         </div>
     }
-    @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EMAILBASES && Model.EmailBasesStats.TotalCount != 0)
+    @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases && Model.EmailBasesStats.TotalCount != 0)
     {
         <label for="bases-progress" title="Preostalo za obradu od ukupnog broja kreiranih predmeta">Status obrade: @Model.EmailBasesStats.NotVerifiedCount / @Model.EmailBasesStats.TotalCount</label>
         <div id="bases-progress" class="progress">
@@ -275,86 +314,313 @@
         </div>
     }
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Campaign.RelatedCompany.SubjectName)
-        </dt>
+    <div class="row">
+        <div class="col-md-4">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Campaign.RelatedCompany.SubjectName)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Campaign.RelatedCompany.SubjectName) (@Html.DisplayFor(model => model.Campaign.RelatedCompany.VAT))
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Campaign.RelatedCompany.SubjectName) (@Html.DisplayFor(model => model.Campaign.RelatedCompany.VAT))
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Campaign.CampaignName)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Campaign.CampaignName)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Campaign.CampaignName)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Campaign.CampaignName)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Campaign.CampaignDescription)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Campaign.CampaignDescription)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Campaign.CampaignDescription)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Campaign.CampaignDescription)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Campaign.CampaignInitiatior)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Campaign.CampaignInitiatior)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Campaign.CampaignInitiatior)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Campaign.CampaignInitiatior)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Campaign.CampaignType)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Campaign.CampaignType)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Campaign.CampaignTypeString)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Campaign.CampaignTypeString)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Campaign.CampaignStatus)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Campaign.CampaignStatus)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Campaign.CampaignStatusString)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Campaign.CampaignStatusString)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Campaign.CampaignStartDate)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Campaign.CampaignStartDate)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Campaign.CampaignStartDate)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Campaign.CampaignStartDate)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Campaign.CampaignPlannedEndDate)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Campaign.CampaignPlannedEndDate)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Campaign.CampaignPlannedEndDate)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Campaign.CampaignPlannedEndDate)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Campaign.CampaignEndDate)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Campaign.CampaignEndDate)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Campaign.CampaignEndDate)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Campaign.CampaignEndDate)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Campaign.InsertDate)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Campaign.InsertDate)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Campaign.InsertDate)
-        </dd>
-        
-    </dl>
+                <dd>
+                    @Html.DisplayFor(model => model.Campaign.InsertDate)
+                </dd>
+
+            </dl>
+        </div>
+        @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases)
+        {
+            <div class="col-md-8" title="Statistički podaci o statusu unosa predmeta">
+                <dl class="dl-horizontal">
+
+                    @foreach (var stat in Model.EmailsBasesEntityStatusStats)
+                    {
+                        <dt>
+                            @stat.StatusName
+                        </dt>
+
+                        <dd>
+                            @stat.SumOfEntities
+                        </dd>
+                    }
+
+                </dl>
+            </div>
+        }
+        @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.Sales)
+        {
+            <div class="col-md-4" title="Statistički podaci o statusu prodajnih prilika u kampanji">
+                <dl class="dl-horizontal">
+
+                    @foreach (var stat in Model.SalesOpportunitiesStatusStats)
+                    {
+                        <dt>
+                            @stat.StatusName
+                        </dt>
+
+                        <dd>
+                            @stat.SumOfEntities
+                        </dd>
+                    }
+
+                </dl>
+            </div>
+            <div class="col-md-4" title="Statistički podaci o statusu leadova u kampanji">
+                <dl class="dl-horizontal">
+
+                    @foreach (var stat in Model.SalesLeadsStatusStats)
+                    {
+                        <dt>
+                            @stat.StatusName
+                        </dt>
+
+                        <dd>
+                            @stat.SumOfEntities
+                        </dd>
+                    }
+
+                </dl>
+            </div>
+        }
+    </div>
+    @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.Sales)
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <div class="widget widget-hide-header">
+                    <div class="widget-header">
+                        <h3>Detalji obrade</h3> <em>- statistički prikaz statusa obrade pojedinih prodajnih predmeta</em>
+                        <div class="btn-group widget-header-toolbar">
+                            <a href="#" title="Fokusiraj" class="btn-borderless btn-focus"><i class="fa fa-eye"></i></a>
+                            <a href="#" title="Proširi/Sažmi" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a>
+                            @*<a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a>*@
+                        </div>
+                    </div>
+                    <div class="widget-content">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <p class="text-center">Broj kreiranih prodajnih prilika</p>
+                                <p class="text-center"><strong>@Model.SalesGeneralStatus.NumberOfOpportunitiesCreated</strong></p>
+                                <p class="text-center">Broj kreiranih leadova</p>
+                                <p class="text-center"><strong>@Model.SalesGeneralStatus.NumberOfLeadsCreated</strong></p>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="easy-pie-chart yellow" data-percent="@Model.SalesGeneralStatus.NumberOfOpportunitiesInProgressPercent" title="@Model.SalesGeneralStatus.NumberOfOpportunitiesInProgress">
+                                    <span class="percent">@Model.SalesGeneralStatus.NumberOfOpportunitiesInProgressPercent</span>
+                                </div>
+                                <p class="text-center">Broj prodajnih prilika u obradi</p>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="easy-pie-chart green" data-percent="@Model.SalesGeneralStatus.NumberOfOpportunitiesUserPercent" title="@Model.SalesGeneralStatus.NumberOfOpportunitesUser">
+                                    <span class="percent">@Model.SalesGeneralStatus.NumberOfOpportunitiesUserPercent</span>
+                                </div>
+                                <p class="text-center">Broj postojećih korisnika</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="easy-pie-chart green" data-percent="@Model.SalesGeneralStatus.NumberOfOpportunitiesToLeadPercent" title="@Model.SalesGeneralStatus.NumberOfOpportunitiesToLead">
+                                    <span class="percent">@Model.SalesGeneralStatus.NumberOfOpportunitiesToLeadPercent</span>
+                                </div>
+                                <p class="text-center">Broj kreiranih leadova</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="easy-pie-chart red" data-percent="@Model.SalesGeneralStatus.NumberOfOpportunitiesRejectedPercent" title="@Model.SalesGeneralStatus.NumberOfOpportunitiesRejected">
+                                    <span class="percent">@Model.SalesGeneralStatus.NumberOfOpportunitiesRejectedPercent</span>
+                                </div>
+                                <p class="text-center">Broj odbijenih prodajnih prilika</p>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="col-md-2">
+                                <div class="easy-pie-chart yellow" data-percent="@Model.SalesGeneralStatus.NumberOfLeadsInProgressPercent" title="@Model.SalesGeneralStatus.NumberOfLeadsInProgress">
+                                    <span class="percent">@Model.SalesGeneralStatus.NumberOfLeadsInProgressPercent</span>
+                                </div>
+                                <p class="text-center">Broj leadova u obradi</p>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="easy-pie-chart yellow" data-percent="@Model.SalesGeneralStatus.NumberOfLeadsMeetingsPercent" title="@Model.SalesGeneralStatus.NumberOfLeadsMeetings">
+                                    <span class="percent">@Model.SalesGeneralStatus.NumberOfLeadsMeetingsPercent</span>
+                                </div>
+                                <p class="text-center">Broj leadova sa dogovorenim sastankom</p>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="easy-pie-chart yellow" data-percent="@Model.SalesGeneralStatus.NumberOfLeadsQuotesPercent" title="@Model.SalesGeneralStatus.NumberOfLeadsQuotes">
+                                    <span class="percent">@Model.SalesGeneralStatus.NumberOfLeadsQuotesPercent</span>
+                                </div>
+                                <p class="text-center">Broj leadova sa poslanom ponudom</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="easy-pie-chart green" data-percent="@Model.SalesGeneralStatus.NumberOfLeadsAcceptedPercent" title="@Model.SalesGeneralStatus.NumberOfLeadsAccepted">
+                                    <span class="percent">@Model.SalesGeneralStatus.NumberOfLeadsAcceptedPercent</span>
+                                </div>
+                                <p class="text-center">Broj realiziranih (prihvaćenih) ponuda</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="easy-pie-chart red" data-percent="@Model.SalesGeneralStatus.NumberOfLeadsRejectedPercent" title="@Model.SalesGeneralStatus.NumberOfLeadsRejected">
+                                    <span class="percent">@Model.SalesGeneralStatus.NumberOfLeadsRejectedPercent</span>
+                                </div>
+                                <p class="text-center">Broj odbijenih leadova</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="widget widget-table">
+                <div class="widget-header">
+                    <h3>Uspješnost agenata</h3> <em>- statistički pregled uspješnosti u ostvarenju leadova</em>
+                    <div class="btn-group widget-header-toolbar">
+                        <a href="#" title="Fokusiraj" class="btn-borderless btn-focus"><i class="fa fa-eye"></i></a>
+                        <a href="#" title="Proširi/Sažmi" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a>
+                        @*<a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a>*@
+                    </div>
+                </div>
+                <br/>
+                <div classs="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-info">
+                            <p>
+                                Ovaj pregled sadrži podatke o uspješnosti agenata u ostvarenju prodaje u ovoj kampanji.<br/>
+                                Podatak o <strong>postotku konverzije</strong> govori o uspješnosti agenta da iz prodajne prilike ostvari lead. Ukoliko agent ima postotak konverzije manji od <strong>@minConversion %</strong> on se smatra kritičnim, dok se postotak veći od <strong>@maxConversion %</strong> smatra dobrim rezultatom.<br/>
+                                Podatak o <strong>postotku prihvaćenih leadova</strong> govori o uspješnosti agenta da iz leada ostvari prodaju. Ukoliko agent ima postotak prihvaćanja manji od <strong>@minAccepted %</strong> on se smatra kritičnim, dok se postotak veći od <strong>@maxAccepted %</strong> smatra dobrim rezultatom.<br />
+                                Podatak o <strong>postotku odbijenih leadova</strong> govori o neuspješnosti agenta da iz leada ostvari prodaju. Ukoliko agent ima postotak odbijanja veći od <strong>@maxRejected %</strong> on se smatra kritičnim, dok se postotak manji od <strong>@minRejected %</strong> smatra dobrim rezultatom.<br />
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-content">
+                    <table id="ticket-table" class="table table-sorting">
+                        <thead>
+                        <tr>
+                            <th>Agent</th>
+                            <th>Ukupan broj prodajnih prilika</th>
+                            <th>Ukupan broj leadova</th>
+                            <th>Postotak konverzije</th>
+                            <th>Broj prihvaćenih leadova (postotak)</th>
+                            <th>Broj odbijenih leadova (postotak)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var entity in Model.CampaignLeadsAgentEfficiencies)
+                        {
+                            <tr>
+                                <td>@entity.Agent</td>
+                                <td>@entity.NumberOfOpportunitiesTotal</td>
+                                <td>@entity.AssignedTotalCount</td>
+                                @if (entity.ConverionPercent < minConversion)
+                                {
+                                    <td style="color: red"><strong>@entity.ConverionPercent %</strong></td>   
+                                }
+                                @if (entity.ConverionPercent > maxConversion)
+                                {
+                                    <td style="color: green"><strong>@entity.ConverionPercent %</strong></td>
+                                }
+                                @if (entity.ConverionPercent < maxConversion && entity.ConverionPercent > minConversion)
+                                {
+                                    <td>@entity.ConverionPercent %</td>
+                                }
+                                @if (entity.AcceptedPercent < minAccepted)
+                                {
+                                    <td style="color: red"><strong>@entity.AcceptedCount (@entity.AcceptedPercent %)</strong></td>
+                                }
+                                @if (entity.AcceptedPercent > maxAccepted)
+                                {
+                                    <td style="color: green"><strong>@entity.AcceptedCount (@entity.AcceptedPercent %)</strong></td>
+                                }
+                                @if (entity.AcceptedPercent < maxAccepted && entity.AcceptedPercent > minAccepted)
+                                {
+                                    <td>@entity.AcceptedCount (@entity.AcceptedPercent %)</td>
+                                }
+                                @if (entity.RejectedPercent < minRejected)
+                                {
+                                    <td style="color: green"><strong>@entity.RejectedCount (@entity.RejectedPercent %)</strong></td>
+                                }
+                                @if (entity.RejectedPercent > maxRejected)
+                                {
+                                    <td style="color: red"><strong>@entity.RejectedCount (@entity.RejectedPercent %)</strong></td>
+                                }
+                                @if (entity.RejectedPercent < maxRejected && entity.RejectedPercent > minRejected)
+                                {
+                                    <td>@entity.RejectedCount (@entity.RejectedPercent %)</td>
+                                }
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
 </div>

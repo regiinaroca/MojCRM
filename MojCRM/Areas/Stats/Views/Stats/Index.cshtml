@@ -10,33 +10,72 @@
 <h4>Osobni izvještaji</h4>
 <div class="row">
     <div class="col-md-3">
-        <a href="@Url.RouteUrl(new { action = "PersonalDailyActivities", controller = "Stats", area = "Stats", User.Identity.Name})" class="btn btn-default btn-sm">
+        <a href="@Url.RouteUrl(new { action = "PersonalDailyActivities", controller = "Stats", area = "Stats", User.Identity.Name})" class="btn btn-default btn-sm" title="Izvještaj o osobnim aktivnostima obavljenima u jednom danu">
             <i class="fa fa-book"></i>
             Osobni dnevnik
         </a>
     </div>
 </div>
-@if (User.IsInRole("Management") || User.IsInRole("Board") || User.IsInRole("Administrator") || User.IsInRole("Superadmin"))
+@if (!User.IsInRole("Guest"))
 {
-    <hr />
-    <h4>Statistike agenata</h4>
+    <hr/>
+    <h4>Statistički pregledi vezani za tvrtke</h4>
     <div class="row">
         <div class="col-md-3">
-            <a href="@Url.RouteUrl(new { action = "CallCenterDaily", controller = "Stats", area = "Stats" })" class="btn btn-default btn-sm">
+            <a href="@Url.RouteUrl(new { action = "OrganizationsByCountry", controller = "Stats", area = "Stats" })" class="btn btn-default btn-sm" title="Broj tvrtki po pojedinoj državi">
+                <i class="fa fa-globe"></i>
+                Pregled tvrtki po državama
+            </a>
+        </div>
+    </div>
+}
+@if (User.IsInRole("Management") || User.IsInRole("Board") || User.IsInRole("Administrator") || User.IsInRole("Superadmin"))
+{
+    <hr/>
+    <h4>Prodajne statistike</h4>
+    <div class="row">
+        <div class="col-md-3">
+            <a href="@Url.RouteUrl(new { action = "OpportunityEntryChannel", controller = "Stats", area = "Stats" })" class="btn btn-default btn-sm" title="Statistika prodajnih prilika po kanalu ulaska">
+                <i class="fa fa-bars"></i>
+                Prodajne prilike - kanal ulaska
+            </a>
+        </div>
+    </div>
+    <hr />
+    <h4>Statistike djelatnika</h4>
+    <div class="row">
+        <div class="col-md-3">
+            <a href="@Url.RouteUrl(new { action = "CallCenterDaily", controller = "Stats", area = "Stats" })" class="btn btn-default btn-sm" title="Dnevna statistika aktivnosti djelatnika">
                 <i class="fa fa-headphones"></i>
-                Dnevna statistika poziva
+                Dnevna statistika aktivnosti
             </a>
         </div>
         <div class="col-md-3">
-            <a href="@Url.RouteUrl(new { action = "CallCenterWeekly", controller = "Stats", area = "Stats" })" class="btn btn-default btn-sm">
+            <a href="@Url.RouteUrl(new { action = "CallCenterWeekly", controller = "Stats", area = "Stats" })" class="btn btn-default btn-sm" title="Statistika aktivnosti djelatnika u vremenskom periodu">
                 <i class="fa fa-headphones"></i>
-                Statistika poziva u periodu
+                Statistika aktivnosti u periodu
             </a>
         </div>
         <div class="col-md-3">
             <a href="@Url.RouteUrl(new { action = "SalesStat", controller = "Stats", area = "Stats" })" class="btn btn-default btn-sm">
-                <i class="fa fa-phone"></i>
+                <i class="fa fa-money"></i>
                 Osnovna prodajna statistika
+            </a>
+        </div>
+    </div>
+    <hr />
+    <h4>Statistike ažuriranja e-mail adresa korisnika</h4>
+    <div class="row">
+        <div class="col-md-3">
+            <a href="@Url.RouteUrl(new { action = "EmailBasesStats", controller = "Campaigns", area = "Campaigns" })" class="btn btn-default btn-sm" title="Statistički podaci o kampanjama za ažuriranje baza korisnika">
+                <i class="fa fa-bars"></i>
+                Statistika ažuriranja baza
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="@Url.RouteUrl(new { action = "AcquireEmailsAssignedStats", controller = "AcquireEmail", area = "HelpDesk" })" class="btn btn-default btn-sm" title="Statistika dodijeljenih predmeta u kampanjama za ažuriranje baza korisnika">
+                <i class="fa fa-bars"></i>
+                Statistika dodijeljenih predmeta
             </a>
         </div>
     </div>
@@ -44,7 +83,7 @@
     <h4>Statistike odjela dostave</h4>
     <div class="row">
         <div class="col-md-3">
-            <a href="@Url.RouteUrl(new { action = "Delivery", controller = "Stats", area = "Stats" })" class="btn btn-default btn-sm">
+            <a href="@Url.RouteUrl(new { action = "Delivery", controller = "Stats", area = "Stats" })" class="btn btn-default btn-sm" title="Izvještaj o kreiranim karticama za dostavu eRačuna">
                 <i class="fa fa-ticket"></i>
                 Statistika kreiranih kartica
             </a>

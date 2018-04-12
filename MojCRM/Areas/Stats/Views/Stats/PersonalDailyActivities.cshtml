@@ -5,6 +5,19 @@
 }
 
 <h2 style="text-align:center"><strong>Osobni dnevnik</strong></h2>
+<br />
+<div class="alert alert-info">
+    <p style="text-align: justify">
+        Ovaj statistički pregled donosi podatke o osobnim aktivnostima djelatnika. Statistika prikazuje podatke o:
+        <ul>
+            <li>broju odjela u kojima je pojedini djelatnik radio tijekom dana</li>
+            <li>ukupnom broju aktivnosti koje je djelatnik odradio</li>
+            <li>broju aktivnosti koje je djelatnik odradio grupiranom po tipu aktivnosti</li>
+        </ul>
+        <br />
+        Dodatno, kroz ovaj statistički pregled moguće je pretraživati osobne aktivnosti djelatnika po datumu obavljanja aktivnosti.
+    </p>
+</div>
 <hr />
 <div class="row">
     <div class="col-md-6">
@@ -65,14 +78,14 @@
                         <td class="description-td"><strong>Opis aktivnosti</strong></td>
                         <td><strong>Odjel</strong></td>
                     </tr>
-                    @foreach (var Activity in @Model.PersonalActivities)
+                    @foreach (var activity in @Model.PersonalActivities)
                 {
-                    if (Activity.ActivityTypeString.Equals("Uspješan poziv"))
+                    if (activity.ActivityTypeString.Equals("Uspješan poziv"))
                     {
                             <tr>
 
-                                <td class="description-td">@Activity.Description</td>
-                                <td>@Activity.DepartmentString</td>
+                                <td class="description-td">@activity.Description</td>
+                                <td>@activity.DepartmentString</td>
                             </tr>
                         }
                     }
@@ -95,14 +108,14 @@
                         <td class="description-td"><strong>Opis aktivnosti</strong></td>
                         <td><strong>Odjel</strong></td>
                     </tr>
-                    @foreach (var Activity in @Model.PersonalActivities)
+                    @foreach (var activity in @Model.PersonalActivities)
                 {
-                    if (Activity.ActivityTypeString.Equals("Uspješan poziv (nekonkretni)"))
+                    if (activity.ActivityTypeString.Equals("Uspješan poziv (nekonkretni)"))
                     {
                             <tr>
 
-                                <td class="description-td">@Activity.Description</td>
-                                <td>@Activity.DepartmentString</td>
+                                <td class="description-td">@activity.Description</td>
+                                <td>@activity.DepartmentString</td>
                             </tr>
                         }
                     }
@@ -124,13 +137,13 @@
                         <td class="description-td"><strong>Opis aktivnosti</strong></td>
                         <td><strong>Odjel</strong></td>
                     </tr>
-                    @foreach (var Activity in @Model.PersonalActivities)
+                    @foreach (var activity in @Model.PersonalActivities)
                 {
-                    if (Activity.ActivityTypeString.Equals("Neuspješan poziv"))
+                    if (activity.ActivityTypeString.Equals("Neuspješan poziv"))
                     {
                             <tr>
-                                <td class="description-td">@Activity.Description</td>
-                                <td>@Activity.DepartmentString</td>
+                                <td class="description-td">@activity.Description</td>
+                                <td>@activity.DepartmentString</td>
                             </tr>
                         }
                     }
@@ -155,14 +168,14 @@
                         <td class="description-td"><strong>Opis aktivnosti</strong></td>
                         <td ><strong>Odjel</strong></td>
                     </tr>
-                    @foreach (var Activity in @Model.PersonalActivities)
+                    @foreach (var activity in @Model.PersonalActivities)
                                 {
                                    
-                                    if (Activity.ActivityTypeString.Equals("Slanje e-mailova"))
+                                    if (activity.ActivityTypeString.Equals("Slanje e-mailova"))
                                     {
                             <tr>
-                                <td class="description-td">@Activity.Description</td>
-                                <td>@Activity.DepartmentString</td>
+                                <td class="description-td">@activity.Description</td>
+                                <td>@activity.DepartmentString</td>
                             </tr>
                         }
                     }
@@ -186,13 +199,13 @@
                         <td class="description-td"><strong>Opis aktivnosti</strong></td>
                         <td><strong>Odjel</strong></td>
                     </tr>
-                    @foreach (var Activity in @Model.PersonalActivities)
+                    @foreach (var activity in @Model.PersonalActivities)
                 {
-                    if (Activity.ActivityTypeString.Equals("Izmjena e-mail obavijesti"))
+                    if (activity.ActivityTypeString.Equals("Izmjena e-mail obavijesti"))
                     {
                             <tr>
-                                <td class="description-td">@Activity.Description</td>
-                                <td>@Activity.DepartmentString</td>
+                                <td class="description-td">@activity.Description</td>
+                                <td>@activity.DepartmentString</td>
                             </tr>
                         }
                     }
@@ -216,13 +229,13 @@
                         <td class="description-td"><strong>Opis aktivnosti</strong></td>
                         <td><strong>Odjel</strong></td>
                     </tr>
-                    @foreach (var Activity in @Model.PersonalActivities)
-                {
-                    if (Activity.ActivityTypeString.Equals("Ponovno slanje obavijesti o dostavi"))
+                    @foreach (var activity in @Model.PersonalActivities)
                     {
+                        if (activity.ActivityTypeString.Equals("Ponovno slanje obavijesti o dostavi"))
+                        {
                             <tr>
-                                <td class="description-td">@Activity.Description</td>
-                                <td>@Activity.DepartmentString</td>
+                                <td class="description-td">@activity.Description</td>
+                                <td>@activity.DepartmentString</td>
                             </tr>
                         }
                     }
@@ -232,6 +245,23 @@
 
 
     </div>
+<div id="AcquirePhoneNumberDiv" class="personal-div">
+    <div id="AcquirePhoneNumberLablelWrap">
+        <label class="personal-label">
+            @Html.DisplayNameFor(model => model.SumAcquiredPhoneNumbers): @Model.SumAcquiredPhoneNumbers
+        </label>
+    </div>
+
+
+</div>
+<div id="AcquireEmailDiv" class="personal-div">
+    <div id="AcquireEmailLablelWrap">
+        <label class="personal-label">
+            @Html.DisplayNameFor(model => model.SumAcquiredEmails): @Model.SumAcquiredEmails
+        </label>
+    </div>
+
+</div>
 
 </div>
 <script>

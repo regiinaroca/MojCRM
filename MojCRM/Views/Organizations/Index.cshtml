@@ -1,6 +1,6 @@
 ﻿@using GridMvc.Html
 
-@model IQueryable<MojCRM.Models.Organizations>
+@model MojCRM.ViewModels.OrganizationIndexViewModel
 @{
     ViewBag.Title = "Popis tvrtki";
     Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
@@ -12,15 +12,53 @@
     @using (Html.BeginForm("Index", "Organizations", FormMethod.Get))
     {
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-2">
                 <div class="form-group">
-                    <label for="organization-search">Naziv ili OIB tvrtke</label>
-                    <div id="organization-search">
-                        @Html.TextBox("Organization", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Naziv ili OIB tvrtke" })
+                    <label for="organization-vat-search">OIB tvrtke</label>
+                    <div id="organization-vat-search">
+                        @Html.TextBox("VAT", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "OIB tvrtke" })
                     </div>
                 </div>
             </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="organization-name-search">Naziv tvrtke</label>
+                    <div id="organization-name-search">
+                        @Html.TextBox("SubjectName", ViewBag.CurrentFilter as string, new {@class = "form-control", @placeholder = "Naziv tvrtke"})
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="organization-city-search">Mjesto sjedišta tvrtke</label>
+                    <div id="organization-city-search">
+                        @Html.TextBox("MainCity", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Mjesto sjedišta tvrtke" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="organization-isActive-search">Status tvrtke</label>
+                    <div id="organization-isActive-search">
+                        @Html.DropDownList("IsActive", Model.LegalStatusDropdown, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="organization-group-search">Grupacija tvrtke</label>
+                    <div id="organization-group-search">
+                        @Html.DropDownList("Group", Model.OrganizationGroupDropdown, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="alert alert-info">
+                    Broj rezultata: <strong>@Model.ResultsCount</strong>
+                </div>
+            </div>
         </div>
+        <br/>
         <div class="col-md-12">
             <div class="form-group" style="margin-bottom:0">
                 <input id="Search" type="submit" class="btn btn-primary btn-sm" value="Traži" />
@@ -29,7 +67,7 @@
         </div>
     }
     <hr />
-    @Html.Grid(Model).Named("PopisSvihTvrtki").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
+    @Html.Grid(Model.OrganizationList).Named("PopisSvihTvrtki").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
 {
     columns.Add(m => m.VAT).Encoded(false).Sanitized(false).Titled("OIB tvrtke").Sortable(true);
     columns.Add().Encoded(false).Sanitized(false).RenderValueAs(m =>
