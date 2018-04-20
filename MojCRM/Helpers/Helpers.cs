@@ -252,6 +252,8 @@ namespace MojCRM.Helpers
                 organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Sk;
             else if (organization.Organization.VAT.StartsWith("AT"))
                 organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.At;
+            else if (organization.Organization.VAT.StartsWith("RS"))
+                organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Rs;
             else
                 organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Hr;
         }

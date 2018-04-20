@@ -74,6 +74,7 @@ namespace MojCRM.Controllers
         }
 
         // GET: Organizations/Details/5
+        [Authorize]
         public ActionResult Details(int id)
         {
             try

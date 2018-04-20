@@ -132,5 +132,18 @@ namespace MojCRM.Areas.Sales.Helpers
             }
             _db.SaveChanges();
         }
+
+        public void ApplyOpportunityStatusToRelatedOpportunities(int? organizationId, OpportunityStatusEnum status)
+        {
+            var opportunities = _db.Opportunities.Where(o => o.RelatedOrganizationId == organizationId);
+
+            foreach (var opportunity in opportunities)
+            {
+                opportunity.OpportunityStatus = status;
+                opportunity.UpdateDate = DateTime.Now;
+                opportunity.LastUpdatedBy = @"Moj-CRM - ApplyOpportunityStatusToRelatedOpportunities";
+            }
+            _db.SaveChanges();
+        }
     }
 }

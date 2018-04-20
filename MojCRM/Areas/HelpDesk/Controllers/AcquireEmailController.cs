@@ -231,7 +231,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
 
             if (entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains("@") && entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation != null)
                 indetifierTemp = 1; //check if agent inserted an email and set identifier to AcquiredInformation by default
-            else if (String.IsNullOrEmpty(entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation))
+            else if (String.IsNullOrEmpty(entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation) && identifier == 1)
                 indetifierTemp = 99; //check if the information IsNullOrEmpty and if true don't change the EntityStatus
             else
                 indetifierTemp = identifier;
@@ -241,6 +241,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 case 0:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.Created;
                     entity.UpdateDate = DateTime.Now;
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.Created, entityId);
                     _helper.LogActivity("Promijenjen status obrade. Novi status: Kreirano", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;

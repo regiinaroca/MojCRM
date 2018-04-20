@@ -136,7 +136,10 @@ namespace MojCRM.Models
             Se,
 
             [Description("Slovačka")]
-            Sk
+            Sk,
+
+            [Description("Srbija")]
+            Rs
         }
 
         public string CountryIdentificationCode
@@ -174,6 +177,7 @@ namespace MojCRM.Models
                     case CountryIdentificationCodeEnum.Ro: return "Rumunjska";
                     case CountryIdentificationCodeEnum.Se: return "Švedska";
                     case CountryIdentificationCodeEnum.Sk: return "Slovačka";
+                    case CountryIdentificationCodeEnum.Rs: return "Srbija";
                 }
                 return "Nema podatka";
             }
