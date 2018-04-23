@@ -211,6 +211,7 @@ namespace MojCRM.Models
                     case OrganizationGroupEnum.Žito: return "Žito Grupa";
                     case OrganizationGroupEnum.ZagrebačkiHolding: return "Zagrebački Holding";
                     case OrganizationGroupEnum.Ciak: return "C.I.A.K. Grupa";
+                    case OrganizationGroupEnum.Siemens: return "Siemens";
                 }
                 return "Ne pripada grupaciji";
             }

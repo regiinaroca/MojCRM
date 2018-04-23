@@ -407,6 +407,7 @@ namespace MojCRM.Areas.Stats.ViewModels
                     case OrganizationDetail.CountryIdentificationCodeEnum.Ro: return "Rumunjska";
                     case OrganizationDetail.CountryIdentificationCodeEnum.Se: return "Švedska";
                     case OrganizationDetail.CountryIdentificationCodeEnum.Sk: return "Slovačka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Rs: return "Srbija";
                 }
                 return "Nema podatka";
             }

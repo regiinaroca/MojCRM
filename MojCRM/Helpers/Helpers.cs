@@ -110,7 +110,10 @@ namespace MojCRM.Helpers
         ZagrebačkiHolding,
 
         [Description("C.I.A.K. Grupa")]
-        Ciak
+        Ciak,
+
+        [Description("Siemens")]
+        Siemens
     }
 
     public class DailyUpdateReturnModel
