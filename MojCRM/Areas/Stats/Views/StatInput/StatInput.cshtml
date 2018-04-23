@@ -1,0 +1,21 @@
+﻿@model MojCRM.Areas.Stats.Models.TechDepController
+@{
+    ViewBag.Title = "StatInput";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+}
+
+<body>
+    @using (Html.BeginForm("StatInput", "StatInput", FormMethod.Post))
+    {
+        
+        <div>
+            @Html.TextBoxFor(m => m.TechIncomingCall);
+        </div>
+        <input type="submit" value="Submit" />
+    }
+    <hr />
+
+
+</body>
+
+

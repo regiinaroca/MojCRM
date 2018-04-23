@@ -1,0 +1,71 @@
+﻿@model MojCRM.Areas.Stats.Models.TechDepControllers
+@Styles.Render("~/Content/themes/base/css")
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/jqueryui")
+@{
+    ViewBag.Title = "StatisticsInputWindow";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title> Index </title>
+</head>
+<body>
+    <div class="inputStatDiv">
+        @using (Html.BeginForm())
+        {
+            <div>
+                @Html.LabelFor(model => model.TechIncomingCall, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                @Html.EditorFor(model => model.TechIncomingCall, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+            <div>
+                @Html.LabelFor(model => model.TechOutgoingCall, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                @Html.EditorFor(model => model.TechOutgoingCall, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+            <div>
+                @Html.LabelFor(model => model.TechCallDuration, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                @Html.TextBoxFor(model => model.TechCallDuration, new { @class = "form-control timepicker-holdOffTime", type = "time", step = 1 })
+            </div>
+            <div>
+                @Html.LabelFor(model => model.TechCompaniesActivated, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                @Html.EditorFor(model => model.TechCompaniesActivated, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+            <div>
+                @Html.LabelFor(model => model.TechEmailCustomers, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                @Html.EditorFor(model => model.TechEmailCustomers, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+            <div>
+                @Html.LabelFor(model => model.TechEmailIntegrators, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                @Html.EditorFor(model => model.TechEmailIntegrators, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+            <div>
+                @Html.LabelFor(model => model.InsertDate, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                @Html.TextBoxFor(model => model.InsertDate, new { @class = "datepicker" })
+            </div>
+
+            <input type="submit" value="Create" class="btn btn-default" />
+        }
+    </div>
+</body>
+
+</html >
+
+<script type="text/javascript">
+    $(document).ready(
+        function () {
+            $('.datepicker').datepicker({
+                changeMonth: true,
+                changeYear: true,
+                format: "yyyy-mm-dd"
+            });
+        });
+</script>

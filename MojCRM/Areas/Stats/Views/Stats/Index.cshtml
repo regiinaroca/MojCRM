@@ -15,7 +15,14 @@
             Osobni dnevnik
         </a>
     </div>
+    <div class="col-md-3">
+        <a href="@Url.RouteUrl(new { action = "StatisticsInputWindow", controller = "Stats", area = "Stats", User.Identity.Name})" class="btn btn-default btn-sm" title="Forma za unos osobne statistike">
+            <i class="fa fa-book"></i>
+            Unos statistike
+        </a>
+    </div>
 </div>
+
 @if (!User.IsInRole("Guest"))
 {
     <hr/>

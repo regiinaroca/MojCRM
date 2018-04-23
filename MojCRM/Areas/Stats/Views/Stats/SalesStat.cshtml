@@ -57,14 +57,15 @@
                             {
                                 if (Sum.Name.Equals(Agent.Text))
                                 { @Sum.Count;
-                            break;
-                        }
-                        if (Model.SumAssignedOpportunities.IndexOf(Sum) == Model.SumAssignedOpportunities.Count - 1)
-                        {
-                                    <text>0</text>
+                                    break;
                                 }
 
+                                if(Model.SumAssignedOpportunities.ToList().Last().Name == Sum.Name)
+                                {
+                                    <text>0</text>
+                                }
                             }
+                            
 
                         }
                     </label>
@@ -112,11 +113,12 @@
                                 { @Sum.Count;
                                     break;
                                 }
-                                if (Model.SumAssignedLeads.IndexOf(Sum) == Model.SumAssignedLeads.Count - 1)
+                                 if( Model.SumAssignedLeads.ToList().Last().Name==Sum.Name)
                                 {
                                     <text>0</text>
                                 }
                             }
+                            
                         }
                     </label>
                 </div>

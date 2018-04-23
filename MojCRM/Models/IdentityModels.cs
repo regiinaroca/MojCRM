@@ -91,5 +91,7 @@ namespace MojCRM.Models
         public DbSet<ContractedService> ContractedServices { get; set; }
 
         public DbSet<ContractRate> ContractRates { get; set; }
+
+        public DbSet<TechDepControllers> TDC { get; set; }
     }
 }

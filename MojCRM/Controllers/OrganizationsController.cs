@@ -551,18 +551,28 @@ namespace MojCRM.Controllers
         public JsonResult MarkAsPostalService(int merId, bool unmark = false)
         {
             var organization = _db.MerDeliveryDetails.First(x => x.MerId == merId);
-            var acquireEmailEntity = _db.AcquireEmails.First(x => x.RelatedOrganizationId == merId);
+
 
             organization.RequiredPostalService = !unmark;
             organization.AcquiredReceivingInformation = !unmark ? "ŽELE POŠTOM" : String.Empty;
             organization.Organization.LastUpdatedBy = User.Identity.Name;
             organization.Organization.UpdateDate = DateTime.Now;
+
+            var acquireEmailEntity = _db.AcquireEmails.FirstOrDefault(x => x.RelatedOrganizationId == merId);
+
+
+            if (acquireEmailEntity != null) {
+                acquireEmailEntity = _db.AcquireEmails.First(x => x.RelatedOrganizationId == merId);
             _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmail.AcquireEmailEntityStatusEnum.Post, acquireEmailEntity.Id);
             _acquireEmailMethodHelpers.UpdateStatus(AcquireEmail.AcquireEmailStatusEnum.Verified, merId);
+            }
             _db.SaveChanges();
 
             return Json(new { Status = "OK" });
         }
+
+        [HttpPost]
+      
 
         public void LogActivity(string ActivityDescription, string User, int ActivityReferenceId, ActivityLog.ActivityTypeEnum ActivityType)
         {
