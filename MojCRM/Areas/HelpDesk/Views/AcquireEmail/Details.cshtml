@@ -254,6 +254,9 @@
     <div class="hidden">
         @Html.TextBox("MerId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Entity.Organization.MerId })
     </div>
+    <div class="hidden">
+        @Html.TextBox("AcquireEmailId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Entity.Id })
+    </div>
 </div>
 <br />
 <div class="row">

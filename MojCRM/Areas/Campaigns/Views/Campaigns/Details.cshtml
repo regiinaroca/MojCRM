@@ -282,6 +282,12 @@
                         <a href="@Url.RouteUrl(new {action = "AddAttribute", controller = "Campaigns", area = "Campaigns", campaignId = Model.Campaign.CampaignId, attribute = "Baza je dostavljena klijentu"})" class="btn btn-sm btn-default" title="Dodaj atribut o dostavljenoj bazi klijentu"><i class="fa fa-check"></i></a>
                     </div>
                 </div>
+                <div class="col-md-2">
+
+                </div>
+                <div class="col-md-2">
+                    <h5>Broj novoprikupljenih e-mailova: <strong style="color:red">@Model.NumberOfNewlyAcquiredReceivingInformation</strong></h5>
+                </div>
             </div>
         if (Model.Campaign.CampaignAttributes != null)
         {

@@ -13,6 +13,7 @@ namespace MojCRM.Areas.HelpDesk.Helpers
         public string NewAcquiredReceivingInformation1 { get; set; }
         public string NewAcquiredReceivingInformation2 { get; set; }
         public string NewAcquiredReceivingInformation3 { get; set; }
+        public int? AcquireEmailId { get; set; }
     }
 
     public class AcquireEmailExportModel

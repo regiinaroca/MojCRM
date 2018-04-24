@@ -28,6 +28,7 @@ namespace MojCRM.Areas.Campaigns.ViewModels
         public GeneralCampaignStatusViewModel SalesGeneralStatus { get; set; }
         public IQueryable<CampaignLeadsAgentEfficiency> CampaignLeadsAgentEfficiencies { get; set; }
         public string CampaignAttributes { get; set; }
+        public int? NumberOfNewlyAcquiredReceivingInformation { get; set; }
 
         public IQueryable<SelectListItem> CampaignStatusList
         {

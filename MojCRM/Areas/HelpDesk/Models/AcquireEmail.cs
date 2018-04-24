@@ -13,6 +13,7 @@ namespace MojCRM.Areas.HelpDesk.Models
         public int Id { get; set; }
         public int? RelatedOrganizationId { get; set; }
         public int? RelatedCampaignId { get; set; }
+        public bool? IsNewlyAcquired { get; set; }
         public bool IsAssigned { get; set; }
         public string AssignedTo { get; set; }
         public AcquireEmailStatusEnum AcquireEmailStatus { get; set; }
@@ -118,7 +119,7 @@ namespace MojCRM.Areas.HelpDesk.Models
                     case AcquireEmailEntityStatusEnum.AcquiredInformation: return "Prikupljena povratna informacija";
                     case AcquireEmailEntityStatusEnum.NoAnswer: return "Nema odgovora / Ne javlja se";
                     case AcquireEmailEntityStatusEnum.ClosedOrganization: return "Zatvorena tvrtka";
-                    case AcquireEmailEntityStatusEnum.OldPartner: return "Ne poslujus s korisnikom";
+                    case AcquireEmailEntityStatusEnum.OldPartner: return "Ne posluju s korisnikom";
                     case AcquireEmailEntityStatusEnum.PartnerWillContactUser: return "Partner će se javiti korisniku samostalno";
                     case AcquireEmailEntityStatusEnum.WrittenConfirmationRequired: return "Potrebno poslati pisanu suglasnost";
                     case AcquireEmailEntityStatusEnum.WrongTelephoneNumber: return "Neispravan kontakt broj";

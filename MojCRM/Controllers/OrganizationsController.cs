@@ -410,6 +410,7 @@ namespace MojCRM.Controllers
         public ActionResult EditAcquiredReceivingInformation(EditAcquiredReceivingInformationHelper model)
         {
             var organization = _db.MerDeliveryDetails.First(o => o.MerId == model.MerId);
+
             string logString = "Agent " + User.Identity.Name + " je izmjenio informaciju za preuzimanju na subjektu: "
                 + organization.Organization.SubjectName + ". Izmjenjeno je:";
             string newInformation = String.Empty;
@@ -423,6 +424,14 @@ namespace MojCRM.Controllers
 
             if (!String.Equals(newInformation, organization.AcquiredReceivingInformation))
                 logString += " stara informacija o preuzimanju: " + organization.AcquiredReceivingInformation + ", nova informacija o preuzimanju " + newInformation + ".";
+
+            if (model.AcquireEmailId != null)
+            {
+                var acquireEmail = _db.AcquireEmails.First(ae => ae.Id == model.AcquireEmailId);
+
+                if (String.IsNullOrEmpty(organization.AcquiredReceivingInformation) && newInformation.Contains("@"))
+                    acquireEmail.IsNewlyAcquired = true;
+            }
 
             organization.AcquiredReceivingInformation = newInformation;
             organization.Organization.UpdateDate = DateTime.Now;
