@@ -568,6 +568,14 @@ namespace MojCRM.Areas.Stats.Controllers
             return View(model.OrderByDescending(x => x.NumberOfOpportunities).AsQueryable());
         }
 
+        // GET: Stats/OrganizationsForMeeting
+        public ActionResult OrganizationsForMeeting()
+        {
+            var entities = _db.Opportunities.Where(o => o.OpportunityStatus == Opportunity.OpportunityStatusEnum.Arrangemeeting).Distinct();
+
+            return View(entities);
+        }
+
 
         // GET: Stats/Sales
         public ActionResult SalesStat(string agent, string searchDateStart, string searchDateEnd)

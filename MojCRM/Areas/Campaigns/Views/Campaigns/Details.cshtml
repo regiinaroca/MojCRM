@@ -241,6 +241,58 @@
     </div>
 }
 
+<!--Modal - ChangeEntityStatus - AcquireEmail-->
+@using (Html.BeginForm("ChangeStatusBasedOnEntityStatus", "AcquireEmail", new { area = "HelpDesk" }, FormMethod.Post))
+{
+    <div class="modal fade" id="ChangeStatusAcquireEmail" tabindex="-1" role="dialog" aria-labelledby="ChangeStatusAcquireEmail">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content" style="overflow:hidden">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4>Promijeni status predmeta za obradu</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-12">
+                                Molimo odaberite status obrade za koji želite promijeniti status predmeta.
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="status-ons">Status obrade</label>
+                                <div id="status-ons">
+                                    @Html.DropDownList("entityStatus", Model.AcquireEmailEntityStatusList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <br />
+                            <div class="hidden">
+                                <div id="ticketid">
+                                    @Html.TextBox("campaignId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Campaign.CampaignId })
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="status-ons">Status</label>
+                                <div id="status-ons">
+                                    @Html.DropDownList("status", Model.AcquireEmailStatusList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Predaj promjenu</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Prekini</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 <h2 style="text-align:center"><strong>Detalji kampanje</strong></h2>
 
 <div>
@@ -262,6 +314,7 @@
                             <a href="@Url.RouteUrl(new {action = "ExportEntities", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId, identifier = 1 })" class="btn btn-sm btn-default" title="Preuzmi sve rezultate"><i class="fa fa-file-excel-o" style="color: lightgreen"></i></a>
                             <a href="@Url.RouteUrl(new {action = "ExportEntities", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId, identifier = 2 })" class="btn btn-sm btn-default" title="Preuzmi samo revidirane rezultate"><i class="fa fa-file-excel-o" style="color: blue"></i></a>
                             <a href="@Url.RouteUrl(new {action = "ExportEntitiesForEmailNotification", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId })" class="btn btn-sm btn-default" title="Preuzmi rezultate formirane za tipsku obavijest"><i class="fa fa-file-excel-o" style="color: yellow"></i></a>
+                            <button type="button" title="Promijeni status predmeta u kampanji" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangeStatusAcquireEmail"><i class="fa fa-refresh" style="color:yellow"></i></button>
                             <a href="@Url.RouteUrl(new {action = "Index", controller = "AcquireEmail", area = "HelpDesk", CampaignName = Model.Campaign.CampaignName ,returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Pregled predmeta za ovu kampanju"><i class="fa fa-bars"></i> <i class="fa fa-arrow-right"></i></a>
                     }
                     <a href="@Url.RouteUrl(new {action = "Index", controller = "Campaigns", area = "Campaigns", returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Povratak na popis kampanja"><i class="fa fa-arrow-left"></i></a>

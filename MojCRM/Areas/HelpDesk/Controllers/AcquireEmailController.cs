@@ -670,6 +670,18 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             return Redirect(Request.UrlReferrer?.ToString());
         }
 
+        public ActionResult ChangeStatusBasedOnEntityStatus(AcquireEmailEntityStatusEnum entityStatus, int campaignId, AcquireEmailStatusEnum status)
+        {
+            var entites = _db.AcquireEmails.Where(x => x.RelatedCampaignId == campaignId && x.AcquireEmailEntityStatus == entityStatus);
+            foreach (var entity in entites)
+            {
+                entity.AcquireEmailStatus = status;
+                entity.UpdateDate = DateTime.Now;
+            }
+            _db.SaveChanges();
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
         public ActionResult AcquireEmailsAssignedStats()
         {
             var entities = _db.AcquireEmails.Where(x => x.AcquireEmailStatus == AcquireEmailStatusEnum.Created && x.IsAssigned)

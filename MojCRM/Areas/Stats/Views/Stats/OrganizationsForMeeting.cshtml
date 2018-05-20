@@ -1,0 +1,52 @@
+﻿@model IQueryable<MojCRM.Areas.Sales.Models.Opportunity>
+@{
+    ViewBag.Title = "Izvještaj - Tvrtke za dogovor sastanka";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+}
+
+<h2>Tvrtke za dogovor sastanka</h2>
+<br/>
+<div class="alert alert-info">
+    <p style="text-align: justify">
+        Ovaj izvještaj donosi pregled tvrtki kod kojih je potrebno dogovoriti sastanak.<br/>
+        Dodatno, izvještaj donosi i podatak o broju prodajnih prilika otvorenih za pojedinu tvrtku.<br/>
+        <br/>
+        <strong>Napomena:</strong> Klikom na pojedinu tvrtku sustav će Vas preusmjeriti na detalje o tvrtki, a klikom na broj prodajnih prilika na popis povezanih prodajnih prilika.
+    </p>
+</div>
+<hr />
+<hr />
+<div class="row">
+    <div class="widget widget-table">
+        <div class="widget-header">
+            <h3><i class="fa fa-money"></i> Pregled podataka</h3> <em>- Tvrtke za dogovor sastanka</em>
+            <div class="btn-group widget-header-toolbar">
+                <a href="#" title="Fokusiraj" class="btn-borderless btn-focus"><i class="fa fa-eye"></i></a>
+                <a href="#" title="Proširi/Sažmi" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a>
+                @*<a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a>*@
+            </div>
+        </div>
+        <div class="widget-content">
+            <table id="ticket-table" class="table table-sorting">
+                <thead>
+                <tr>
+                    <th>Naziv tvrtke</th>
+                    <th>Grad</th>
+                    <th>Broj povezanih prilika</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var opportunity in Model)
+                {
+                    <tr>
+                        <td><a href="@Url.RouteUrl(new { action = "Details", controller = "Organizations", area = "", Id = opportunity.RelatedOrganizationId })">@opportunity.RelatedOrganization.SubjectName</a></td>
+                        <td>@opportunity.RelatedOrganization.OrganizationDetail.MainCity</td>
+                        <td><a href="@Url.RouteUrl(new { action = "Index", controller = "Opportunities", area = "Sales", Organization = opportunity.RelatedOrganization.VAT })">@Model.Count(x => x.RelatedOrganizationId == opportunity.RelatedOrganizationId)</a></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
