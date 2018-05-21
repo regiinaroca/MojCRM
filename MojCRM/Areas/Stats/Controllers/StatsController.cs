@@ -595,9 +595,6 @@ namespace MojCRM.Areas.Stats.Controllers
             {
                 var count = _db.AcquireEmails.Count(ae => ae.RelatedCampaignId == campaign.CampaignId && ae.IsNewlyAcquired == true);
 
-                if (count == 0)
-                    break;
-
                 var tempModel = new AcquireEmailPaymentStatTempViewModel()
                 {
                     CampaignName = campaign.CampaignName,
@@ -612,7 +609,7 @@ namespace MojCRM.Areas.Stats.Controllers
             var model = new AcquireEmailPaymentStatViewModel()
             {
                 List = models.AsQueryable(),
-                SumTotalAmount = sumTotalAmount
+                SumTotalAmount = Math.Round((decimal)sumTotalAmount, 2)
             };
 
             return View(model);

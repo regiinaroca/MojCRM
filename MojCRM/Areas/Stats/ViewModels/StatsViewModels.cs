@@ -465,7 +465,7 @@ namespace MojCRM.Areas.Stats.ViewModels
     public class AcquireEmailPaymentStatViewModel
     {
         public IQueryable<AcquireEmailPaymentStatTempViewModel> List { get; set; }
-        public double SumTotalAmount { get; set; }
+        public decimal SumTotalAmount { get; set; }
     }
 
     #endregion
