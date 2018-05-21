@@ -449,5 +449,24 @@ namespace MojCRM.Areas.Stats.ViewModels
         public decimal RejectedPercent { get; set; }
     }
 
+    public class AcquireEmailPaymentStatTempViewModel
+    {
+        [DisplayFormat(DataFormatString = "{0:C0}")]
+        [DataType(DataType.Currency)]
+        public double FixedAmount = 19.99;
+        public string CampaignName { get; set; }
+        public int CampaignId { get; set; }
+        public int IsNewlyAcquiredCount { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C0}")]
+        [DataType(DataType.Currency)]
+        public double TotalAmount { get; set; }
+    }
+
+    public class AcquireEmailPaymentStatViewModel
+    {
+        public IQueryable<AcquireEmailPaymentStatTempViewModel> List { get; set; }
+        public double SumTotalAmount { get; set; }
+    }
+
     #endregion
 }

@@ -7,6 +7,8 @@ using System.Linq;
 using System.Web.Mvc;
 using MojCRM.Areas.Sales.Models;
 using MojCRM.Areas.Stats.ViewModels;
+using MojCRM.Areas.HelpDesk.Models;
+using MojCRM.Areas.Campaigns.Models;
 
 namespace MojCRM.Areas.Stats.Controllers
 {
@@ -574,6 +576,46 @@ namespace MojCRM.Areas.Stats.Controllers
             var entities = _db.Opportunities.Where(o => o.OpportunityStatus == Opportunity.OpportunityStatusEnum.Arrangemeeting).Distinct();
 
             return View(entities);
+        }
+
+        // GET: Stats/AcquireEmailPaymentStat
+        public ActionResult AcquireEmailPaymentStat(Campaign.CampaignStatusEnum? campaignStatus)
+        {
+            var entities = _db.Campaigns.Where(c => c.CampaignType == Campaign.CampaignTypeEnum.EmailBases);
+            var sumTotalAmount = 0.00;
+
+            if (campaignStatus != null)
+            {
+                entities = entities.Where(c => c.CampaignStatus == campaignStatus);
+            }
+
+            var models = new List<AcquireEmailPaymentStatTempViewModel>();
+
+            foreach (var campaign in entities)
+            {
+                var count = _db.AcquireEmails.Count(ae => ae.RelatedCampaignId == campaign.CampaignId && ae.IsNewlyAcquired == true);
+
+                if (count == 0)
+                    break;
+
+                var tempModel = new AcquireEmailPaymentStatTempViewModel()
+                {
+                    CampaignName = campaign.CampaignName,
+                    CampaignId = campaign.CampaignId,
+                    IsNewlyAcquiredCount = count,
+                    TotalAmount = (count * 1.49) + 19.99
+                };
+                models.Add(tempModel);
+                sumTotalAmount += tempModel.TotalAmount;
+            }
+
+            var model = new AcquireEmailPaymentStatViewModel()
+            {
+                List = models.AsQueryable(),
+                SumTotalAmount = sumTotalAmount
+            };
+
+            return View(model);
         }
 
 
