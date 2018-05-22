@@ -247,8 +247,19 @@ namespace MojCRM.Controllers
                 response = response.Replace("[", "").Replace("]", "");
                 MerGetSubjektDataResponse result = JsonConvert.DeserializeObject<MerGetSubjektDataResponse>(response);
 
-                string postalCode = result.Mjesto.Substring(0, 5).Trim();
-                string mainCity = result.Mjesto.Substring(6).Trim();
+                string postalCode = String.Empty;
+                string mainCity = String.Empty;
+
+                if (organization.OrganizationDetail.MainCountry == OrganizationDetail.CountryIdentificationCodeEnum.Hr)
+                {
+                    postalCode = result.Mjesto.Substring(0, 5).Trim();
+                    mainCity = result.Mjesto.Substring(6).Trim();
+                }
+                else
+                {
+                    postalCode = "00000";
+                    mainCity = result.Mjesto;
+                }
 
                 organization.SubjectName = result.Naziv;
                 organization.FirstReceived = result.FirstReceived;
@@ -262,6 +273,20 @@ namespace MojCRM.Controllers
                 organization.OrganizationDetail.MainCity = mainCity;
                 organization.MerDeliveryDetail.TotalSent = result.TotalSent;
                 organization.MerDeliveryDetail.TotalReceived = result.TotalReceived;
+
+                _db.ActivityLogs.Add(new ActivityLog()
+                {
+                    ActivityType = ActivityLog.ActivityTypeEnum.Organizationupdate,
+                    Department = ActivityLog.DepartmentEnum.MojCrm,
+                    InsertDate = DateTime.Now,
+                    IsSuspiciousActivity = false,
+                    Module = ActivityLog.ModuleEnum.Organizations,
+                    ReferenceId = merId,
+                    User = User.Identity.Name,
+                    Description = @"Korisnik " + User.Identity.Name + " je izvršio sinkronizaciju podataka tvrtke s Moj-eRačuna. Stari podaci su: Naziv tvrtke: "
+                    + organization.SubjectName + ", Adresa: " + organization.OrganizationDetail.MainAddress + ", Poštanski broj: " + organization.OrganizationDetail.MainPostalCode
+                    + ", Grad: " + organization.OrganizationDetail.MainCity + "."
+                });
             }
             _db.SaveChanges();
 
