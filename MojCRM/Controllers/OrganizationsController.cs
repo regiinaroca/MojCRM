@@ -528,6 +528,24 @@ namespace MojCRM.Controllers
             return Redirect(Request.UrlReferrer.ToString());
         }
 
+        // POST: Organizations/EditEmailAddressForVerification
+        [HttpPost]
+        public ActionResult EditEmailAddressForVerification(int merId, string emailForVerification)
+        {
+            var entity = _db.MerDeliveryDetails.First(e => e.MerId == merId);
+            string logString = "Agent " + User.Identity.Name + " je napravio izmjene na subjektu: "
+                + entity.Organization.SubjectName + ". Izmjenjena je email adresa za provjeru iz: " + entity.EmailAddressForVerification + ", u: " + emailForVerification + ".";
+
+            entity.EmailAddressForVerification = emailForVerification;
+            entity.Organization.UpdateDate = DateTime.Now;
+            entity.Organization.LastUpdatedBy = User.Identity.Name;
+            _db.SaveChanges();
+
+            LogActivity(logString, User.Identity.Name, merId, ActivityLog.ActivityTypeEnum.Organizationupdate);
+
+            return Redirect(Request.UrlReferrer.ToString());
+        }
+
         // GET: Organizations/AddAttribute
         public ActionResult AddAttribute()
         {

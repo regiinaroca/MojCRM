@@ -227,6 +227,28 @@
 </div>
 }
 <hr />
+<h4>E-mail adresa za provjeru</h4><h6>- potrebno je provjeriti ispravnost i/ili pravovaljanost navedene e-mail adrese</h6>
+@using (Html.BeginForm("EditEmailAddressForVerification", "Organizations", new { area = "" }, FormMethod.Post))
+{
+    <div class="row">
+        <div class="col-md-6">
+            <label for="telephone-number">Adresa za provjeru</label>
+            <div id="telephone-number">
+                @Html.TextBox("emailForVerification", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = Model.Entity.Organization.MerDeliveryDetail.EmailAddressForVerification })
+            </div>
+        </div>
+        <div class="hidden">
+            @Html.TextBox("merId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Entity.Organization.MerId })
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <button type="submit" class="btn btn-sm btn-primary">Predaj izmjene</button>
+        </div>
+    </div>
+}
+<hr />
 <h4>Uredi informaciju o preuzimanju</h4><h6>- ako Vam korisnik da informaciju da je račun potrebno slati na više e-mail adresa, molimo unesite ih odvojeno u zasebna polja</h6>
 @using (Html.BeginForm("EditAcquiredReceivingInformation", "Organizations", new { area = "" }, FormMethod.Post))
 {
