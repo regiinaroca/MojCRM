@@ -20,7 +20,14 @@
             @foreach (var Lead in Model.Leads)
             {
                 <tr>
-                    <td>@Lead.RelatedCampaign.CampaignName</td>
+                    @if (Lead.RelatedCampaignId != null)
+                    {
+                        <td>@Lead.RelatedCampaign.CampaignName</td>
+                    }
+                    @if (Lead.RelatedCampaignId == null)
+                    {
+                        <td>Slobodni unos - @Lead.RelatedOpportunity.OpportunityEntryChannelString</td>
+                    }
                     @if (Lead.LeadStatus == MojCRM.Areas.Sales.Models.Lead.LeadStatusEnum.Start)
                     {
                         <td><span class="label label-default">@Html.Raw(Lead.LeadStatusString)</span></td>

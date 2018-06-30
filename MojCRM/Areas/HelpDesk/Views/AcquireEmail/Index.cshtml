@@ -104,7 +104,7 @@
 @Html.Grid(Model).Named("PopisPredmetaZaAžuriranjeBazaKorisnika").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
 {
     //columns.Add().Encoded(false).Sanitized(false).RenderValueAs(r => Html.CheckBox("checked", false, new { r.Id, @class = "checked", @id = "checkbox" }));
-    columns.Add(r => r.Campaign.CampaignName).Encoded(false).Sanitized(false).Titled("Kampanja").Sortable(true);
+    columns.Add(r => r.Campaign.CampaignDescription).Encoded(false).Sanitized(false).Titled("Kampanja").Sortable(true);
     columns.Add(r => r.Organization.SubjectName).Encoded(false).Sanitized(false).Titled("Naziv tvrtke za kontakt").Sortable(true).RenderValueAs(v =>
     {
     if (User.IsInRole("Guest"))

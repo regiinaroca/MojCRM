@@ -99,7 +99,7 @@ namespace MojCRM.Areas.HelpDesk.Models
             [Description("Najava brisanja subjekta")]
             ToBeClosed,
 
-            [Description("Žele primati eRačune poštom")]
+            [Description("Žele primati račune poštom")]
             Post,
 
             [Description("Inozemna tvrtka")]

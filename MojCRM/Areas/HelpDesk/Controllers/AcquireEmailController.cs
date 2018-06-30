@@ -24,15 +24,16 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         [Authorize]
         public ActionResult Index(AcquireEmailSearchModel model)
         {
+            var referenceDate = new DateTime(2017, (DateTime.Today.AddMonths(-4)).Month, 1);
             IQueryable<AcquireEmail> list;
             if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Management"))
             {
-                list = _db.AcquireEmails;
+                list = _db.AcquireEmails.Where(x => x.InsertDate >= referenceDate);
             }
             else
             {
                 //list = _db.AcquireEmails.Where(ae => ae.AcquireEmailStatus != AcquireEmailStatusEnum.Verified && ae.AssignedTo == User.Identity.Name);
-                list = _db.AcquireEmails.Where(x => x.AcquireEmailStatus != AcquireEmailStatusEnum.Verified
+                list = _db.AcquireEmails.Where(x => x.InsertDate >= referenceDate && x.AcquireEmailStatus != AcquireEmailStatusEnum.Verified
                 && x.AssignedTo == User.Identity.Name
                 && (!(x.Organization.OrganizationDetail.TelephoneNumber == String.Empty || x.Organization.OrganizationDetail.TelephoneNumber == null)
                 || !(x.Organization.OrganizationDetail.MobilePhoneNumber == String.Empty || x.Organization.OrganizationDetail.MobilePhoneNumber == null)));
@@ -333,7 +334,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation = "ŽELE POŠTOM";
                     _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.Post, entityId);
                     _acquireEmailMethodHelpers.UpdateStatus(AcquireEmailStatusEnum.Verified, entity.Organization.MerId);
-                    _helper.LogActivity("Promijenjen status obrade. Novi status: Žele primati eRačune poštom", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Žele primati račune poštom", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
                 case 14:
@@ -543,7 +544,8 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             switch (status)
             {
                 case AcquireEmailStatusEnum.Created:
-                    entityStatusEnum = AcquireEmailEntityStatusEnum.Created;
+                    //entityStatusEnum = AcquireEmailEntityStatusEnum.Created;
+                    entityStatusEnum = AcquireEmailEntityStatusEnum.AcquiredInformation; // Iva tražila da bude ovakva klasifikacija
                     break;
                 case AcquireEmailStatusEnum.Checked:
                     entityStatusEnum = AcquireEmailEntityStatusEnum.Created;

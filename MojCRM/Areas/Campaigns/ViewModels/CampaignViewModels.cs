@@ -83,8 +83,7 @@ namespace MojCRM.Areas.Campaigns.ViewModels
                     new SelectListItem{ Value = null, Text = @"-- Odaberi status predmeta--"},
                     new SelectListItem{ Value= @"0", Text = @"Kreirano"},
                     new SelectListItem{ Value= @"1", Text = @"Provjereno"},
-                    new SelectListItem{ Value= @"2", Text = @"Verificirano"},
-                    new SelectListItem{ Value= @"3", Text = @"Revidirano"}
+                    new SelectListItem{ Value= @"2", Text = @"Verificirano"}
                 };
                 return statusList.AsQueryable();
             }
@@ -207,7 +206,7 @@ namespace MojCRM.Areas.Campaigns.ViewModels
                         status = "Najava brisanja subjekta";
                         break;
                     case AcquireEmail.AcquireEmailEntityStatusEnum.Post:
-                        status = "Žele primati eRačune poštom";
+                        status = "Žele primati račune poštom";
                         break;
                     default:
                         status = "Status unosa";
