@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using static MojCRM.Models.Organizations;
 using MojCRM.Models;
 using static MojCRM.Models.OrganizationDetail;
+using System.ComponentModel.DataAnnotations;
 
 namespace MojCRM.Helpers
 {
@@ -19,7 +20,9 @@ namespace MojCRM.Helpers
         public string CorrespondenceAddress { get; set; }
         public int CorrespondencePostalCode { get; set; }
         public string CorrespondenceCity { get; set; }
+        [StringLength(100, ErrorMessage = "Nedovoljan broj znakova", MinimumLength = 6)]
         public string TelephoneNumber { get; set; }
+        [StringLength(100, ErrorMessage = "Nedovoljan broj znakova", MinimumLength = 6)]
         public string MobilePhoneNumber { get; set; }
         public string EmailAddress { get; set; }
         public string ERP { get; set; }
