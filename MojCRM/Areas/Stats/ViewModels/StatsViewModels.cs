@@ -293,6 +293,15 @@ namespace MojCRM.Areas.Stats.ViewModels
         }
     }
 
+    public class AcquireEmailInformationUpdateStatViewModel
+    {
+        public string Agent { get; set; }
+        public int ClosedSubject { get; set; }
+        public int Bankruptcy { get; set; }
+        public int NoTelephoneNumber { get; set; }
+        public int ToBeClosed { get; set; }
+    }
+
     public class GeneralCampaignStatusViewModel
     {
         public int RelatedCampaignId { get; set; }

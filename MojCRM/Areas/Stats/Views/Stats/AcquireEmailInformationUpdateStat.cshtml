@@ -1,0 +1,72 @@
+﻿@model IQueryable<MojCRM.Areas.Stats.ViewModels.AcquireEmailInformationUpdateStatViewModel>
+@{
+    ViewBag.Title = "Statistika - aktivnosti djelatnika - ažuriranje podataka";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+}
+
+<h2>Statistika aktivnosti djelatnika kod ažuriranja podataka za obradu baza</h2>
+<br />
+<div class="alert alert-info">
+    <p style="text-align: justify">
+        Ovaj statistički pregled donosi podatke o aktivnostima djelatnika kod ažuriranja podataka za obradu baza korisnika.<br />
+        Podaci se odnose na promjene statusa koje djelatnici naprave.<br />
+        <br />
+        <strong>Napomena: </strong>pregled u startu daje pregled cjelokupnog učinka. Za specifičnije upite možete izvršiti pretragu po određenom razdoblju.
+    </p>
+</div>
+<hr />
+@using (Html.BeginForm("AcquireEmailInformationUpdateStat", "Stats", FormMethod.Get))
+{
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="start-search-date">Početak pretrage</label>
+                <div id="start-search-date">
+                    @Html.TextBox("searchStart", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Početak pretrage", @type = "text", @id = "search-date", @name = "search-date" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="end-search-date">Završetak pretrage</label>
+                <div id="end-search-date">
+                    @Html.TextBox("searchEnd", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Završetak pretrage", @type = "text", @id = "search-date", @name = "search-date" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" style="margin-top:22px">
+            <div class="form-group">
+                <div>
+                    <input id="Search" type="submit" class="btn btn-primary btn-sm" value="Traži" />
+                    <input id="btn-reset" type="reset" class="btn btn-warning btn-sm" value="Poništi" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<hr />
+<h3 style="text-align:center"><strong>Podaci</strong></h3>
+<div>
+    <div>
+        <table class="table">
+            <tr>
+                <th>Djelatnik</th>
+                <th>Novi status: Zatvoren subjekt</th>
+                <th>Novi status: Subjekt u stečaju / likvidaciji</th>
+                <th>Novi status: Ne postoji ispravan kontakt broj</th>
+                <th>Novi status: Najava brisanja subjekta</th>
+            </tr>
+            @foreach (var activity in Model)
+            {
+                <tr>
+                    <td>@activity.Agent</td>
+                    <td>@activity.ClosedSubject</td>
+                    <td>@activity.Bankruptcy</td>
+                    <td>@activity.NoTelephoneNumber</td>
+                    <td>@activity.ToBeClosed</td>
+                </tr>
+            }
+            <tr></tr>
+        </table>
+    </div>
+</div>

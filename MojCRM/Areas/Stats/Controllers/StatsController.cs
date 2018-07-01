@@ -615,6 +615,43 @@ namespace MojCRM.Areas.Stats.Controllers
             return View(model);
         }
 
+        // GET: Stats/AcquireEmailInformationUpdateStat
+        public ActionResult AcquireEmailInformationUpdateStat(string searchStart, string searchEnd)
+        {
+            var entities = _db.ActivityLogs.Where(al => 
+            al.ActivityType == ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange);
+
+            if (!String.IsNullOrEmpty(searchStart))
+            {
+                var searchStartConverted = Convert.ToDateTime(searchStart);
+                entities = entities.Where(e => e.InsertDate >= searchStartConverted);
+            }
+            if (!String.IsNullOrEmpty(searchEnd))
+            {
+                var searchEndConverted = Convert.ToDateTime(searchEnd);
+                entities = entities.Where(e => e.InsertDate < searchEndConverted);
+            }
+
+            var resultsTemp = entities.GroupBy(x => x.User);
+
+            var resultList = new List<AcquireEmailInformationUpdateStatViewModel>();
+
+            foreach (var result in resultsTemp)
+            {
+                var resultTemp = new AcquireEmailInformationUpdateStatViewModel()
+                {
+                    Agent = result.Key,
+                    Bankruptcy = result.Count(x => x.Description == "Promijenjen status obrade. Novi status: Subjekt u stečaju / likvidaciji"),
+                    ClosedSubject = result.Count(x => x.Description == "Promijenjen status obrade. Novi status: Zatvoren subjekt"),
+                    NoTelephoneNumber = result.Count(x => x.Description == "Promijenjen status obrade. Novi status: Ne postoji ispravan kontakt broj"),
+                    ToBeClosed = result.Count(x => x.Description == "Promijenjen status obrade. Novi status: Najava brisanja subjekta")
+                };
+                resultList.Add(resultTemp);
+            }
+
+            return View(resultList.AsQueryable());
+        }
+
 
         // GET: Stats/Sales
         public ActionResult SalesStat(string agent, string searchDateStart, string searchDateEnd)

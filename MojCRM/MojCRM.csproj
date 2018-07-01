@@ -800,6 +800,7 @@
     <Content Include="Areas\Stats\Views\Stats\OpportunityEntryChannel.cshtml" />
     <Content Include="Areas\Stats\Views\Stats\OrganizationsForMeeting.cshtml" />
     <Content Include="Areas\Stats\Views\Stats\AcquireEmailPaymentStat.cshtml" />
+    <Content Include="Areas\Stats\Views\Stats\AcquireEmailInformationUpdateStat.cshtml" />
     <None Include="Properties\PublishProfiles\MerDeployCIS.pubxml" />
     <None Include="Scripts\jquery-3.2.1-vsdoc.js" />
     <Content Include="Scripts\daterangepicker.js" />
