@@ -10,6 +10,10 @@ using System.Text;
 using MojCRM.Areas.HelpDesk.Helpers;
 using MojCRM.Areas.HelpDesk.Models;
 using MojCRM.Areas.Sales.Helpers;
+using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using OfficeOpenXml;
+using System.Web;
 
 namespace MojCRM.Controllers
 {
@@ -615,6 +619,47 @@ namespace MojCRM.Controllers
             _db.SaveChanges();
 
             return Json(new { Status = "OK" });
+        }
+
+        //GET: Organizations/ImportEmailsForVerification
+        public JsonResult ImportEmailsForVerification(HttpPostedFileBase file)
+        {
+            int importedEmails = 0;
+            int unimportedEmails = 0;
+
+            var wb = new ExcelPackage(file.InputStream);
+            var ws = wb.Workbook.Worksheets[1];
+
+            for (int i = ws.Dimension.Start.Row; i <= ws.Dimension.End.Row; i++)
+            {
+                object vat;
+
+                if ((vat = ws.Cells[i, 1].Value) != null)
+                {
+                    string vatTemp = vat.ToString();
+
+                    if (_db.Organizations.Any(o => (o.SubjectBusinessUnit == "" || o.SubjectBusinessUnit == "11"/*DHL hack/fix*/) && o.VAT == vatTemp))
+                    {
+                        var organization = _db.Organizations.First(o => o.VAT == vatTemp && (o.SubjectBusinessUnit == "" || o.SubjectBusinessUnit == "11"/*DHL hack/fix*/));
+                        var emailTemp = ws.Cells[i, 2].Value.ToString();
+                        organization.MerDeliveryDetail.EmailAddressForVerification = emailTemp;
+                        _db.SaveChanges();
+
+                        importedEmails++;
+                    }
+                    else
+                    {
+                        unimportedEmails++;
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+                wb.Dispose();
+                return Json(new { ImportedEmails = importedEmails, UnimportedEmails = unimportedEmails });
         }
 
         public void LogActivity(string ActivityDescription, string User, int ActivityReferenceId, ActivityLog.ActivityTypeEnum ActivityType)
