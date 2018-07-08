@@ -234,7 +234,7 @@
         <div class="col-md-6">
             <label for="telephone-number">Adresa za provjeru</label>
             <div id="telephone-number">
-                @Html.TextBox("emailForVerification", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = Model.Entity.Organization.MerDeliveryDetail.EmailAddressForVerification })
+                @Html.TextBox("emailForVerification", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Entity.Organization.MerDeliveryDetail.EmailAddressForVerification })
             </div>
         </div>
         <div class="hidden">

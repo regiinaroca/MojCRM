@@ -544,8 +544,9 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             switch (status)
             {
                 case AcquireEmailStatusEnum.Created:
-                    //entityStatusEnum = AcquireEmailEntityStatusEnum.Created;
-                    entityStatusEnum = AcquireEmailEntityStatusEnum.AcquiredInformation; // Iva tražila da bude ovakva klasifikacija
+                    if (!String.IsNullOrEmpty(organization.MerDeliveryDetail.AcquiredReceivingInformation))
+                        entityStatusEnum = AcquireEmailEntityStatusEnum.AcquiredInformation; // Iva tražila da bude ovakva klasifikacija
+                    entityStatusEnum = AcquireEmailEntityStatusEnum.Created;
                     break;
                 case AcquireEmailStatusEnum.Checked:
                     entityStatusEnum = AcquireEmailEntityStatusEnum.Created;
