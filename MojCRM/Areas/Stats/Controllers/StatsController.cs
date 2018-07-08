@@ -618,8 +618,20 @@ namespace MojCRM.Areas.Stats.Controllers
         // GET: Stats/AcquireEmailInformationUpdateStat
         public ActionResult AcquireEmailInformationUpdateStat(string searchStart, string searchEnd)
         {
-            var entities = _db.ActivityLogs.Where(al => 
-            al.ActivityType == ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange);
+            IQueryable<ActivityLog> entities;
+            if (String.IsNullOrEmpty(searchStart) && String.IsNullOrEmpty(searchEnd))
+            {
+                entities = _db.ActivityLogs.Where(al =>
+            (al.ActivityType == ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange
+            || al.ActivityType == ActivityLog.ActivityTypeEnum.Organizationupdate)
+            && al.InsertDate >= DateTime.Today);
+            }
+            else
+            {
+                entities = _db.ActivityLogs.Where(al =>
+            al.ActivityType == ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange
+            || al.ActivityType == ActivityLog.ActivityTypeEnum.Organizationupdate);
+            }
 
             if (!String.IsNullOrEmpty(searchStart))
             {
@@ -644,7 +656,8 @@ namespace MojCRM.Areas.Stats.Controllers
                     Bankruptcy = result.Count(x => x.Description == "Promijenjen status obrade. Novi status: Subjekt u stečaju / likvidaciji"),
                     ClosedSubject = result.Count(x => x.Description == "Promijenjen status obrade. Novi status: Zatvoren subjekt"),
                     NoTelephoneNumber = result.Count(x => x.Description == "Promijenjen status obrade. Novi status: Ne postoji ispravan kontakt broj"),
-                    ToBeClosed = result.Count(x => x.Description == "Promijenjen status obrade. Novi status: Najava brisanja subjekta")
+                    ToBeClosed = result.Count(x => x.Description == "Promijenjen status obrade. Novi status: Najava brisanja subjekta"),
+                    AcquiredTelephoneNumber = result.Count(x => x.Description.Contains("- broj mobitela") || x.Description.Contains("- broj telefona"))
                 };
                 resultList.Add(resultTemp);
             }

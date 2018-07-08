@@ -55,6 +55,7 @@
                 <th>Novi status: Subjekt u stečaju / likvidaciji</th>
                 <th>Novi status: Ne postoji ispravan kontakt broj</th>
                 <th>Novi status: Najava brisanja subjekta</th>
+                <th>Prikupljenih brojeva telefona</th>
             </tr>
             @foreach (var activity in Model)
             {
@@ -64,6 +65,7 @@
                     <td>@activity.Bankruptcy</td>
                     <td>@activity.NoTelephoneNumber</td>
                     <td>@activity.ToBeClosed</td>
+                    <td>@activity.AcquiredTelephoneNumber</td>
                 </tr>
             }
             <tr></tr>

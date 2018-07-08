@@ -300,6 +300,7 @@ namespace MojCRM.Areas.Stats.ViewModels
         public int Bankruptcy { get; set; }
         public int NoTelephoneNumber { get; set; }
         public int ToBeClosed { get; set; }
+        public int AcquiredTelephoneNumber { get; set; }
     }
 
     public class GeneralCampaignStatusViewModel
