@@ -687,7 +687,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
 
         public ActionResult AcquireEmailsAssignedStats()
         {
-            var entities = _db.AcquireEmails.Where(x => x.AcquireEmailStatus == AcquireEmailStatusEnum.Created && x.IsAssigned)
+            var entities = _db.AcquireEmails.Where(x => /*x.AcquireEmailStatus == AcquireEmailStatusEnum.Created &&*/ x.IsAssigned)
                 .GroupBy(x => new { x.AssignedTo, x.Campaign.CampaignName, x.Campaign.CampaignId});
             var list = new List<AcquireEmailStatsPerAgentAndCampaign>();
 
@@ -697,7 +697,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     (x.Organization.OrganizationDetail.TelephoneNumber == String.Empty || x.Organization.OrganizationDetail.TelephoneNumber == null)
                     && (x.Organization.OrganizationDetail.MobilePhoneNumber == String.Empty || x.Organization.OrganizationDetail.MobilePhoneNumber == null)
                     && x.RelatedCampaignId == entity.Key.CampaignId
-                    && x.AcquireEmailStatus == AcquireEmailStatusEnum.Created
+                    //&& x.AcquireEmailStatus == AcquireEmailStatusEnum.Created
                     && x.AssignedTo == entity.Key.AssignedTo);
                 var temp = new AcquireEmailStatsPerAgentAndCampaign
                 {
