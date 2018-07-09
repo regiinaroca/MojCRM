@@ -121,13 +121,7 @@ namespace MojCRM.Areas.Sales.Controllers
         [HttpPost]
         public ActionResult AddQuoteLine(AddQuoteLineHelper model)
         {
-            var lines = _db.QuoteLines.Count(q => q.RelatedQuoteId == model.RelatedQuoteId);
-            var linesCount = 1;
-            if (lines != 0)
-            {
-                lines++;
-                linesCount = lines;
-            }
+            var linesCount = _quoteHelper.CheckQuoteLineNumber(model.RelatedQuoteId);
 
             var service = _db.Services.First(s => s.ServiceId == model.RelatedServiceId);
 
@@ -171,6 +165,71 @@ namespace MojCRM.Areas.Sales.Controllers
 
             _quoteHelper.UpdateQuoteSum(quoteId);
 
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
+        [HttpPost]
+        public ActionResult FillQuoteLines(FillQuoteLinesHelper model)
+        {
+            var quote = _db.Quotes.First(q => q.Id == model.quoteId);
+
+            //Prepare variables for quote filling
+            var archive = _quoteHelper.CheckArchiveAndAqcuireEmailOption(model.archiveOption);
+            var acquireEmailOption = _quoteHelper.CheckArchiveAndAqcuireEmailOption(model.acquireEmail);
+            var package = _quoteHelper.CheckPackage(model.package, model.documents);
+
+            _db.QuoteLines.Add(new QuoteLine()
+            {
+                BaseAmount = 69,
+                InsertDate = DateTime.Now,
+                LineNumber = _quoteHelper.CheckQuoteLineNumber(model.quoteId),
+                Price = package.Price,
+                Quantity = 1,
+                LineTotal = package.Price * 1,
+                RelatedQuoteId = model.quoteId,
+                RelatedServiceId = package.ServiceId
+            });
+            _db.SaveChanges();
+
+            if (package.InvoiceQuantity > 0)
+            {
+                _db.QuoteLines.Add(new QuoteLine()
+                {
+                    BaseAmount = (decimal)2.49,
+                    InsertDate = DateTime.Now,
+                    LineNumber = _quoteHelper.CheckQuoteLineNumber(model.quoteId),
+                    Price = 0,
+                    Quantity = package.InvoiceQuantity,
+                    LineTotal = 0,
+                    RelatedQuoteId = model.quoteId,
+                    RelatedServiceId = package.DocumentServiceId
+                });
+                _db.SaveChanges();
+            }
+
+            if (archive)
+            {
+                _db.QuoteLines.Add(new QuoteLine()
+                {
+                    BaseAmount = (decimal)0.5,
+                    InsertDate = DateTime.Now,
+                    LineNumber = _quoteHelper.CheckQuoteLineNumber(model.quoteId),
+                    Price = package.ArchivePrice,
+                    Quantity = package.InvoiceQuantity,
+                    LineTotal = package.ArchivePrice * 1,
+                    RelatedQuoteId = model.quoteId,
+                    RelatedServiceId = 1  //TO DO: ovdje dodati pravi ID
+                });
+                _db.SaveChanges();
+            }
+
+            if (acquireEmailOption)
+                quote.AcquireEmailPayment = true;
+
+            quote.ContractDuration = model.contractDuration;
+
+            _db.SaveChanges();
+            _quoteHelper.UpdateQuoteSum(model.quoteId);
             return Redirect(Request.UrlReferrer?.ToString());
         }
 
