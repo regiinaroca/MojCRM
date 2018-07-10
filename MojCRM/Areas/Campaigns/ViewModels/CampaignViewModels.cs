@@ -28,6 +28,7 @@ namespace MojCRM.Areas.Campaigns.ViewModels
         public GeneralCampaignStatusViewModel SalesGeneralStatus { get; set; }
         public IQueryable<CampaignLeadsAgentEfficiency> CampaignLeadsAgentEfficiencies { get; set; }
         public string CampaignAttributes { get; set; }
+        public int? NumberOfNewlyAcquiredReceivingInformation { get; set; }
 
         public IQueryable<SelectListItem> CampaignStatusList
         {
@@ -40,6 +41,49 @@ namespace MojCRM.Areas.Campaigns.ViewModels
                     new SelectListItem {Value = "2", Text = @"Privremeno zaustavljeno"},
                     new SelectListItem {Value = "3", Text = @"Prekinuto"},
                     new SelectListItem {Value = "4", Text = @"Završeno"}
+                };
+                return statusList.AsQueryable();
+            }
+        }
+
+        public IQueryable<SelectListItem> AcquireEmailEntityStatusList
+        {
+            get
+            {
+                var statusList = new List<SelectListItem>
+                {
+                    new SelectListItem{ Value = null, Text = @"-- Odaberi status obrade--"},
+                    new SelectListItem{ Value= @"0", Text = @"Kreirano"},
+                    new SelectListItem{ Value= @"1", Text = @"Dobivena povratna informacija"},
+                    new SelectListItem{ Value= @"2", Text = @"Nema odgovora / Ne javlja se"},
+                    new SelectListItem{ Value= @"4", Text = @"Ne posluju s korisnikom"},
+                    new SelectListItem{ Value= @"13", Text = @"POŠTA"},
+                    new SelectListItem{ Value= @"5", Text = @"Partner će se javiti korisniku samostalno"},
+                    new SelectListItem{ Value= @"6", Text = @"Potrebno poslati pisanu suglasnost"},
+                    new SelectListItem{ Value= @"7", Text = @"Neispravan kontakt broj"},
+                    new SelectListItem{ Value= @"3", Text = @"Zatvoren subjekt (sudski / obrtni registar)"},
+                    new SelectListItem{ Value= @"12", Text = @"Najava brisanja subjekta"},
+                    new SelectListItem{ Value= @"10", Text = @"Subjekt u stečaju / likvidaciji"},
+                    new SelectListItem{ Value= @"11", Text = @"Subjekt nema žiro račun"},
+                    //new SelectListItem{ Value= @"8", Text = @"PH"},
+                    new SelectListItem{ Value= @"9", Text = @"Nema broja"},
+                    new SelectListItem{ Value= @"14", Text = @"Inozemna tvrtka"},
+                    new SelectListItem{ Value= @"15", Text = @"Tvrtka u mirovanju"},
+                };
+                return statusList.AsQueryable();
+            }
+        }
+
+        public IQueryable<SelectListItem> AcquireEmailStatusList
+        {
+            get
+            {
+                var statusList = new List<SelectListItem>
+                {
+                    new SelectListItem{ Value = null, Text = @"-- Odaberi status predmeta--"},
+                    new SelectListItem{ Value= @"0", Text = @"Kreirano"},
+                    new SelectListItem{ Value= @"1", Text = @"Provjereno"},
+                    new SelectListItem{ Value= @"2", Text = @"Verificirano"}
                 };
                 return statusList.AsQueryable();
             }
@@ -162,7 +206,7 @@ namespace MojCRM.Areas.Campaigns.ViewModels
                         status = "Najava brisanja subjekta";
                         break;
                     case AcquireEmail.AcquireEmailEntityStatusEnum.Post:
-                        status = "Žele primati eRačune poštom";
+                        status = "Žele primati račune poštom";
                         break;
                     default:
                         status = "Status unosa";

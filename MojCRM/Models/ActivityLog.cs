@@ -123,6 +123,7 @@ namespace MojCRM.Models
                     case ActivityTypeEnum.Postmarkactivatebounce: return "Rektivacija e-mail adrese u Postmarku";
                     case ActivityTypeEnum.Createdlead: return "Kreiran lead";
                     case ActivityTypeEnum.Ticketassign: return "Zaključana kartica";
+                    case ActivityTypeEnum.Organizationupdate: return "Izmjena podataka tvrtke";
                     case ActivityTypeEnum.Acquiredemails: return "Prikupljene e-mail adrese";
                     case ActivityTypeEnum.QuoteSent: return "Poslana ponuda";
                     case ActivityTypeEnum.AchievedSales: return "Ostvarena prodaja";

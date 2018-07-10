@@ -7,6 +7,8 @@ using System.Linq;
 using System.Web.Mvc;
 using MojCRM.Areas.Sales.Models;
 using MojCRM.Areas.Stats.ViewModels;
+using MojCRM.Areas.HelpDesk.Models;
+using MojCRM.Areas.Campaigns.Models;
 
 namespace MojCRM.Areas.Stats.Controllers
 {
@@ -566,6 +568,101 @@ namespace MojCRM.Areas.Stats.Controllers
             }
 
             return View(model.OrderByDescending(x => x.NumberOfOpportunities).AsQueryable());
+        }
+
+        // GET: Stats/OrganizationsForMeeting
+        public ActionResult OrganizationsForMeeting()
+        {
+            var entities = _db.Opportunities.Where(o => o.OpportunityStatus == Opportunity.OpportunityStatusEnum.Arrangemeeting).Distinct();
+
+            return View(entities);
+        }
+
+        // GET: Stats/AcquireEmailPaymentStat
+        public ActionResult AcquireEmailPaymentStat(Campaign.CampaignStatusEnum? campaignStatus)
+        {
+            var entities = _db.Campaigns.Where(c => c.CampaignType == Campaign.CampaignTypeEnum.EmailBases);
+            var sumTotalAmount = 0.00;
+
+            if (campaignStatus != null)
+            {
+                entities = entities.Where(c => c.CampaignStatus == campaignStatus);
+            }
+
+            var models = new List<AcquireEmailPaymentStatTempViewModel>();
+
+            foreach (var campaign in entities)
+            {
+                var count = _db.AcquireEmails.Count(ae => ae.RelatedCampaignId == campaign.CampaignId && ae.IsNewlyAcquired == true);
+
+                var tempModel = new AcquireEmailPaymentStatTempViewModel()
+                {
+                    CampaignName = campaign.CampaignName,
+                    CampaignId = campaign.CampaignId,
+                    IsNewlyAcquiredCount = count,
+                    TotalAmount = (count * 1.49) + 19.99
+                };
+                models.Add(tempModel);
+                sumTotalAmount += tempModel.TotalAmount;
+            }
+
+            var model = new AcquireEmailPaymentStatViewModel()
+            {
+                List = models.AsQueryable(),
+                SumTotalAmount = Math.Round((decimal)sumTotalAmount, 2)
+            };
+
+            return View(model);
+        }
+
+        // GET: Stats/AcquireEmailInformationUpdateStat
+        public ActionResult AcquireEmailInformationUpdateStat(string searchStart, string searchEnd)
+        {
+            IQueryable<ActivityLog> entities;
+            if (String.IsNullOrEmpty(searchStart) && String.IsNullOrEmpty(searchEnd))
+            {
+                entities = _db.ActivityLogs.Where(al =>
+            (al.ActivityType == ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange
+            || al.ActivityType == ActivityLog.ActivityTypeEnum.Organizationupdate)
+            && al.InsertDate >= DateTime.Today);
+            }
+            else
+            {
+                entities = _db.ActivityLogs.Where(al =>
+            al.ActivityType == ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange
+            || al.ActivityType == ActivityLog.ActivityTypeEnum.Organizationupdate);
+            }
+
+            if (!String.IsNullOrEmpty(searchStart))
+            {
+                var searchStartConverted = Convert.ToDateTime(searchStart);
+                entities = entities.Where(e => e.InsertDate >= searchStartConverted);
+            }
+            if (!String.IsNullOrEmpty(searchEnd))
+            {
+                var searchEndConverted = Convert.ToDateTime(searchEnd);
+                entities = entities.Where(e => e.InsertDate < searchEndConverted);
+            }
+
+            var resultsTemp = entities.GroupBy(x => x.User);
+
+            var resultList = new List<AcquireEmailInformationUpdateStatViewModel>();
+
+            foreach (var result in resultsTemp)
+            {
+                var resultTemp = new AcquireEmailInformationUpdateStatViewModel()
+                {
+                    Agent = result.Key,
+                    Bankruptcy = result.Count(x => x.Description == "Promijenjen status obrade. Novi status: Subjekt u stečaju / likvidaciji"),
+                    ClosedSubject = result.Count(x => x.Description == "Promijenjen status obrade. Novi status: Zatvoren subjekt"),
+                    NoTelephoneNumber = result.Count(x => x.Description == "Promijenjen status obrade. Novi status: Ne postoji ispravan kontakt broj"),
+                    ToBeClosed = result.Count(x => x.Description == "Promijenjen status obrade. Novi status: Najava brisanja subjekta"),
+                    AcquiredTelephoneNumber = result.Count(x => x.Description.Contains("- broj mobitela") || x.Description.Contains("- broj telefona"))
+                };
+                resultList.Add(resultTemp);
+            }
+
+            return View(resultList.AsQueryable());
         }
 
 

@@ -169,6 +169,102 @@
         </div>
     </div>
 }
+<!--Modal - Use Template-->
+@using (Html.BeginForm("FillQuoteLines", "Quotes", new { area = "Sales" }, FormMethod.Post))
+{
+    <div class="modal fade" id="UseTemplate" tabindex="-1" role="dialog" aria-labelledby="UseTemplate">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content" style="overflow:hidden">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4>Koristi predložak za popunjavanje stavki ponude</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-12">
+                                Molimo odaberite trajanje ugovorne obaveze
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="contract-duration">Trajanje ugovorne obaveze</label>
+                                <div id="contract-duration">
+                                    @Html.DropDownList("contractDuration", Model.ContractDurationList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <br />
+                            <div class="hidden">
+                                <div id="ticketid">
+                                    @Html.TextBox("quoteId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Quote.Id })
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-12">
+                                Molimo odaberite opciju arhiviranja
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="archive-option">Opcija arhiviranja</label>
+                                <div id="archive-option">
+                                    @Html.DropDownList("archiveOption", Model.ArchiveAndAcquireEmailOptionList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-12">
+                                Molimo odaberite paket i opciju uključenih dokumenata u ponudi
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="package">Paket</label>
+                                <div id="package">
+                                    @Html.DropDownList("package", Model.PackagesList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="documents">Dokumenti</label>
+                                <div id="documents">
+                                    @Html.DropDownList("documents", Model.InvoiceOrDocumentsOptionList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-12">
+                                Molimo odaberite opciju plaćanja obrade baze
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="acquire-email">Opcije</label>
+                                <div id="acquire-email">
+                                    @Html.DropDownList("acquireEmail", Model.ArchiveAndAcquireEmailOptionList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Kreiraj stavke ponude</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Prekini</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 <h2>Detalji ponude</h2>
 <br />
@@ -208,11 +304,17 @@
     <div class="row">
         <div class="col-md-12">
             <div class="btn-group" role="group">
-                <button type="button" title="Dodaj stavku na ponudu" class="btn btn-sm btn-default" data-toggle="modal" href="#AddQuoteLine"><i class="fa fa-plus"></i> <i class="fa fa-bars"></i></button>
+                <button type="button" title="Dodaj stavku na ponudu" class="btn btn-sm btn-default" data-toggle="modal" href="#AddQuoteLine"><i class="fa fa-plus"></i> <i class="fa fa-minus"></i></button>
                 <button type="button" title="Dodaj djelatnika uz ponudu" class="btn btn-sm btn-default" data-toggle="modal" href="#AddQuoteMember"><i class="fa fa-plus"></i> <i class="fa fa-user"></i></button>
                 @if (Model.Quote.QuoteStatus != Quote.QuoteStatusEnum.Accepted || Model.Quote.QuoteStatus != Quote.QuoteStatusEnum.AcceptedAfterReview)
                 {
                     <button type="button" title="Promijeni status ponude" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangeStatus"><i class="fa fa-refresh"></i></button>   
+                }
+            </div>
+            <div class="btn-group" role="group">
+                @if (Model.Quote.QuoteType == Quote.QuoteTypeEnum.ContractFixed)
+                {
+                    <button type="button" title="Koristi predložak za popunjavanje stavki" class="btn btn-sm btn-default" data-toggle="modal" href="#UseTemplate"><i class="fa fa-plus"></i> <i class="fa fa-bars"></i></button>
                 }
             </div>
         </div>
@@ -223,19 +325,19 @@
     <h4>Opći podaci</h4>
     <div class="row">
         <div class="col-md-3">
-            <strong>@Html.DisplayNameFor(model => model.Quote.QuoteNumber)</strong>
+            <strong>@Html.DisplayNameFor(model => model.Quote.QuoteNumber):</strong>
             @Html.DisplayFor(model => model.Quote.QuoteNumber)
         </div>
         <div class="col-md-3">
-            <strong>@Html.DisplayNameFor(model => model.Quote.Organization.SubjectName)</strong>
+            <strong>@Html.DisplayNameFor(model => model.Quote.Organization.SubjectName):</strong>
             <a href="@Url.RouteUrl(new {action = "Details", controller = "Organizations", area = "", Id = Model.Quote.RelatedOrganizationId})">@Model.Quote.Organization.SubjectName (@Model.Quote.Organization.VAT)</a>
         </div>
         <div class="col-md-3">
-            <strong>@Html.DisplayNameFor(model => model.Quote.AssignedTo)</strong>
+            <strong>@Html.DisplayNameFor(model => model.Quote.AssignedTo):</strong>
             @Html.DisplayFor(model => model.Quote.AssignedTo)
         </div>
         <div class="col-md-3">
-            <strong>@Html.DisplayNameFor(model => model.Quote.InsertDate)</strong>
+            <strong>@Html.DisplayNameFor(model => model.Quote.InsertDate):</strong>
             @Html.DisplayFor(model => model.Quote.InsertDate)
         </div>
     </div>
@@ -243,15 +345,15 @@
     <h4>Podaci o trajanju i povezanoj kampanji</h4>
     <div class="row">
         <div class="col-md-3">
-            <strong>@Html.DisplayNameFor(model => model.Quote.StartDate)</strong>
+            <strong>@Html.DisplayNameFor(model => model.Quote.StartDate):</strong>
             @Model.Quote.StartDate.ToShortDateString()
         </div>
         <div class="col-md-3">
-            <strong>@Html.DisplayNameFor(model => model.Quote.EndDate)</strong>
+            <strong>@Html.DisplayNameFor(model => model.Quote.EndDate):</strong>
             @Model.Quote.EndDate.ToShortDateString()
         </div>
         <div class="col-md-6">
-            <strong>@Html.DisplayNameFor(model => model.Quote.Campaign.CampaignName)</strong>
+            <strong>@Html.DisplayNameFor(model => model.Quote.Campaign.CampaignName):</strong>
             @Html.DisplayFor(model => model.Quote.Campaign.CampaignName)
         </div>
     </div>
@@ -259,20 +361,37 @@
     <h4>Komercijalni podaci ponude</h4>
     <div class="row">
         <div class="col-md-3">
-            <strong>@Html.DisplayNameFor(model => model.Quote.QuoteTypeString)</strong>
+            <strong>@Html.DisplayNameFor(model => model.Quote.QuoteTypeString):</strong>
             @Html.DisplayFor(model => model.Quote.QuoteTypeString)
         </div>
         <div class="col-md-3">
-            <strong>@Html.DisplayNameFor(model => model.Quote.QuoteStatusString)</strong>
+            <strong>@Html.DisplayNameFor(model => model.Quote.QuoteStatusString):</strong>
             @Html.DisplayFor(model => model.Quote.QuoteStatusString)
         </div>
         <div class="col-md-3">
-            <strong>@Html.DisplayNameFor(model => model.Quote.QuoteSum)</strong>
+            <strong>@Html.DisplayNameFor(model => model.Quote.QuoteSum):</strong>
             @Html.DisplayFor(model => model.Quote.QuoteSum)
         </div>
         <div class="col-md-3">
-            <strong>@Html.DisplayNameFor(model => model.Quote.QuoteSumTotal)</strong>
+            <strong>@Html.DisplayNameFor(model => model.Quote.QuoteSumTotal):</strong>
             @Html.DisplayFor(model => model.Quote.QuoteSumTotal).ToString()
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.Quote.AcquireEmailPaymentString):</strong>
+            @Html.DisplayFor(model => model.Quote.AcquireEmailPaymentString)
+        </div>
+        <div class="col-md-3">
+            <strong>@Html.DisplayNameFor(model => model.Quote.ContractDuration) (mjeseci):</strong>
+            @Html.DisplayFor(model => model.Quote.ContractDuration)
+        </div>
+        <div class="col-md-3">
+
+        </div>
+        <div class="col-md-3">
+
         </div>
     </div>
 </div>

@@ -31,7 +31,9 @@ namespace MojCRM.Models
         [Display(Name = "Država:")]
         public CountryIdentificationCodeEnum CorrespondenceCountry { get; set; }
 
+        [StringLength(1000, ErrorMessage = "Nedovoljan broj znakova"/*, MinimumLength = 6*/)]
         public string TelephoneNumber { get; set; }
+        [StringLength(1000, ErrorMessage = "Nedovoljan broj znakova"/*, MinimumLength = 6*/)]
         public string MobilePhoneNumber { get; set; }
         public string EmailAddress { get; set; }
         public string ERP { get; set; }
@@ -136,7 +138,10 @@ namespace MojCRM.Models
             Se,
 
             [Description("Slovačka")]
-            Sk
+            Sk,
+
+            [Description("Srbija")]
+            Rs
         }
 
         public string CountryIdentificationCode
@@ -174,6 +179,7 @@ namespace MojCRM.Models
                     case CountryIdentificationCodeEnum.Ro: return "Rumunjska";
                     case CountryIdentificationCodeEnum.Se: return "Švedska";
                     case CountryIdentificationCodeEnum.Sk: return "Slovačka";
+                    case CountryIdentificationCodeEnum.Rs: return "Srbija";
                 }
                 return "Nema podatka";
             }
@@ -207,6 +213,7 @@ namespace MojCRM.Models
                     case OrganizationGroupEnum.Žito: return "Žito Grupa";
                     case OrganizationGroupEnum.ZagrebačkiHolding: return "Zagrebački Holding";
                     case OrganizationGroupEnum.Ciak: return "C.I.A.K. Grupa";
+                    case OrganizationGroupEnum.Siemens: return "Siemens";
                 }
                 return "Ne pripada grupaciji";
             }

@@ -73,7 +73,8 @@ namespace MojCRM.Areas.Campaigns.Controllers
                         SalesLeadsStatusStats = null,
                         SalesGeneralStatus = null,
                         CampaignLeadsAgentEfficiencies = null,
-                        CampaignAttributes = campaign.CampaignAttributes
+                        CampaignAttributes = campaign.CampaignAttributes,
+                        NumberOfNewlyAcquiredReceivingInformation = _db.AcquireEmails.Count(ae => ae.RelatedCampaignId == id && ae.IsNewlyAcquired == true)
                     };
                     return View(model);
                 case Campaign.CampaignTypeEnum.Sales:
@@ -91,7 +92,8 @@ namespace MojCRM.Areas.Campaigns.Controllers
                         SalesLeadsStatusStats = model.GetLeadsSalesStatusStats(id),
                         SalesGeneralStatus = model.GetSalesGeneralStatus(id),
                         CampaignLeadsAgentEfficiencies = model.GetCampaignLeadsAgentEfficiencies(id),
-                        CampaignAttributes = campaign.CampaignAttributes
+                        CampaignAttributes = campaign.CampaignAttributes,
+                        NumberOfNewlyAcquiredReceivingInformation = null
                     };
                     return View(model);
             }
@@ -247,12 +249,12 @@ namespace MojCRM.Areas.Campaigns.Controllers
 
             if (campaign.CampaignAttributes == null)
             {
-                campaign.CampaignAttributes = attribute;
+                campaign.CampaignAttributes = attribute + "(" + DateTime.Now.ToShortDateString() + ")";
                 campaign.UpdateDate = DateTime.Now;
             }
             else
             {
-                campaign.CampaignAttributes += "; " + attribute;
+                campaign.CampaignAttributes += "; " + attribute + "(" + DateTime.Now.ToShortDateString() + ")";
                 campaign.UpdateDate = DateTime.Now;
             }
             _db.SaveChanges();

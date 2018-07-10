@@ -40,6 +40,22 @@
                 Prodajne prilike - kanal ulaska
             </a>
         </div>
+        <div class="col-md-3">
+            <a href="@Url.RouteUrl(new { action = "AcquireEmailPaymentStat", controller = "Stats", area = "Stats" })" class="btn btn-default btn-sm" title="Statistika prihoda od obrada baza korisnika">
+                <i class="fa fa-money"></i>
+                Statistika prihoda od obrada baza korisnika
+            </a>
+        </div>
+    </div>
+    <hr />
+    <h4>Prodajni izvještaji</h4>
+    <div class="row">
+        <div class="col-md-3">
+            <a href="@Url.RouteUrl(new { action = "OrganizationsForMeeting", controller = "Stats", area = "Stats" })" class="btn btn-default btn-sm" title="Popis tvrtki za dogovor sastanka">
+                <i class="fa fa-bars"></i>
+                Tvrtke za dogovor sastanka
+            </a>
+        </div>
     </div>
     <hr />
     <h4>Statistike djelatnika</h4>
@@ -76,6 +92,12 @@
             <a href="@Url.RouteUrl(new { action = "AcquireEmailsAssignedStats", controller = "AcquireEmail", area = "HelpDesk" })" class="btn btn-default btn-sm" title="Statistika dodijeljenih predmeta u kampanjama za ažuriranje baza korisnika">
                 <i class="fa fa-bars"></i>
                 Statistika dodijeljenih predmeta
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="@Url.RouteUrl(new { action = "AcquireEmailInformationUpdateStat", controller = "Stats", area = "Stats" })" class="btn btn-default btn-sm" title="Statistika ažuriranja statusa kod obrade baza">
+                <i class="fa fa-bars"></i>
+                Statistika ažuriranja statusa
             </a>
         </div>
     </div>

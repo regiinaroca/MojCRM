@@ -105,5 +105,69 @@ namespace MojCRM.Areas.Sales.ViewModels
                 return roleList.AsQueryable();
             }
         }
+
+        public IQueryable<SelectListItem> ContractDurationList
+        {
+            get
+            {
+                var list = new List<SelectListItem>
+                {
+                    new SelectListItem {Value = null, Text = @"-- Odaberi trajanje ugovorne obaveze --"},
+                    new SelectListItem {Value = "12", Text = @"12 mjeseci / 1 godina"},
+                    new SelectListItem {Value = "24", Text = @"24 mjeseca / 2 godine"},
+                    new SelectListItem {Value = "36", Text = @"36 mjeseci / 3 godine"}
+                };
+                return list.AsQueryable();
+            }
+        }
+
+        public IQueryable<SelectListItem> ArchiveAndAcquireEmailOptionList
+        {
+            get
+            {
+                var list = new List<SelectListItem>
+                {
+                    new SelectListItem {Value = null, Text = @"-- Odaberi opciju --"},
+                    new SelectListItem {Value = "0", Text = @"Nije uključeno"},
+                    new SelectListItem {Value = "1", Text = @"Uključeno"}
+                };
+                return list.AsQueryable();
+            }
+        }
+
+        public IQueryable<SelectListItem> PackagesList
+        {
+            get
+            {
+                var list = new List<SelectListItem>
+                {
+                    new SelectListItem {Value = null, Text = @"-- Odaberi paket u ugovoru --"},
+                    new SelectListItem {Value = @"BASIC MICRO 20", Text = @"BASIC MICRO 20"},
+                    new SelectListItem {Value = @"BASIC MICRO 50", Text = @"BASIC MICRO 50"},
+                    new SelectListItem {Value = @"BASIC MICRO 75", Text = @"BASIC MICRO 75"},
+                    new SelectListItem {Value = @"BASIC MICRO 100", Text = @"BASIC MICRO 100"},
+                    new SelectListItem {Value = @"BASIC MICRO 150", Text = @"BASIC MICRO 150"},
+                    new SelectListItem {Value = @"BASIC 250", Text = @"BASIC 250"},
+                    new SelectListItem {Value = @"BASIC 350", Text = @"BASIC 350"},
+                    new SelectListItem {Value = @"BASIC 450", Text = @"BASIC 450"},
+                    new SelectListItem {Value = @"BASIC 600", Text = @"BASIC 600"},
+                };
+                return list.AsQueryable();
+            }
+        }
+
+        public IQueryable<SelectListItem> InvoiceOrDocumentsOptionList
+        {
+            get
+            {
+                var list = new List<SelectListItem>
+                {
+                    new SelectListItem {Value = null, Text = @"-- Odaberi opciju --"},
+                    new SelectListItem {Value = "1", Text = @"Uključeni eRačuni"},
+                    new SelectListItem {Value = "2", Text = @"Uključeni eDokumenti"}
+                };
+                return list.AsQueryable();
+            }
+        }
     }
 }

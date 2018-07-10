@@ -27,8 +27,10 @@
         new ListItem{ Value= @"12", Text = @"Najava brisanja subjekta"},
         new ListItem{ Value= @"10", Text = @"Subjekt u stečaju / likvidaciji"},
         new ListItem{ Value= @"11", Text = @"Subjekt nema žiro račun"},
-        new ListItem{ Value= @"8", Text = @"PH"},
+        //new ListItem{ Value= @"8", Text = @"PH"},
         new ListItem{ Value= @"9", Text = @"Nema broja"},
+        new ListItem{ Value= @"14", Text = @"Inozemna tvrtka"},
+        new ListItem{ Value= @"15", Text = @"Tvrtka u mirovanju"},
     };
 }
 
@@ -102,7 +104,7 @@
 @Html.Grid(Model).Named("PopisPredmetaZaAžuriranjeBazaKorisnika").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
 {
     //columns.Add().Encoded(false).Sanitized(false).RenderValueAs(r => Html.CheckBox("checked", false, new { r.Id, @class = "checked", @id = "checkbox" }));
-    columns.Add(r => r.Campaign.CampaignName).Encoded(false).Sanitized(false).Titled("Kampanja").Sortable(true);
+    columns.Add(r => r.Campaign.CampaignDescription).Encoded(false).Sanitized(false).Titled("Kampanja").Sortable(true);
     columns.Add(r => r.Organization.SubjectName).Encoded(false).Sanitized(false).Titled("Naziv tvrtke za kontakt").Sortable(true).RenderValueAs(v =>
     {
     if (User.IsInRole("Guest"))

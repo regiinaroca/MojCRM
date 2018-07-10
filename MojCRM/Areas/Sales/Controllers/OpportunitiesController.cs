@@ -20,6 +20,7 @@ namespace MojCRM.Areas.Sales.Controllers
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
         private readonly HelperMethods _helper = new HelperMethods();
+        private readonly OpportunityHelperMethods _opportunityHelper = new OpportunityHelperMethods();
 
         // GET: Sales/Opportunities
         [Authorize]
@@ -452,6 +453,22 @@ namespace MojCRM.Areas.Sales.Controllers
                     Contact = lastOpportunityNote.Contact
                 });
                 _db.SaveChanges();
+
+                var relatedOpportunities = _db.Opportunities.Where(o => o.RelatedOrganizationId == model.OrganizationId && o.OpportunityId != model.OpportunityId);
+
+                foreach (var relatedOpportunity in relatedOpportunities)
+                {
+                    _opportunityHelper.ApplyOpportunityStatusToRelatedOpportunities(relatedOpportunity.RelatedOrganizationId, Opportunity.OpportunityStatusEnum.Lead);
+                    _db.OpportunityNotes.Add(new OpportunityNote
+                    {
+                        RelatedOpportunityId = relatedOpportunity.OpportunityId,
+                        User = User.Identity.Name,
+                        Note = @"Za ovu tvrtku je kreiran lead u sklopu kampanje " + relatedOpportunity.RelatedCampaign.CampaignName,
+                        InsertDate = DateTime.Now
+                    });
+                }
+                _db.SaveChanges();
+
                 return Redirect(Request.UrlReferrer?.ToString());
             }
             catch (InvalidOperationException)
@@ -467,6 +484,7 @@ namespace MojCRM.Areas.Sales.Controllers
             opportunity.StatusDescription = model.StatusDescription;
             opportunity.UpdateDate = DateTime.Now;
             opportunity.LastUpdatedBy = User.Identity.Name;
+            _opportunityHelper.ApplyOpportunityStatusToRelatedOpportunities(opportunity.RelatedOrganizationId, model.NewStatus);
             _db.SaveChanges();
 
             return Redirect(Request.UrlReferrer?.ToString());

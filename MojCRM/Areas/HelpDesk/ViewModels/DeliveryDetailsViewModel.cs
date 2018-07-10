@@ -151,8 +151,8 @@ namespace MojCRM.Areas.HelpDesk.ViewModels
         public IQueryable<DeliveryDetail> RelatedDeliveryDetails { get; set; }
         public IQueryable<ActivityLog> RelatedActivities { get; set; }
         public IQueryable<MerGetSentDocumentsResponse> DocumentHistory { get; set; }
-        public MessagesOutboundOpenResponse PostmarkOpenings { get; set; }
-        public BouncesResponse PostmarkBounces { get; set; }
+        //public MessagesOutboundOpenResponse PostmarkOpenings { get; set; }
+        //public BouncesResponse PostmarkBounces { get; set; }
         public IQueryable<SelectListItem> RelatedDeliveryContactsForDetails
         {
             get

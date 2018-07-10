@@ -24,15 +24,16 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         [Authorize]
         public ActionResult Index(AcquireEmailSearchModel model)
         {
+            var referenceDate = new DateTime(2017, (DateTime.Today.AddMonths(-4)).Month, 1);
             IQueryable<AcquireEmail> list;
             if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Management"))
             {
-                list = _db.AcquireEmails;
+                list = _db.AcquireEmails.Where(x => x.InsertDate >= referenceDate);
             }
             else
             {
                 //list = _db.AcquireEmails.Where(ae => ae.AcquireEmailStatus != AcquireEmailStatusEnum.Verified && ae.AssignedTo == User.Identity.Name);
-                list = _db.AcquireEmails.Where(x => x.AcquireEmailStatus != AcquireEmailStatusEnum.Verified
+                list = _db.AcquireEmails.Where(x => x.InsertDate >= referenceDate && x.AcquireEmailStatus != AcquireEmailStatusEnum.Verified
                 && x.AssignedTo == User.Identity.Name
                 && (!(x.Organization.OrganizationDetail.TelephoneNumber == String.Empty || x.Organization.OrganizationDetail.TelephoneNumber == null)
                 || !(x.Organization.OrganizationDetail.MobilePhoneNumber == String.Empty || x.Organization.OrganizationDetail.MobilePhoneNumber == null)));
@@ -231,6 +232,8 @@ namespace MojCRM.Areas.HelpDesk.Controllers
 
             if (entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains("@") && entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation != null)
                 indetifierTemp = 1; //check if agent inserted an email and set identifier to AcquiredInformation by default
+            else if (String.IsNullOrEmpty(entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation) && identifier == 1)
+                indetifierTemp = 99; //check if the information IsNullOrEmpty and if true don't change the EntityStatus
             else
                 indetifierTemp = identifier;
 
@@ -239,6 +242,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 case 0:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.Created;
                     entity.UpdateDate = DateTime.Now;
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.Created, entityId);
                     _helper.LogActivity("Promijenjen status obrade. Novi status: Kreirano", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
@@ -330,9 +334,28 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation = "ŽELE POŠTOM";
                     _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.Post, entityId);
                     _acquireEmailMethodHelpers.UpdateStatus(AcquireEmailStatusEnum.Verified, entity.Organization.MerId);
-                    _helper.LogActivity("Promijenjen status obrade. Novi status: Žele primati eRačune poštom", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Žele primati račune poštom", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
+                case 14:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.Foreign;
+                    entity.UpdateDate = DateTime.Now;
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.Foreign, entityId);
+                    _acquireEmailMethodHelpers.UpdateStatus(AcquireEmailStatusEnum.Verified, entity.Organization.MerId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Inozemna tvrtka", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 15:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.OnHold;
+                    entity.UpdateDate = DateTime.Now;
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.OnHold, entityId);
+                    _acquireEmailMethodHelpers.UpdateStatus(AcquireEmailStatusEnum.Verified, entity.Organization.MerId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Tvrtka u mirovanju", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 99:
+                    break;
+
             }
             return Redirect(Request.UrlReferrer?.ToString());
         }
@@ -521,6 +544,8 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             switch (status)
             {
                 case AcquireEmailStatusEnum.Created:
+                    if (!String.IsNullOrEmpty(organization.MerDeliveryDetail.AcquiredReceivingInformation))
+                        entityStatusEnum = AcquireEmailEntityStatusEnum.AcquiredInformation; // Iva tražila da bude ovakva klasifikacija
                     entityStatusEnum = AcquireEmailEntityStatusEnum.Created;
                     break;
                 case AcquireEmailStatusEnum.Checked:
@@ -616,6 +641,22 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             return Redirect(Request.UrlReferrer?.ToString());
         }
 
+        public ActionResult UpdateEntityStatusToCreated(int campaignId)
+        {
+            var entites = _db.AcquireEmails.Where(c => c.RelatedCampaignId == campaignId
+            && c.AcquireEmailEntityStatus == AcquireEmailEntityStatusEnum.WrongTelephoneNumber);
+
+            foreach (var entity in entites)
+            {
+                entity.AcquireEmailStatus = AcquireEmailStatusEnum.Created;
+                entity.UpdateDate = DateTime.Now;
+            }
+
+            _db.SaveChanges();
+
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
         public ActionResult AdminUnassignEntities(int campaignId, string agent)
         {
             var entites = _db.AcquireEmails.Where(c => c.RelatedCampaignId == campaignId && c.AssignedTo == agent);
@@ -632,9 +673,21 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             return Redirect(Request.UrlReferrer?.ToString());
         }
 
+        public ActionResult ChangeStatusBasedOnEntityStatus(AcquireEmailEntityStatusEnum entityStatus, int campaignId, AcquireEmailStatusEnum status)
+        {
+            var entites = _db.AcquireEmails.Where(x => x.RelatedCampaignId == campaignId && x.AcquireEmailEntityStatus == entityStatus);
+            foreach (var entity in entites)
+            {
+                entity.AcquireEmailStatus = status;
+                entity.UpdateDate = DateTime.Now;
+            }
+            _db.SaveChanges();
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
         public ActionResult AcquireEmailsAssignedStats()
         {
-            var entities = _db.AcquireEmails.Where(x => x.AcquireEmailStatus == AcquireEmailStatusEnum.Created && x.IsAssigned)
+            var entities = _db.AcquireEmails.Where(x => /*x.AcquireEmailStatus == AcquireEmailStatusEnum.Created &&*/ x.IsAssigned)
                 .GroupBy(x => new { x.AssignedTo, x.Campaign.CampaignName, x.Campaign.CampaignId});
             var list = new List<AcquireEmailStatsPerAgentAndCampaign>();
 
@@ -644,7 +697,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     (x.Organization.OrganizationDetail.TelephoneNumber == String.Empty || x.Organization.OrganizationDetail.TelephoneNumber == null)
                     && (x.Organization.OrganizationDetail.MobilePhoneNumber == String.Empty || x.Organization.OrganizationDetail.MobilePhoneNumber == null)
                     && x.RelatedCampaignId == entity.Key.CampaignId
-                    && x.AcquireEmailStatus == AcquireEmailStatusEnum.Created
+                    //&& x.AcquireEmailStatus == AcquireEmailStatusEnum.Created
                     && x.AssignedTo == entity.Key.AssignedTo);
                 var temp = new AcquireEmailStatsPerAgentAndCampaign
                 {

@@ -10,6 +10,10 @@ using System.Text;
 using MojCRM.Areas.HelpDesk.Helpers;
 using MojCRM.Areas.HelpDesk.Models;
 using MojCRM.Areas.Sales.Helpers;
+using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using OfficeOpenXml;
+using System.Web;
 
 namespace MojCRM.Controllers
 {
@@ -74,6 +78,7 @@ namespace MojCRM.Controllers
         }
 
         // GET: Organizations/Details/5
+        [Authorize]
         public ActionResult Details(int id)
         {
             try
@@ -246,8 +251,19 @@ namespace MojCRM.Controllers
                 response = response.Replace("[", "").Replace("]", "");
                 MerGetSubjektDataResponse result = JsonConvert.DeserializeObject<MerGetSubjektDataResponse>(response);
 
-                string postalCode = result.Mjesto.Substring(0, 5).Trim();
-                string mainCity = result.Mjesto.Substring(6).Trim();
+                string postalCode = String.Empty;
+                string mainCity = String.Empty;
+
+                if (organization.OrganizationDetail.MainCountry == OrganizationDetail.CountryIdentificationCodeEnum.Hr)
+                {
+                    postalCode = result.Mjesto.Substring(0, 5).Trim();
+                    mainCity = result.Mjesto.Substring(6).Trim();
+                }
+                else
+                {
+                    postalCode = "00000";
+                    mainCity = result.Mjesto;
+                }
 
                 organization.SubjectName = result.Naziv;
                 organization.FirstReceived = result.FirstReceived;
@@ -261,6 +277,20 @@ namespace MojCRM.Controllers
                 organization.OrganizationDetail.MainCity = mainCity;
                 organization.MerDeliveryDetail.TotalSent = result.TotalSent;
                 organization.MerDeliveryDetail.TotalReceived = result.TotalReceived;
+
+                _db.ActivityLogs.Add(new ActivityLog()
+                {
+                    ActivityType = ActivityLog.ActivityTypeEnum.Organizationupdate,
+                    Department = ActivityLog.DepartmentEnum.MojCrm,
+                    InsertDate = DateTime.Now,
+                    IsSuspiciousActivity = false,
+                    Module = ActivityLog.ModuleEnum.Organizations,
+                    ReferenceId = merId,
+                    User = User.Identity.Name,
+                    Description = @"Korisnik " + User.Identity.Name + " je izvršio sinkronizaciju podataka tvrtke s Moj-eRačuna. Stari podaci su: Naziv tvrtke: "
+                    + organization.SubjectName + ", Adresa: " + organization.OrganizationDetail.MainAddress + ", Poštanski broj: " + organization.OrganizationDetail.MainPostalCode
+                    + ", Grad: " + organization.OrganizationDetail.MainCity + "."
+                });
             }
             _db.SaveChanges();
 
@@ -409,6 +439,7 @@ namespace MojCRM.Controllers
         public ActionResult EditAcquiredReceivingInformation(EditAcquiredReceivingInformationHelper model)
         {
             var organization = _db.MerDeliveryDetails.First(o => o.MerId == model.MerId);
+
             string logString = "Agent " + User.Identity.Name + " je izmjenio informaciju za preuzimanju na subjektu: "
                 + organization.Organization.SubjectName + ". Izmjenjeno je:";
             string newInformation = String.Empty;
@@ -422,6 +453,14 @@ namespace MojCRM.Controllers
 
             if (!String.Equals(newInformation, organization.AcquiredReceivingInformation))
                 logString += " stara informacija o preuzimanju: " + organization.AcquiredReceivingInformation + ", nova informacija o preuzimanju " + newInformation + ".";
+
+            if (model.AcquireEmailId != null)
+            {
+                var acquireEmail = _db.AcquireEmails.First(ae => ae.Id == model.AcquireEmailId);
+
+                if (String.IsNullOrEmpty(organization.AcquiredReceivingInformation) && newInformation.Contains("@"))
+                    acquireEmail.IsNewlyAcquired = true;
+            }
 
             organization.AcquiredReceivingInformation = newInformation;
             organization.Organization.UpdateDate = DateTime.Now;
@@ -489,6 +528,24 @@ namespace MojCRM.Controllers
             LogActivity(logString, User.Identity.Name, organization.MerId, ActivityLog.ActivityTypeEnum.Organizationupdate);
 
             _db.SaveChanges();
+
+            return Redirect(Request.UrlReferrer.ToString());
+        }
+
+        // POST: Organizations/EditEmailAddressForVerification
+        [HttpPost]
+        public ActionResult EditEmailAddressForVerification(int merId, string emailForVerification)
+        {
+            var entity = _db.MerDeliveryDetails.First(e => e.MerId == merId);
+            string logString = "Agent " + User.Identity.Name + " je napravio izmjene na subjektu: "
+                + entity.Organization.SubjectName + ". Izmjenjena je email adresa za provjeru iz: " + entity.EmailAddressForVerification + ", u: " + emailForVerification + ".";
+
+            entity.EmailAddressForVerification = emailForVerification;
+            entity.Organization.UpdateDate = DateTime.Now;
+            entity.Organization.LastUpdatedBy = User.Identity.Name;
+            _db.SaveChanges();
+
+            LogActivity(logString, User.Identity.Name, merId, ActivityLog.ActivityTypeEnum.Organizationupdate);
 
             return Redirect(Request.UrlReferrer.ToString());
         }
@@ -562,6 +619,47 @@ namespace MojCRM.Controllers
             _db.SaveChanges();
 
             return Json(new { Status = "OK" });
+        }
+
+        //GET: Organizations/ImportEmailsForVerification
+        public JsonResult ImportEmailsForVerification(HttpPostedFileBase file)
+        {
+            int importedEmails = 0;
+            int unimportedEmails = 0;
+
+            var wb = new ExcelPackage(file.InputStream);
+            var ws = wb.Workbook.Worksheets[1];
+
+            for (int i = ws.Dimension.Start.Row; i <= ws.Dimension.End.Row; i++)
+            {
+                object vat;
+
+                if ((vat = ws.Cells[i, 1].Value) != null)
+                {
+                    string vatTemp = vat.ToString();
+
+                    if (_db.Organizations.Any(o => (o.SubjectBusinessUnit == "" || o.SubjectBusinessUnit == "11"/*DHL hack/fix*/) && o.VAT == vatTemp))
+                    {
+                        var organization = _db.Organizations.First(o => o.VAT == vatTemp && (o.SubjectBusinessUnit == "" || o.SubjectBusinessUnit == "11"/*DHL hack/fix*/));
+                        var emailTemp = ws.Cells[i, 2].Value.ToString();
+                        organization.MerDeliveryDetail.EmailAddressForVerification = emailTemp;
+                        _db.SaveChanges();
+
+                        importedEmails++;
+                    }
+                    else
+                    {
+                        unimportedEmails++;
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+                wb.Dispose();
+                return Json(new { ImportedEmails = importedEmails, UnimportedEmails = unimportedEmails });
         }
 
         public void LogActivity(string ActivityDescription, string User, int ActivityReferenceId, ActivityLog.ActivityTypeEnum ActivityType)

@@ -293,6 +293,16 @@ namespace MojCRM.Areas.Stats.ViewModels
         }
     }
 
+    public class AcquireEmailInformationUpdateStatViewModel
+    {
+        public string Agent { get; set; }
+        public int ClosedSubject { get; set; }
+        public int Bankruptcy { get; set; }
+        public int NoTelephoneNumber { get; set; }
+        public int ToBeClosed { get; set; }
+        public int AcquiredTelephoneNumber { get; set; }
+    }
+
     public class GeneralCampaignStatusViewModel
     {
         public int RelatedCampaignId { get; set; }
@@ -407,6 +417,7 @@ namespace MojCRM.Areas.Stats.ViewModels
                     case OrganizationDetail.CountryIdentificationCodeEnum.Ro: return "Rumunjska";
                     case OrganizationDetail.CountryIdentificationCodeEnum.Se: return "Švedska";
                     case OrganizationDetail.CountryIdentificationCodeEnum.Sk: return "Slovačka";
+                    case OrganizationDetail.CountryIdentificationCodeEnum.Rs: return "Srbija";
                 }
                 return "Nema podatka";
             }
@@ -446,6 +457,25 @@ namespace MojCRM.Areas.Stats.ViewModels
         public decimal AcceptedPercent { get; set; }
         public int RejectedCount { get; set; }
         public decimal RejectedPercent { get; set; }
+    }
+
+    public class AcquireEmailPaymentStatTempViewModel
+    {
+        [DisplayFormat(DataFormatString = "{0:C0}")]
+        [DataType(DataType.Currency)]
+        public double FixedAmount = 19.99;
+        public string CampaignName { get; set; }
+        public int CampaignId { get; set; }
+        public int IsNewlyAcquiredCount { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C0}")]
+        [DataType(DataType.Currency)]
+        public double TotalAmount { get; set; }
+    }
+
+    public class AcquireEmailPaymentStatViewModel
+    {
+        public IQueryable<AcquireEmailPaymentStatTempViewModel> List { get; set; }
+        public decimal SumTotalAmount { get; set; }
     }
 
     #endregion

@@ -54,6 +54,11 @@ namespace MojCRM.Areas.Sales.Models
         [DataType(DataType.Currency)]
         public decimal QuoteSumTotal { get; set; }
 
+        [Display(Name = "Trajanje ugovora")]
+        public int? ContractDuration { get; set; }
+        [DisplayName("Opcija plaćanja obrade baza")]
+        public bool? AcquireEmailPayment { get; set; }
+
         [DisplayName("Datum i vrijeme kreiranja")]
         public DateTime InsertDate { get; set; }
 
@@ -134,6 +139,20 @@ namespace MojCRM.Areas.Sales.Models
                     case QuoteStatusEnum.Recalled: return "Opozvana ponuda";
                 }
                 return "Status ponude";
+            }
+        }
+
+        [DisplayName("Opcija plaćanja obrade baza")]
+        public string AcquireEmailPaymentString
+        {
+            get
+            {
+                switch (AcquireEmailPayment)
+                {
+                    case true: return "Uključeno";
+                    case false: return "Nije uključeno";
+                }
+                return "Nije specificirano";
             }
         }
     }

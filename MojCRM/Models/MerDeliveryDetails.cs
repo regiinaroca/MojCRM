@@ -26,5 +26,7 @@ namespace MojCRM.Models
         public string AcquiredReceivingInformation { get; set; }
         public bool AcquiredReceivingInformationIsVerified { get; set; }
         public bool RequiredPostalService { get; set; }
+        [Display(Name = "E-mail adresa za provjeru")] //CroBiz import addresses
+        public string EmailAddressForVerification { get; set; }
     }
 }
