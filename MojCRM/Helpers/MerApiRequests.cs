@@ -52,4 +52,11 @@ namespace MojCRM.Helpers
         [JsonProperty]
         public DateTime From { get; set; }
     }
+
+    public class MerApiGetInaDailyReport : MerApiRequest
+    {
+        [JsonProperty]
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+    }
 }

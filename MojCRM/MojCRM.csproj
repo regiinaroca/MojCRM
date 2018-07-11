@@ -809,6 +809,7 @@
     <Content Include="Areas\Stats\Views\Stats\OrganizationsForMeeting.cshtml" />
     <Content Include="Areas\Stats\Views\Stats\AcquireEmailPaymentStat.cshtml" />
     <Content Include="Areas\Stats\Views\Stats\AcquireEmailInformationUpdateStat.cshtml" />
+    <Content Include="Areas\CRM\Views\UserReport\GetInaDailyReport.cshtml" />
     <None Include="Properties\PublishProfiles\MerDeployCIS.pubxml" />
     <None Include="Scripts\jquery-3.2.1-vsdoc.js" />
     <Content Include="Scripts\daterangepicker.js" />
@@ -969,6 +970,7 @@
     <Content Include="Views\Organizations\_Quotes.cshtml" />
     <Content Include="Views\Shared\ErrorWrongInputFormat.cshtml" />
     <Content Include="Views\Organizations\_Contracts.cshtml" />
+    <Content Include="Views\Shared\_UserLayoutNewUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -976,7 +978,6 @@
     <Folder Include="Areas\Cooperation\Controllers\" />
     <Folder Include="Areas\Cooperation\Views\Shared\" />
     <Folder Include="Areas\CRM\Views\Shared\" />
-    <Folder Include="Areas\CRM\Views\UserReport\" />
     <Folder Include="Areas\HelpDesk\Views\Shared\" />
     <Folder Include="Areas\Sales\Views\Shared\" />
     <Folder Include="Areas\Stats\Views\Shared\" />
