@@ -199,6 +199,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                 mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
                 var responseFirstTime = mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getNondeliveredDocuments").ToString(), "POST", merRequestFirstTime);
+                //var responseFirstTime = mer.UploadString(new Uri(@"http://localhost/apis/v21/getNondeliveredDocuments").ToString(), "POST", merRequestFirstTime);
                 //ResponseFirstTime = ResponseFirstTime.Replace("[", "").Replace("]", "");
                 MerGetNondeliveredDocumentsResponse[] resultsFirstTime = JsonConvert.DeserializeObject<MerGetNondeliveredDocumentsResponse[]>(responseFirstTime);
                 foreach (var result in resultsFirstTime)
@@ -266,6 +267,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                 mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
                 var responseRegularDelivery = mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getNondeliveredDocuments").ToString(), "POST", merRequestFirstTime);
+                //var responseRegularDelivery = mer.UploadString(new Uri(@"http://localhost/apis/v21/getNondeliveredDocuments").ToString(), "POST", merRequestFirstTime);
                 //ResponseRegularDelivery = ResponseRegularDelivery.Replace("[", "").Replace("]", "");
                 MerGetNondeliveredDocumentsResponse[] resultsRegularDelivery = JsonConvert.DeserializeObject<MerGetNondeliveredDocumentsResponse[]>(responseRegularDelivery);
                 foreach (var result in resultsRegularDelivery)

@@ -6,31 +6,31 @@
     Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 
     var statusList = new List<ListItem>
-    {
-        new ListItem{ Value= @"0", Text = @"Kreirano"},
-        new ListItem{ Value= @"1", Text = @"Provjereno"},
-        new ListItem{ Value= @"2", Text = @"Verificirano"},
-        new ListItem{ Value= @"3", Text = @"Revidirano"}
-    };
+{
+new ListItem{ Value= @"0", Text = @"Kreirano"},
+new ListItem{ Value= @"1", Text = @"Provjereno"},
+new ListItem{ Value= @"2", Text = @"Verificirano"},
+new ListItem{ Value= @"3", Text = @"Revidirano"}
+};
     var entityStatusList = new List<ListItem>
-    {
-        new ListItem{ Value= @"0", Text = @"Kreirano"},
-        new ListItem{ Value= @"1", Text = @"Dobivena povratna informacija"},
-        new ListItem{ Value= @"2", Text = @"Nema odgovora / Ne javlja se"},
-        new ListItem{ Value= @"4", Text = @"Ne posluju s korisnikom"},
-        new ListItem{ Value= @"13", Text = @"POŠTA"},
-        new ListItem{ Value= @"5", Text = @"Partner će se javiti korisniku samostalno"},
-        new ListItem{ Value= @"6", Text = @"Potrebno poslati pisanu suglasnost"},
-        new ListItem{ Value= @"7", Text = @"Neispravan kontakt broj"},
-        new ListItem{ Value= @"3", Text = @"Zatvoren subjekt (sudski / obrtni registar)"},
-        new ListItem{ Value= @"12", Text = @"Najava brisanja subjekta"},
-        new ListItem{ Value= @"10", Text = @"Subjekt u stečaju / likvidaciji"},
-        new ListItem{ Value= @"11", Text = @"Subjekt nema žiro račun"},
-        //new ListItem{ Value= @"8", Text = @"PH"},
-        new ListItem{ Value= @"9", Text = @"Nema broja"},
-        new ListItem{ Value= @"14", Text = @"Inozemna tvrtka"},
-        new ListItem{ Value= @"15", Text = @"Tvrtka u mirovanju"},
-    };
+{
+new ListItem{ Value= @"0", Text = @"Kreirano"},
+new ListItem{ Value= @"1", Text = @"Dobivena povratna informacija"},
+new ListItem{ Value= @"2", Text = @"Nema odgovora / Ne javlja se"},
+new ListItem{ Value= @"4", Text = @"Ne posluju s korisnikom"},
+new ListItem{ Value= @"13", Text = @"POŠTA"},
+new ListItem{ Value= @"5", Text = @"Partner će se javiti korisniku samostalno"},
+new ListItem{ Value= @"6", Text = @"Potrebno poslati pisanu suglasnost"},
+new ListItem{ Value= @"7", Text = @"Neispravan kontakt broj"},
+new ListItem{ Value= @"3", Text = @"Zatvoren subjekt (sudski / obrtni registar)"},
+new ListItem{ Value= @"12", Text = @"Najava brisanja subjekta"},
+new ListItem{ Value= @"10", Text = @"Subjekt u stečaju / likvidaciji"},
+new ListItem{ Value= @"11", Text = @"Subjekt nema žiro račun"},
+//new ListItem{ Value= @"8", Text = @"PH"},
+new ListItem{ Value= @"9", Text = @"Nema broja"},
+new ListItem{ Value= @"14", Text = @"Inozemna tvrtka"},
+new ListItem{ Value= @"15", Text = @"Tvrtka u mirovanju"},
+};
 }
 
 <!--Modal - Change Status-->
@@ -167,8 +167,8 @@
         @if (Model.Entity.AcquireEmailStatus == AcquireEmail.AcquireEmailStatusEnum.Created)
         {
             <div>
-                       <strong>Alati: </strong><a class="mark-checked" data-entity-id="@Model.Entity.Id" title="Označi kao provjereno"><i style="color: red" class="fa fa-check-circle-o fa-lg"></i></a> | <a href="@Url.RouteUrl(new {action = "Index", controller = "AcquireEmail", area = "HelpDesk"})" title="Povratak na popis predmeta" class="btn btn-sm btn-success">Završi obradu</a>
-                   </div>
+                <strong>Alati: </strong><a class="mark-checked" data-entity-id="@Model.Entity.Id" title="Označi kao provjereno"><i style="color: red" class="fa fa-check-circle-o fa-lg"></i></a> | <a href="@Url.RouteUrl(new {action = "Index", controller = "AcquireEmail", area = "HelpDesk"})" title="Povratak na popis predmeta" class="btn btn-sm btn-success">Završi obradu</a>
+            </div>
         }
         @if (Model.Entity.AcquireEmailStatus != AcquireEmail.AcquireEmailStatusEnum.Created)
         {
@@ -181,7 +181,7 @@
 </div>
 @if (User.IsInRole("Management") || User.IsInRole("Superadmin") || User.IsInRole("Administrator"))
 {
-    <hr/>
+    <hr />
     <div class="row">
         <div class="col-md-4">
             <strong>Administrativni alati: </strong>
@@ -198,36 +198,81 @@
 <h4>Uredi kontakt podatke</h4>
 @using (Html.BeginForm("EditOrganizationDetails", "Organizations", new { area = "" }, FormMethod.Post))
 {
-<div class="row">
-    <div class="col-md-6">
-        <label for="telephone-number">Broj telefona</label>
-        <div id="telephone-number">
-            @Html.TextBox("TelephoneNumber", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = Model.Entity.Organization.OrganizationDetail.TelephoneNumber })
-            @*@Html.EditorFor(model => model.Entity.Organization.OrganizationDetail.TelephoneNumber, "TelephoneNumber", new { htmlAttributes = new { @id = "TelephoneNumber", @name = "TelephoneNumber", @class = "form-control" } })*@
-            @Html.ValidationMessageFor(model => model.Entity.Organization.OrganizationDetail.TelephoneNumber, "", new { @class = "text-danger" })
+    <div class="row">
+        <div class="col-md-6">
+            <label for="telephone-number">Broj telefona</label>
+            <div id="telephone-number">
+                @Html.TextBox("TelephoneNumber", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = Model.Entity.Organization.OrganizationDetail.TelephoneNumber })
+                @*@Html.EditorFor(model => model.Entity.Organization.OrganizationDetail.TelephoneNumber, "TelephoneNumber", new { htmlAttributes = new { @id = "TelephoneNumber", @name = "TelephoneNumber", @class = "form-control" } })*@
+                @Html.ValidationMessageFor(model => model.Entity.Organization.OrganizationDetail.TelephoneNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label for="mobile-phone-number">Broj mobitela</label>
+            <div id="mobile-phone-number">
+                @Html.TextBox("MobilePhoneNumber", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = Model.Entity.Organization.OrganizationDetail.MobilePhoneNumber })
+                @*@Html.EditorFor(model => model.Entity.Organization.OrganizationDetail.MobilePhoneNumber, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.ValidationMessageFor(model => model.Entity.Organization.OrganizationDetail.MobilePhoneNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="hidden">
+            @Html.TextBox("MerId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Entity.Organization.MerId })
         </div>
     </div>
-    <div class="col-md-6">
-        <label for="mobile-phone-number">Broj mobitela</label>
-        <div id="mobile-phone-number">
-            @Html.TextBox("MobilePhoneNumber", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = Model.Entity.Organization.OrganizationDetail.MobilePhoneNumber })
-            @*@Html.EditorFor(model => model.Entity.Organization.OrganizationDetail.MobilePhoneNumber, new { htmlAttributes = new { @class = "form-control" } })*@
-            @Html.ValidationMessageFor(model => model.Entity.Organization.OrganizationDetail.MobilePhoneNumber, "", new { @class = "text-danger" })
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <button type="submit" class="btn btn-sm btn-primary">Predaj izmjene</button>
         </div>
     </div>
-    <div class="hidden">
-        @Html.TextBox("MerId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Entity.Organization.MerId })
-    </div>
-</div>
-<br />
-<div class="row">
-    <div class="col-md-6">
-        <button type="submit" class="btn btn-sm btn-primary">Predaj izmjene</button>
-    </div>
-</div>
 }
 <hr />
-<h4>E-mail adresa za provjeru</h4><h6>- potrebno je provjeriti ispravnost i/ili pravovaljanost navedene e-mail adrese</h6>
+<h4>Uredi informaciju o preuzimanju</h4>
+<h6>- ako Vam korisnik da informaciju da je račun potrebno slati na više e-mail adresa, molimo unesite ih odvojeno u zasebna polja</h6>
+@using (Html.BeginForm("EditAcquiredReceivingInformation", "Organizations", new { area = "" }, FormMethod.Post))
+{
+    <div class="row">
+        <div class="col-md-3">
+            <label for="receiving-information">Informacija o preuzimanju eRačuna</label>
+            <div id="receiving-information">
+                @Html.TextBox("AcquiredReceivingInformation", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation })
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label for="new-receiving-information">Nova informacija o preuzimanju eRačuna</label>
+            <div id="new-receiving-information">
+                @Html.TextBox("NewAcquiredReceivingInformation1", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Unesi novu informaciju o preuzimanju" })
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label for="new-receiving-information-2">Nova informacija o preuzimanju eRačuna (2)</label>
+            <div id="new-receiving-information-2">
+                @Html.TextBox("NewAcquiredReceivingInformation2", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Unesi novu informaciju o preuzimanju (2)" })
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label for="new-receiving-information-3">Nova informacija o preuzimanju eRačuna (3)</label>
+            <div id="new-receiving-information-3">
+                @Html.TextBox("NewAcquiredReceivingInformation3", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Unesi novu informaciju o preuzimanju (3)" })
+            </div>
+        </div>
+        <div class="hidden">
+            @Html.TextBox("MerId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Entity.Organization.MerId })
+        </div>
+        <div class="hidden">
+            @Html.TextBox("AcquireEmailId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Entity.Id })
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <button type="submit" class="btn btn-sm btn-primary">Predaj izmjene</button>
+        </div>
+    </div>
+}
+<hr />
+<h4>E-mail adresa za provjeru</h4>
+<h6>- potrebno je provjeriti ispravnost i/ili pravovaljanost navedene e-mail adrese</h6>
 @using (Html.BeginForm("EditEmailAddressForVerification", "Organizations", new { area = "" }, FormMethod.Post))
 {
     <div class="row">
@@ -249,48 +294,6 @@
     </div>
 }
 <hr />
-<h4>Uredi informaciju o preuzimanju</h4><h6>- ako Vam korisnik da informaciju da je račun potrebno slati na više e-mail adresa, molimo unesite ih odvojeno u zasebna polja</h6>
-@using (Html.BeginForm("EditAcquiredReceivingInformation", "Organizations", new { area = "" }, FormMethod.Post))
-{
-<div class="row">
-    <div class="col-md-3">
-        <label for="receiving-information">Informacija o preuzimanju eRačuna</label>
-        <div id="receiving-information">
-            @Html.TextBox("AcquiredReceivingInformation", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation })
-        </div>
-    </div>
-    <div class="col-md-3">
-        <label for="new-receiving-information">Nova informacija o preuzimanju eRačuna</label>
-        <div id="new-receiving-information">
-            @Html.TextBox("NewAcquiredReceivingInformation1", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Unesi novu informaciju o preuzimanju" })
-        </div>
-    </div>
-    <div class="col-md-3">
-        <label for="new-receiving-information-2">Nova informacija o preuzimanju eRačuna (2)</label>
-        <div id="new-receiving-information-2">
-            @Html.TextBox("NewAcquiredReceivingInformation2", ViewBag.CurrentFilter as string, new {@class = "form-control", @placeholder = "Unesi novu informaciju o preuzimanju (2)"})
-        </div>
-    </div>
-    <div class="col-md-3">
-        <label for="new-receiving-information-3">Nova informacija o preuzimanju eRačuna (3)</label>
-        <div id="new-receiving-information-3">
-            @Html.TextBox("NewAcquiredReceivingInformation3", ViewBag.CurrentFilter as string, new {@class = "form-control", @placeholder = "Unesi novu informaciju o preuzimanju (3)"})
-        </div>
-    </div>
-    <div class="hidden">
-        @Html.TextBox("MerId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Entity.Organization.MerId })
-    </div>
-    <div class="hidden">
-        @Html.TextBox("AcquireEmailId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Entity.Id })
-    </div>
-</div>
-<br />
-<div class="row">
-    <div class="col-md-6">
-        <button type="submit" class="btn btn-sm btn-primary">Predaj izmjene</button>
-    </div>
-</div>
-}
 <script>
     $(document).on("click", "a.add-successfull-call", function (e) {
         e.preventDefault();

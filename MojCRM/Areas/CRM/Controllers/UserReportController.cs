@@ -46,8 +46,8 @@ namespace MojCRM.Areas.CRM.Controllers
             {
                 mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                 mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                //var response = mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getInaReport").ToString(), "POST", merRequest);
-                var response = mer.UploadString(new Uri(@"http://localhost:1312/apis/v21/getInaReport").ToString(), "POST", merRequest);
+                var response = mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getInaReport").ToString(), "POST", merRequest); // production
+                //var response = mer.UploadString(new Uri(@"http://localhost:1312/apis/v21/getInaReport").ToString(), "POST", merRequest); // local test
                 results = JsonConvert.DeserializeObject<MerGetInaReportResponse[]>(response);
             }
 
