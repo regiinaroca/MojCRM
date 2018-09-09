@@ -15,6 +15,11 @@ namespace MojCRM.Areas.Campaigns.Controllers
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
+        /// <summary>
+        /// Index method where we have all of the campaigns listed
+        /// </summary>
+        /// <param name="model">Search parameters</param>
+        /// <returns>List of campaigns matching search criteria</returns>
         // GET: Campaigns/Campaigns
         public ActionResult Index(CampaignSearchHelper model)
         {
@@ -56,6 +61,7 @@ namespace MojCRM.Areas.Campaigns.Controllers
             }
 
             var list = _db.CampaignMembers.Where(cm => cm.CampaignId == id);
+            // Preparing DetailsView based on the CampaignType
             switch (campaign.CampaignType)
             {
                 case Campaign.CampaignTypeEnum.EmailBases:
@@ -229,6 +235,14 @@ namespace MojCRM.Areas.Campaigns.Controllers
             return Redirect(Request.UrlReferrer?.ToString());
         }
 
+        /// <summary>
+        /// Addign a member (employee working on the campaign) to the campaign
+        /// </summary>
+        /// <param name="agent"></param>
+        /// <param name="role"></param>
+        /// <param name="campaignId"></param>
+        /// <returns></returns>
+        // POST: Campaigns/Campaigns/AddMember
         [HttpPost]
         public ActionResult AddMember(string agent, CampaignMember.MemberRoleEnum role, int campaignId)
         {
@@ -243,6 +257,13 @@ namespace MojCRM.Areas.Campaigns.Controllers
             return Redirect(Request.UrlReferrer?.ToString());
         }
 
+        /// <summary>
+        /// Adding attributes (additional notifications) to the campaign
+        /// </summary>
+        /// <param name="campaignId"></param>
+        /// <param name="attribute"></param>
+        /// <returns></returns>
+        // GET: Campaigns/Campaigns/AddAttribute
         public ActionResult AddAttribute(int campaignId, string attribute)
         {
             Campaign campaign = _db.Campaigns.First(x => x.CampaignId == campaignId);
