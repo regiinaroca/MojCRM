@@ -249,12 +249,12 @@ namespace MojCRM.Areas.Campaigns.Controllers
 
             if (campaign.CampaignAttributes == null)
             {
-                campaign.CampaignAttributes = attribute + "(" + DateTime.Now.ToShortDateString() + ")";
+                campaign.CampaignAttributes = attribute + " (" + DateTime.Now.ToShortDateString() + ")";
                 campaign.UpdateDate = DateTime.Now;
             }
             else
             {
-                campaign.CampaignAttributes += "; " + attribute + "(" + DateTime.Now.ToShortDateString() + ")";
+                campaign.CampaignAttributes += "; " + attribute + " (" + DateTime.Now.ToShortDateString() + ")";
                 campaign.UpdateDate = DateTime.Now;
             }
             _db.SaveChanges();

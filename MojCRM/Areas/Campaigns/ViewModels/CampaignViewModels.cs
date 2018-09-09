@@ -208,6 +208,18 @@ namespace MojCRM.Areas.Campaigns.ViewModels
                     case AcquireEmail.AcquireEmailEntityStatusEnum.Post:
                         status = "Žele primati račune poštom";
                         break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.Foreign:
+                        status = "Inozemna tvrtka";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.OnHold:
+                        status = "Tvrtka u mirovanju";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.PostChecked:
+                        status = "Pošta provjereno";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.NoAnswerOldPost:
+                        status = "Ne javlja se, PSP";
+                        break;
                     default:
                         status = "Status unosa";
                         break;

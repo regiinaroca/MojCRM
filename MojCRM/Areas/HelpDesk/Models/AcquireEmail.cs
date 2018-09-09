@@ -106,7 +106,13 @@ namespace MojCRM.Areas.HelpDesk.Models
             Foreign,
 
             [Description("Tvrtka u mirovanju")]
-            OnHold
+            OnHold,
+
+            [Description("Pošta provjereno")]
+            PostChecked,
+
+            [Description("Ne javlja se, prethodni status POŠTA")]
+            NoAnswerOldPost
         }
 
         public string AcquireEmailEntityStatusString
@@ -131,6 +137,8 @@ namespace MojCRM.Areas.HelpDesk.Models
                     case AcquireEmailEntityStatusEnum.Post: return "POŠTA";
                     case AcquireEmailEntityStatusEnum.Foreign: return "Inozemna tvrtka";
                     case AcquireEmailEntityStatusEnum.OnHold: return "Tvrtka u mirovanju";
+                    case AcquireEmailEntityStatusEnum.PostChecked: return "POŠTA PROVJERENO";
+                    case AcquireEmailEntityStatusEnum.NoAnswerOldPost: return "Ne javlja se, PSP";
                 }
                 return "Status unosa";
             }

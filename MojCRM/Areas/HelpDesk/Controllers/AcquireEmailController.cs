@@ -2,6 +2,7 @@
 using MojCRM.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Web;
@@ -11,6 +12,7 @@ using static MojCRM.Areas.HelpDesk.Models.AcquireEmail;
 using MojCRM.Areas.HelpDesk.Helpers;
 using MojCRM.Areas.HelpDesk.ViewModels;
 using MojCRM.Helpers;
+using Newtonsoft.Json;
 using OfficeOpenXml;
 
 namespace MojCRM.Areas.HelpDesk.Controllers
@@ -353,6 +355,20 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     _helper.LogActivity("Promijenjen status obrade. Novi status: Tvrtka u mirovanju", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
+                case 16:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.PostChecked;
+                    entity.UpdateDate = DateTime.Now;
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.PostChecked, entityId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Pošta provjereno", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
+                case 17:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.NoAnswerOldPost;
+                    entity.UpdateDate = DateTime.Now;
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.PostChecked, entityId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Ne javlja se, PSP", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
                 case 99:
                     break;
 
@@ -511,6 +527,29 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             }
 
             return File(wb.GetAsByteArray(), "application/vnd.ms-excel", "Rezultati.xlsx");
+        }
+
+        public ActionResult ExportEntitiesCsv(int campaignId)
+        {
+            //var model = JsonConvert.DeserializeObject<IEnumerable<AcquireEmailExportModel>>("Rezultati");
+            var model = GetEntityListForEmailNotification(campaignId);
+
+            if (model.Any())
+            {
+                string guid = Guid.NewGuid() + "_crm.csv";
+                string tempFileName = Path.Combine(@"d:\Temp\MojEracun\_temp\", guid);
+                var export = new CsvExport<AcquireEmailExportForEmailNotificationModel>(model.AsQueryable(), ',');
+                export.ExportToFile(tempFileName, true);
+
+
+                var fs = new FileStream(tempFileName, FileMode.Open, FileAccess.Read);
+
+                string fileName = "Rezultati.csv";
+
+                return File(fs, "application/octet-stream", fileName);
+            }
+
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         public ActionResult ExportEntitiesForEmailNotification(int campaignId)
