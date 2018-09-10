@@ -84,7 +84,10 @@ namespace MojCRM.Areas.Campaigns.Models
             Ended,
 
             [Description("Završeno")]
-            Completed
+            Completed,
+
+            [Description("Baza za tipsku")]
+            ReadyForEmailNotification
         }
 
         public string CampaignTypeString
@@ -112,6 +115,7 @@ namespace MojCRM.Areas.Campaigns.Models
                     case CampaignStatusEnum.Hold: return "Privremeno zaustavljeno";
                     case CampaignStatusEnum.Ended: return "Prekinuto";
                     case CampaignStatusEnum.Completed: return "Završeno";
+                    case CampaignStatusEnum.ReadyForEmailNotification: return "Baza za tipsku";
                 }
                 return "Status kampanje";
             }

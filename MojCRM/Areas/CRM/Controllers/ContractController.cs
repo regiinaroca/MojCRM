@@ -16,6 +16,12 @@ namespace MojCRM.Areas.CRM.Controllers
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
         private readonly HelperMethods _helper = new HelperMethods();
         private readonly OrganizationHelperMethods _organizationHelper = new OrganizationHelperMethods();
+
+        /// <summary>
+        /// Index metgod where we have the list of all of the contracts
+        /// </summary>
+        /// <param name="model">Search parameters</param>
+        /// <returns>List of contracts matching search criteria</returns>
         // GET: CRM/Contract
         public ActionResult Index(ContractSearchModel model)
         {
@@ -37,6 +43,11 @@ namespace MojCRM.Areas.CRM.Controllers
             return View(contracts.OrderByDescending(c => c.Id));
         }
 
+        /// <summary>
+        /// Method which gets the contracts from Moj-eRačun
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public JsonResult GetContracts(Guid user)
         {
             var credentials = new { MerUser = "", MerPass = "" };

@@ -14,12 +14,22 @@ namespace MojCRM.Areas.CRM.Controllers
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
+        /// <summary>
+        /// Get View for the report
+        /// </summary>
+        /// <returns></returns>
         // GET: CRM/UserReport/GetInaDailyReport
         public ActionResult GetInaDailyReport()
         {
             return View();
         }
 
+        /// <summary>
+        /// Get data from Moj-eRačun for the report
+        /// </summary>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns>Excel file for the report</returns>
         // POST: CRM/UserReport/GetInaDailyReport
         [HttpPost]
         public FileContentResult GetInaDailyReport(DateTime? startDate, DateTime? endDate)

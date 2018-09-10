@@ -537,7 +537,8 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             if (model.Any())
             {
                 string guid = Guid.NewGuid() + "_crm.csv";
-                string tempFileName = Path.Combine(@"d:\Temp\MojEracun\_temp\", guid);
+                //string tempFileName = Path.Combine(@"d:\Temp\MojEracun\_temp\", guid); // local path
+                string tempFileName = Path.Combine(@"D:\MojEracunTemp\_temp\", guid); // production path
                 var export = new CsvExport<AcquireEmailExportForEmailNotificationModel>(model.AsQueryable(), ',');
                 export.ExportToFile(tempFileName, true);
 
