@@ -39,7 +39,8 @@ namespace MojCRM.Areas.Campaigns.ViewModels
                     new SelectListItem {Value = null, Text = @"-- Odaberi status kampanje --"},
                     new SelectListItem {Value = "1", Text = @"U tijeku"},
                     new SelectListItem {Value = "2", Text = @"Privremeno zaustavljeno"},
-                    new SelectListItem {Value = "3", Text = @"Prekinuto"},
+                    //new SelectListItem {Value = "3", Text = @"Prekinuto"},
+                    new SelectListItem {Value = "5", Text = @"Baza za tipsku"},
                     new SelectListItem {Value = "4", Text = @"Završeno"}
                 };
                 return statusList.AsQueryable();
@@ -69,6 +70,8 @@ namespace MojCRM.Areas.Campaigns.ViewModels
                     new SelectListItem{ Value= @"9", Text = @"Nema broja"},
                     new SelectListItem{ Value= @"14", Text = @"Inozemna tvrtka"},
                     new SelectListItem{ Value= @"15", Text = @"Tvrtka u mirovanju"},
+                    new SelectListItem{ Value= @"16", Text = @"POŠTA PROVJERENO"},
+                    new SelectListItem{ Value= @"17", Text = @"Ne javlja se, PSP"}
                 };
                 return statusList.AsQueryable();
             }

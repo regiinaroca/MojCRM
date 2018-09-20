@@ -358,6 +358,8 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 case 16:
                     entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.PostChecked;
                     entity.UpdateDate = DateTime.Now;
+                    entity.Organization.MerDeliveryDetail.RequiredPostalService = true;
+                    entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation = "POŠTA PROVJERENO";
                     _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.PostChecked, entityId);
                     _helper.LogActivity("Promijenjen status obrade. Novi status: Pošta provjereno", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();

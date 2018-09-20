@@ -18,7 +18,7 @@ new ListItem{ Value= @"3", Text = @"Revidirano"}
         new ListItem{ Value= @"1", Text = @"Dobivena povratna informacija"},
         new ListItem{ Value= @"2", Text = @"Nema odgovora / Ne javlja se"},
         new ListItem{ Value= @"4", Text = @"Ne posluju s korisnikom"},
-        new ListItem{ Value= @"13", Text = @"POŠTA"},
+        //new ListItem{ Value= @"13", Text = @"POŠTA"},
         new ListItem{ Value= @"5", Text = @"Partner će se javiti korisniku samostalno"},
         new ListItem{ Value= @"6", Text = @"Potrebno poslati pisanu suglasnost"},
         //new ListItem{ Value= @"7", Text = @"Neispravan kontakt broj"},
@@ -160,7 +160,7 @@ new ListItem{ Value= @"3", Text = @"Revidirano"}
         <strong>Opis kampanje: </strong>@Model.Entity.Campaign.CampaignDescription
     </div>
     <div class="col-md-3">
-        <strong>Subjekt u obradi: </strong>@Model.Entity.Organization.SubjectName
+        <strong>Subjekt u obradi: </strong>@Model.Entity.Organization.SubjectName (@Model.Entity.Organization.VAT)
     </div>
     <div class="col-md-2">
         <strong>Aktivnosti: </strong><a class="add-successfull-call" data-entity-id="@Model.Entity.Id" title="Zabilježi uspješan poziv"><i style="color: forestgreen" class="fa fa-phone-square fa-lg"></i></a> | <a class="add-unsuccessfull-call" data-entity-id="@Model.Entity.Id" title="Zabilježi neuspješan poziv"><i style="color: red" class="fa fa-phone-square fa-lg"></i></a>
