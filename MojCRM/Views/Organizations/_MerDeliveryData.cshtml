@@ -19,14 +19,14 @@
                             <div class="col-md-10">
                                 <label for="important-comment">Napomena:</label>
                                 <div id="important-comment">
-                                    @Html.TextArea("Comment", ViewBag.CurrentFilter as string, new { @class = "form-control" })
+                                    @Html.TextArea("comment", ViewBag.CurrentFilter as string, new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
                         <br />
                         <div class="hidden">
                             <div id="organization-id">
-                                @Html.TextBox("ReceiverId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Organization.MerId })
+                                @Html.TextBox("receiverId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Organization.MerId })
                             </div>
                         </div>
                     </div>

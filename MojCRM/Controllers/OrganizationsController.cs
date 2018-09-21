@@ -10,8 +10,6 @@ using System.Text;
 using MojCRM.Areas.HelpDesk.Helpers;
 using MojCRM.Areas.HelpDesk.Models;
 using MojCRM.Areas.Sales.Helpers;
-using System.Runtime.InteropServices;
-using System.Collections.Generic;
 using OfficeOpenXml;
 using System.Web;
 
@@ -22,6 +20,7 @@ namespace MojCRM.Controllers
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
         private readonly AcquireEmailMethodHelpers _acquireEmailMethodHelpers = new AcquireEmailMethodHelpers();
         private readonly OpportunityHelperMethods _opportunityHelperMethods = new OpportunityHelperMethods();
+        private readonly HelperMethods _helper = new HelperMethods();
 
         // GET: Organizations
         [Authorize]
@@ -32,19 +31,20 @@ namespace MojCRM.Controllers
                                 select o;
             int results = 0;
 
+            // Search Engine
             if (!String.IsNullOrEmpty(model.VAT))
             {
-                organizations = organizations.Where(o => o.VAT.Contains(model.VAT));
+                organizations = organizations.Where(o => o.VAT.StartsWith(model.VAT));
                 results = organizations.Count();
             }
             if (!String.IsNullOrEmpty(model.SubjectName))
             {
-                organizations = organizations.Where(o => o.SubjectName.Contains(model.SubjectName));
+                organizations = organizations.Where(o => o.SubjectName.StartsWith(model.SubjectName));
                 results = organizations.Count();
             }
             if (!String.IsNullOrEmpty(model.MainCity))
             {
-                organizations = organizations.Where(o => o.OrganizationDetail.MainCity.Contains(model.MainCity));
+                organizations = organizations.Where(o => o.OrganizationDetail.MainCity.StartsWith(model.MainCity));
                 results = organizations.Count();
             }
             if (!String.IsNullOrEmpty(model.IsActive))
@@ -116,8 +116,13 @@ namespace MojCRM.Controllers
             }
         }
 
+        /// <summary>
+        /// Method which gets and inserts new organizations from Moj-eRačun API
+        /// </summary>
+        /// <param name="user">System user</param>
+        /// <returns></returns>
         // GET: Organizations/GetOrganizations
-        public JsonResult GetOrganizations(Guid user)
+        public JsonResult GetOrganizations(Guid? user)
         {
             var credentials = new { MerUser = "", MerPass = "" };
             if (String.IsNullOrEmpty(user.ToString()))
@@ -137,7 +142,7 @@ namespace MojCRM.Controllers
                                orderby o.MerId descending
                                select o.MerId).First();
             int createdCompanies = 0;
-            var Response = new MerGetSubjektDataResponse()
+            var response = new MerGetSubjektDataResponse()
             {
                 Id = 238,
                 Naziv = "Test Klising d.o.o."
@@ -145,7 +150,7 @@ namespace MojCRM.Controllers
             referencedId++;
             try
             {
-                while (Response != null)
+                while (response != null)
                 {
                     MerApiGetSubjekt request = new MerApiGetSubjekt()
                     {
@@ -163,9 +168,9 @@ namespace MojCRM.Controllers
                     {
                         mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                         mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                        var _Response = mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getSubjektData").ToString(), "POST", merRequest);
-                        _Response = _Response.Replace("[", "").Replace("]", "");
-                        MerGetSubjektDataResponse result = JsonConvert.DeserializeObject<MerGetSubjektDataResponse>(_Response);
+                        var apiResponse = mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getSubjektData").ToString(), "POST", merRequest);
+                        apiResponse = apiResponse.Replace("[", "").Replace("]", "");
+                        MerGetSubjektDataResponse result = JsonConvert.DeserializeObject<MerGetSubjektDataResponse>(apiResponse);
                         if (result == null)
                         {
                             break;
@@ -223,13 +228,18 @@ namespace MojCRM.Controllers
             return Json(new { Status = "OK", CreatedCompanies = createdCompanies }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Method which uses Moj-eRačun API to update data for one Organization
+        /// </summary>
+        /// <param name="merId">Organization ID</param>
+        /// <returns></returns>
         // GET: Organization/UpdateOrganization/1
         public ActionResult UpdateOrganization(int merId)
         {
             var credentials = (from u in _db.Users
                                where u.UserName == User.Identity.Name
                                select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
-            var organization = _db.Organizations.Find(merId);
+            var organization = _db.Organizations.First(o => o.MerId == merId);
 
             using (var mer = new WebClient() { Encoding = Encoding.UTF8 })
             {
@@ -251,8 +261,8 @@ namespace MojCRM.Controllers
                 response = response.Replace("[", "").Replace("]", "");
                 MerGetSubjektDataResponse result = JsonConvert.DeserializeObject<MerGetSubjektDataResponse>(response);
 
-                string postalCode = String.Empty;
-                string mainCity = String.Empty;
+                string postalCode;
+                string mainCity;
 
                 if (organization.OrganizationDetail.MainCountry == OrganizationDetail.CountryIdentificationCodeEnum.Hr)
                 {
@@ -294,56 +304,59 @@ namespace MojCRM.Controllers
             }
             _db.SaveChanges();
 
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
+        /// <summary>
+        /// Method which uses Moj-eRačun API to update data for all Organizations
+        /// </summary>
         // GET: Organizations/UpdateOrganizations
-            public void UpdateOrganizations()
+        public void UpdateOrganizations()
         {
-            var Credentials = (from u in _db.Users
+            var credentials = (from u in _db.Users
                                where u.UserName == User.Identity.Name
                                select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
-            var Organizations = from o in _db.Organizations
+            var organizations = from o in _db.Organizations
                                  select o;
 
 
-                foreach (var Organization in Organizations)
+                foreach (var organization in organizations)
                 {
-                MerApiGetSubjekt Request = new MerApiGetSubjekt()
+                MerApiGetSubjekt request = new MerApiGetSubjekt()
                     {
-                        Id = Credentials.MerUser,
-                        Pass = Credentials.MerPass,
+                        Id = credentials.MerUser,
+                        Pass = credentials.MerPass,
                         Oib = "99999999927",
                         PJ = "",
                         SoftwareId = "MojCRM-001",
-                        SubjektPJ = Organization.MerId.ToString()
+                        SubjektPJ = organization.MerId.ToString()
                     };
 
-                    string MerRequest = JsonConvert.SerializeObject(Request);
+                    string merRequest = JsonConvert.SerializeObject(request);
 
-                    using (var Mer = new WebClient() { Encoding = Encoding.UTF8 })
+                    using (var mer = new WebClient() { Encoding = Encoding.UTF8 })
                     {
-                    Mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-                    Mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                    var _Response = Mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getSubjektData").ToString(), "POST", MerRequest);
-                    _Response = _Response.Replace("[", "").Replace("]", "");
-                    MerGetSubjektDataResponse Result = JsonConvert.DeserializeObject<MerGetSubjektDataResponse>(_Response);
+                    mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                    mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
+                    var apiResponse = mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getSubjektData").ToString(), "POST", merRequest);
+                    apiResponse = apiResponse.Replace("[", "").Replace("]", "");
+                    MerGetSubjektDataResponse result = JsonConvert.DeserializeObject<MerGetSubjektDataResponse>(apiResponse);
 
-                    string postalCode = Result.Mjesto.Substring(0, 5).Trim();
-                    string mainCity = Result.Mjesto.Substring(6).Trim();
+                    string postalCode = result.Mjesto.Substring(0, 5).Trim();
+                    string mainCity = result.Mjesto.Substring(6).Trim();
 
-                    Organization.SubjectName = Result.Naziv;
-                    Organization.FirstReceived = Result.FirstReceived;
-                    Organization.FirstSent = Result.FirstSent;
-                    Organization.ServiceProvider = (Organizations.ServiceProviderEnum)Result.ServiceProviderId;
-                    Organization.UpdateDate = DateTime.Now;
-                    Organization.LastUpdatedBy = User.Identity.Name;
-                    Organization.MerUpdateDate = DateTime.Now;
-                    Organization.OrganizationDetail.MainAddress = Result.Adresa;
-                    Organization.OrganizationDetail.MainPostalCode = Int32.Parse(postalCode);
-                    Organization.OrganizationDetail.MainCity = mainCity;
-                    Organization.MerDeliveryDetail.TotalSent = Result.TotalSent;
-                    Organization.MerDeliveryDetail.TotalReceived = Result.TotalReceived;
+                    organization.SubjectName = result.Naziv;
+                    organization.FirstReceived = result.FirstReceived;
+                    organization.FirstSent = result.FirstSent;
+                    organization.ServiceProvider = (Organizations.ServiceProviderEnum)result.ServiceProviderId;
+                    organization.UpdateDate = DateTime.Now;
+                    organization.LastUpdatedBy = User.Identity.Name;
+                    organization.MerUpdateDate = DateTime.Now;
+                    organization.OrganizationDetail.MainAddress = result.Adresa;
+                    organization.OrganizationDetail.MainPostalCode = Int32.Parse(postalCode);
+                    organization.OrganizationDetail.MainCity = mainCity;
+                    organization.MerDeliveryDetail.TotalSent = result.TotalSent;
+                    organization.MerDeliveryDetail.TotalReceived = result.TotalReceived;
                 }
             }
             _db.SaveChanges();
@@ -351,84 +364,82 @@ namespace MojCRM.Controllers
 
         // POST: Organizations/EditImportantComment
         [HttpPost]
-        public ActionResult EditImportantComment(string Comment, int ReceiverId)
+        public ActionResult EditImportantComment(string comment, int receiverId)
         {
-            var DetailForEdit = (from dd in _db.MerDeliveryDetails
-                                 where dd.MerId == ReceiverId
-                                 select dd).First();
+            var detailForEdit = _db.MerDeliveryDetails.First(dd => dd.MerId == receiverId);
 
-            DetailForEdit.ImportantComments = Comment;
+            detailForEdit.ImportantComments = comment;
             _db.SaveChanges();
 
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         // POST: Organizations/EditOrganizationDetails
-        public ActionResult EditOrganizationDetails(EditOrganizationDetails Model)
+        public ActionResult EditOrganizationDetails(EditOrganizationDetails model)
         {
-            var organization = _db.OrganizationDetails.Find(Model.MerId);
-            string LogString = "Agent " + User.Identity.Name + " je napravio izmjene na subjektu: "
+            var organization = _db.OrganizationDetails.First(o => o.MerId == model.MerId);
+            string logString = "Agent " + User.Identity.Name + " je napravio izmjene na subjektu: "
                 + organization.Organization.SubjectName + ". Izmjenjeni su:";
 
-            if (!String.IsNullOrEmpty(Model.TelephoneNumber))
+            if (!String.IsNullOrEmpty(model.TelephoneNumber))
             {
-                if (!String.Equals(Model.TelephoneNumber, organization.TelephoneNumber))
-                    LogString += " - broj telefona iz " + organization.TelephoneNumber + " u " + Model.TelephoneNumber;
-                organization.TelephoneNumber = Model.TelephoneNumber;
+                if (!String.Equals(model.TelephoneNumber, organization.TelephoneNumber))
+                    logString += " - broj telefona iz " + organization.TelephoneNumber + " u " + model.TelephoneNumber;
+                organization.TelephoneNumber = model.TelephoneNumber;
             }
-            if (!String.IsNullOrEmpty(Model.MobilePhoneNumber))
+            if (!String.IsNullOrEmpty(model.MobilePhoneNumber))
             {
-                if (!String.Equals(Model.MobilePhoneNumber, organization.MobilePhoneNumber))
-                    LogString += " - broj mobitela iz " + organization.MobilePhoneNumber + " u " + Model.MobilePhoneNumber;
-                organization.MobilePhoneNumber = Model.MobilePhoneNumber;
+                if (!String.Equals(model.MobilePhoneNumber, organization.MobilePhoneNumber))
+                    logString += " - broj mobitela iz " + organization.MobilePhoneNumber + " u " + model.MobilePhoneNumber;
+                organization.MobilePhoneNumber = model.MobilePhoneNumber;
             }
-            if (!String.IsNullOrEmpty(Model.EmailAddress))
+            if (!String.IsNullOrEmpty(model.EmailAddress))
             {
-                if (!String.Equals(Model.EmailAddress, organization.EmailAddress))
-                    LogString += " - e-mail adresa iz " + organization.EmailAddress + " u " + Model.EmailAddress;
-                organization.EmailAddress = Model.EmailAddress;
+                if (!String.Equals(model.EmailAddress, organization.EmailAddress))
+                    logString += " - e-mail adresa iz " + organization.EmailAddress + " u " + model.EmailAddress;
+                organization.EmailAddress = model.EmailAddress;
             }
-            if (!String.IsNullOrEmpty(Model.ERP))
+            if (!String.IsNullOrEmpty(model.ERP))
             {
-                if (!String.Equals(Model.ERP, organization.ERP))
-                    LogString += " - ERP iz " + organization.ERP + " u " + Model.ERP;
-                organization.ERP = Model.ERP;
+                if (!String.Equals(model.ERP, organization.ERP))
+                    logString += " - ERP iz " + organization.ERP + " u " + model.ERP;
+                organization.ERP = model.ERP;
             }
-            if (!String.IsNullOrEmpty(Model.NumberOfInvoicesSent))
+            if (!String.IsNullOrEmpty(model.NumberOfInvoicesSent))
             {
-                if (!String.Equals(Model.NumberOfInvoicesSent, organization.NumberOfInvoicesSent))
-                    LogString += " - broj IRA iz " + organization.NumberOfInvoicesSent + " u " + Model.NumberOfInvoicesSent;
-                organization.NumberOfInvoicesSent = Model.NumberOfInvoicesSent;
+                if (!String.Equals(model.NumberOfInvoicesSent, organization.NumberOfInvoicesSent))
+                    logString += " - broj IRA iz " + organization.NumberOfInvoicesSent + " u " + model.NumberOfInvoicesSent;
+                organization.NumberOfInvoicesSent = model.NumberOfInvoicesSent;
             }
-            if (!String.IsNullOrEmpty(Model.NumberOfInvoicesReceived))
+            if (!String.IsNullOrEmpty(model.NumberOfInvoicesReceived))
             {
-                if (!String.Equals(Model.NumberOfInvoicesReceived, organization.NumberOfInvoicesReceived))
-                    LogString += " - broj URA iz " + organization.NumberOfInvoicesReceived + " u " + Model.NumberOfInvoicesReceived;
-                organization.NumberOfInvoicesReceived = Model.NumberOfInvoicesReceived;
+                if (!String.Equals(model.NumberOfInvoicesReceived, organization.NumberOfInvoicesReceived))
+                    logString += " - broj URA iz " + organization.NumberOfInvoicesReceived + " u " + model.NumberOfInvoicesReceived;
+                organization.NumberOfInvoicesReceived = model.NumberOfInvoicesReceived;
             }
-            if (!String.IsNullOrEmpty(Model.CorrespondenceAddress))
+            if (!String.IsNullOrEmpty(model.CorrespondenceAddress))
             {
-                if (!String.Equals(Model.CorrespondenceAddress, organization.CorrespondenceAddress))
-                    LogString += " - adresa za dostavu iz " + organization.CorrespondenceAddress + " u " + Model.CorrespondenceAddress;
-                organization.CorrespondenceAddress = Model.CorrespondenceAddress;
+                if (!String.Equals(model.CorrespondenceAddress, organization.CorrespondenceAddress))
+                    logString += " - adresa za dostavu iz " + organization.CorrespondenceAddress + " u " + model.CorrespondenceAddress;
+                organization.CorrespondenceAddress = model.CorrespondenceAddress;
             }
-            if (!String.IsNullOrEmpty(Model.CorrespondenceCity))
+            if (!String.IsNullOrEmpty(model.CorrespondenceCity))
             {
-                if (!String.Equals(Model.CorrespondenceCity, organization.CorrespondenceCity))
-                    LogString += " - grad/mjesto za dostavu iz " + organization.CorrespondenceCity + " u " + Model.CorrespondenceCity;
-                organization.CorrespondenceCity = Model.CorrespondenceCity;
+                if (!String.Equals(model.CorrespondenceCity, organization.CorrespondenceCity))
+                    logString += " - grad/mjesto za dostavu iz " + organization.CorrespondenceCity + " u " + model.CorrespondenceCity;
+                organization.CorrespondenceCity = model.CorrespondenceCity;
             }
-            if (Model.CorrespondencePostalCode != 0)
+            if (model.CorrespondencePostalCode != 0)
             {
-                if (Model.CorrespondencePostalCode != organization.CorrespondencePostalCode)
-                    LogString += " - poštanski broj iz " + organization.CorrespondencePostalCode + " u " + Model.CorrespondencePostalCode;
-                organization.CorrespondencePostalCode = Model.CorrespondencePostalCode;
+                if (model.CorrespondencePostalCode != organization.CorrespondencePostalCode)
+                    logString += " - poštanski broj iz " + organization.CorrespondencePostalCode + " u " + model.CorrespondencePostalCode;
+                organization.CorrespondencePostalCode = model.CorrespondencePostalCode;
             }
-            LogString += ".";
+            logString += ".";
             organization.Organization.UpdateDate = DateTime.Now;
             organization.Organization.LastUpdatedBy = User.Identity.Name;
 
-            LogActivity(LogString, User.Identity.Name, organization.MerId, ActivityLog.ActivityTypeEnum.Organizationupdate);
+            _helper.LogActivity(logString, User.Identity.Name, organization.MerId, ActivityLog.ActivityTypeEnum.Organizationupdate, ActivityLog.DepartmentEnum.MojCrm, ActivityLog.ModuleEnum.Organizations);
 
             _db.SaveChanges();
 
@@ -466,7 +477,7 @@ namespace MojCRM.Controllers
             organization.Organization.UpdateDate = DateTime.Now;
             organization.Organization.LastUpdatedBy = User.Identity.Name;
 
-            LogActivity(logString, User.Identity.Name, organization.MerId, ActivityLog.ActivityTypeEnum.Organizationupdate);
+            _helper.LogActivity(logString, User.Identity.Name, organization.MerId, ActivityLog.ActivityTypeEnum.Organizationupdate, ActivityLog.DepartmentEnum.MojCrm, ActivityLog.ModuleEnum.Organizations);
 
             _db.SaveChanges();
 
@@ -477,7 +488,7 @@ namespace MojCRM.Controllers
         [Authorize(Roles = "Superadmin")]
         public ActionResult EditImportantOrganizationInfo(EditImportantOrganizationInfo model)
         {
-            var organization = _db.Organizations.Find(model.MerId);
+            var organization = _db.Organizations.First(o => o.MerId == model.MerId);
 
             string logString = "Agent " + User.Identity.Name + " je napravio izmjene na subjektu: "
                 + organization.SubjectName + ". Izmjenjeni su:";
@@ -525,11 +536,11 @@ namespace MojCRM.Controllers
             organization.UpdateDate = DateTime.Now;
             organization.LastUpdatedBy = User.Identity.Name;
 
-            LogActivity(logString, User.Identity.Name, organization.MerId, ActivityLog.ActivityTypeEnum.Organizationupdate);
+            _helper.LogActivity(logString, User.Identity.Name, organization.MerId, ActivityLog.ActivityTypeEnum.Organizationupdate, ActivityLog.DepartmentEnum.MojCrm, ActivityLog.ModuleEnum.Organizations);
 
             _db.SaveChanges();
 
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         // POST: Organizations/EditEmailAddressForVerification
@@ -545,9 +556,9 @@ namespace MojCRM.Controllers
             entity.Organization.LastUpdatedBy = User.Identity.Name;
             _db.SaveChanges();
 
-            LogActivity(logString, User.Identity.Name, merId, ActivityLog.ActivityTypeEnum.Organizationupdate);
+            _helper.LogActivity(logString, User.Identity.Name, merId, ActivityLog.ActivityTypeEnum.Organizationupdate, ActivityLog.DepartmentEnum.MojCrm, ActivityLog.ModuleEnum.Organizations);
 
-            return Redirect(Request.UrlReferrer.ToString());
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         // GET: Organizations/AddAttribute
@@ -577,14 +588,14 @@ namespace MojCRM.Controllers
 
         // POST: Organizations/CopyMainAddress
         [HttpPost]
-        public JsonResult CopyMainAddress(EditOrganizationDetails Model)
+        public JsonResult CopyMainAddress(EditOrganizationDetails model)
         {
-            var organization = _db.OrganizationDetails.Find(Model.MerId);
+            var organization = _db.OrganizationDetails.First(o => o.MerId == model.MerId);
 
-            organization.CorrespondenceAddress = Model.MainAddress;
-            organization.CorrespondencePostalCode = Model.MainPostalCode;
-            organization.CorrespondenceCity = Model.MainCity;
-            organization.CorrespondenceCountry = Model.MainCountry;
+            organization.CorrespondenceAddress = model.MainAddress;
+            organization.CorrespondencePostalCode = model.MainPostalCode;
+            organization.CorrespondenceCity = model.MainCity;
+            organization.CorrespondenceCountry = model.MainCountry;
             organization.Organization.UpdateDate = DateTime.Now;
             organization.Organization.LastUpdatedBy = User.Identity.Name;
             _db.SaveChanges();
@@ -595,7 +606,7 @@ namespace MojCRM.Controllers
         [HttpPost]
         public JsonResult MarkAsVerified(int merId)
         {
-            var organization = _db.MerDeliveryDetails.Find(merId);
+            var organization = _db.MerDeliveryDetails.First(o => o.MerId == merId);
             organization.AcquiredReceivingInformationIsVerified = true;
             organization.Organization.LastUpdatedBy = User.Identity.Name;
             organization.Organization.UpdateDate = DateTime.Now;
@@ -621,6 +632,12 @@ namespace MojCRM.Controllers
             return Json(new { Status = "OK" });
         }
 
+        /// <summary>
+        /// Method which reads an Excel file and writes telephone numbers in Database
+        /// Excel file should have two columns - VAT and Telephone number
+        /// </summary>
+        /// <param name="file">Excel file</param>
+        /// <returns></returns>
         //GET: Organizations/ImportEmailsForVerification
         public JsonResult ImportEmailsForVerification(HttpPostedFileBase file)
         {
@@ -662,21 +679,6 @@ namespace MojCRM.Controllers
                 return Json(new { ImportedEmails = importedEmails, UnimportedEmails = unimportedEmails });
         }
 
-        public void LogActivity(string ActivityDescription, string User, int ActivityReferenceId, ActivityLog.ActivityTypeEnum ActivityType)
-        {
-            _db.ActivityLogs.Add(new ActivityLog
-            {
-                Description = ActivityDescription,
-                User = User,
-                ReferenceId = ActivityReferenceId,
-                ActivityType = ActivityType,
-                Department = ActivityLog.DepartmentEnum.MojCrm,
-                Module = ActivityLog.ModuleEnum.Organizations,
-                InsertDate = DateTime.Now
-            });
-            _db.SaveChanges();
-        }
-
         public JsonResult AutocompleteOrganization(string query)
         {
             try
@@ -684,7 +686,7 @@ namespace MojCRM.Controllers
                 var organizations = _db.Organizations.Where(o =>
                 o.SubjectName.StartsWith(query) ||
                 o.VAT.StartsWith(query))
-                .Select(o => new { Organization = o.SubjectName + " - " + o.VAT, MerId = o.MerId})
+                .Select(o => new { Organization = o.SubjectName + " - " + o.VAT, o.MerId})
                 .Take(10)
                 .ToList();
 

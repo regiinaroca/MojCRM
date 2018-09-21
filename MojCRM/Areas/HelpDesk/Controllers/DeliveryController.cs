@@ -49,21 +49,21 @@ namespace MojCRM.Areas.HelpDesk.Controllers
 
             if (!string.IsNullOrEmpty(model.Sender))
             {
-                resultsNew = resultsNew.Where(t => t.Sender.SubjectName.Contains(model.Sender) || t.Sender.VAT.Contains(model.Sender));
+                resultsNew = resultsNew.Where(t => t.Sender.SubjectName.StartsWith(model.Sender) || t.Sender.VAT.StartsWith(model.Sender));
                 ViewBag.SearchResults = resultsNew.Count();
                 ViewBag.SearchResultsAssigned = resultsNew.Count(t => t.IsAssigned);
             }
 
             if (!string.IsNullOrEmpty(model.Receiver))
             {
-                resultsNew = resultsNew.Where(t => t.Receiver.SubjectName.Contains(model.Receiver) || t.Receiver.VAT.Contains(model.Receiver));
+                resultsNew = resultsNew.Where(t => t.Receiver.SubjectName.StartsWith(model.Receiver) || t.Receiver.VAT.StartsWith(model.Receiver));
                 ViewBag.SearchResults = resultsNew.Count();
                 ViewBag.SearchResultsAssigned = resultsNew.Count(t => t.IsAssigned);
             }
 
             if (!string.IsNullOrEmpty(model.InvoiceNumber))
             {
-                resultsNew = resultsNew.Where(t => t.InvoiceNumber.Contains(model.InvoiceNumber));
+                resultsNew = resultsNew.Where(t => t.InvoiceNumber.StartsWith(model.InvoiceNumber));
                 ViewBag.SearchResults = resultsNew.Count();
                 ViewBag.SearchResultsAssigned = resultsNew.Count(t => t.IsAssigned);
             }
