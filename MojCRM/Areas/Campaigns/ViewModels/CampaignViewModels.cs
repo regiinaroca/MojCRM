@@ -223,6 +223,9 @@ namespace MojCRM.Areas.Campaigns.ViewModels
                     case AcquireEmail.AcquireEmailEntityStatusEnum.NoAnswerOldPost:
                         status = "Ne javlja se, PSP";
                         break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.AcquiredInformationNoEmail:
+                        status = "Prikupljena povratna informacija, ne žele obavijest";
+                        break;
                     default:
                         status = "Status unosa";
                         break;

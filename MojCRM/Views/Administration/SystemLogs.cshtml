@@ -1,0 +1,26 @@
+﻿@using GridMvc.Html
+@model IQueryable<MojCRM.Models.ActivityLog>
+@{
+    ViewBag.Title = "Logovi";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+}
+
+<body>
+    <h2 style="text-align:center"><strong>Logovi</strong></h2>
+    <hr />
+    @Html.Grid(Model).Named("Popis logova").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
+    {
+    columns.Add(m => m.Id).Encoded(false).Sanitized(false).Titled("ID").Sortable(true);
+    columns.Add(m => m.ActivityType).Encoded(false).Sanitized(false).Titled("Tip aktivnosti").Sortable(true).RenderValueAs(m =>
+    {
+            return @<div><span>@Html.Raw(m.ActivityTypeString)</span></div>;
+    });
+    columns.Add(m => m.Description).Encoded(false).Sanitized(false).Titled("Opis zapisa").Sortable(true);
+    columns.Add(m => m.User).Encoded(false).Sanitized(false).Titled("Korisnik").Sortable(true);
+    columns.Add(m => m.InsertDate).Encoded(false).Sanitized(false).Titled("Datum i vrijeme kreiranja").Sortable(true).RenderValueAs(m =>
+    {
+            return @<div><span>@Html.Raw(m.InsertDate)</span></div>;
+    });
+    }).WithPaging(20)
+</body>
+

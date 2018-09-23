@@ -371,6 +371,13 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                     _helper.LogActivity("Promijenjen status obrade. Novi status: Ne javlja se, PSP", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
                     _db.SaveChanges();
                     break;
+                case 18:
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.AcquiredInformationNoEmail;
+                    entity.UpdateDate = DateTime.Now;
+                    _acquireEmailMethodHelpers.ApplyToAllEntities(AcquireEmailEntityStatusEnum.AcquiredInformationNoEmail, entityId);
+                    _helper.LogActivity("Promijenjen status obrade. Novi status: Prikupljena povratna informacija, ne žele obavijest", User.Identity.Name, entityId, ActivityLog.ActivityTypeEnum.AcquireEmailEntityStatusChange, ActivityLog.DepartmentEnum.DatabaseUpdate, ActivityLog.ModuleEnum.AqcuireEmail);
+                    _db.SaveChanges();
+                    break;
                 case 99:
                     break;
 

@@ -24,6 +24,13 @@ namespace MojCRM.Controllers
             return View();
         }
 
+        // GET: Administration/SystemLogs
+        public ActionResult SystemLogs()
+        {
+            var logs = _db.ActivityLogs.Where(x => x.ActivityType == ActivityLog.ActivityTypeEnum.System).OrderByDescending(x => x.Id);
+            return View(logs);
+        }
+
         // GET: DailyUpdates
         public JsonResult DailyUpdates()
         {
