@@ -14,4 +14,16 @@ namespace MojCRM.Helpers
         public int DoNotCall { get; set; }
         public int ContactType { get; set; }
     }
+
+    public class ContactSearchHelper
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string TitleFunction { get; set; }
+        public string Organization { get; set; }
+        public string TelephoneOrMobile { get; set; }
+        public int? ContactType { get; set; }
+        public string Email { get; set; }
+        public string Agent { get; set; }
+    }
 }

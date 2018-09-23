@@ -15,13 +15,59 @@ namespace MojCRM.Controllers
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
+        /// <summary>
+        /// Initial method which provides the list of all contacts and search engine for contacts
+        /// </summary>
+        /// <returns></returns>
         // GET: Contact
         [Authorize]
-        public ActionResult Index()
+        public ActionResult Index(ContactSearchHelper model)
         {
-            var contacts = from c in _db.Contacts
-                           select c;
-            return View(contacts.ToList());
+            var contacts = _db.Contacts.AsQueryable();
+
+            // Search Engine
+            if (!string.IsNullOrEmpty(model.FirstName))
+            {
+                contacts = contacts.Where(t => t.ContactFirstName.StartsWith(model.FirstName));
+            }
+
+            if (!string.IsNullOrEmpty(model.LastName))
+            {
+                contacts = contacts.Where(t => t.ContactLastName.StartsWith(model.LastName));
+            }
+
+            if (!string.IsNullOrEmpty(model.TitleFunction))
+            {
+                contacts = contacts.Where(t => t.Title.StartsWith(model.TitleFunction));
+            }
+
+            if (!string.IsNullOrEmpty(model.Organization))
+            {
+                contacts = contacts.Where(t => t.Organization.VAT.StartsWith(model.Organization) || t.Organization.SubjectName.StartsWith(model.Organization));
+            }
+
+            if (!string.IsNullOrEmpty(model.TelephoneOrMobile))
+            {
+                contacts = contacts.Where(t => t.TelephoneNumber.StartsWith(model.TelephoneOrMobile) || t.MobilePhoneNumber.StartsWith(model.TelephoneOrMobile));
+            }
+
+            if (model.ContactType != null)
+            {
+                var tempType = (Contact.ContactTypeEnum)model.ContactType;
+                contacts = contacts.Where(x => x.ContactType == tempType);
+            }
+
+            if (!string.IsNullOrEmpty(model.Email))
+            {
+                contacts = contacts.Where(t => t.Email.StartsWith(model.Email));
+            }
+
+            if (!string.IsNullOrEmpty(model.Agent))
+            {
+                contacts = contacts.Where(t => t.User.StartsWith(model.Agent));
+            }
+
+            return View(contacts.OrderBy(c => c.ContactId));
         }
 
         // GET: Contact/Create

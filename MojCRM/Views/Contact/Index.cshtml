@@ -1,30 +1,122 @@
 ﻿@using GridMvc.Html
-@model IEnumerable<MojCRM.Models.Contact>
+@using System.Web.UI.WebControls
+@model IQueryable<MojCRM.Models.Contact>
 @{
     ViewBag.Title = "Kontakti";
     Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+
+    var contactTypeList = new List<ListItem>
+    {
+        new ListItem{ Value= @"0", Text = @"Općeniti"},
+        new ListItem{ Value= @"1", Text = @"Dostava eDokumenata"},
+        new ListItem{ Value= @"2", Text = @"Prodaja"}
+    };
 }
 
 <h2 style="text-align:center"><strong>Kontakti</strong></h2>
 
 <hr />
 
-<div>
-    <div class="row" style="text-align:center">
-        <div class="col-md-12">
-            <div class="btn btn-group" role="group">
-                <a href="@Url.Action("Create", "Contact")" class="btn btn-default btn-sm" title="Dodaj kontakt">
-                    <i class="fa fa-plus"></i>
-                </a>
+@*<div>
+        <div class="row" style="text-align:center">
+            <div class="col-md-12">
+                <div class="btn btn-group" role="group">
+                    <a href="@Url.Action("Create", "Contact")" class="btn btn-default btn-sm" title="Dodaj kontakt">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<hr />
+    <hr />*@
 
+@using (Html.BeginForm("Index", "Contact", FormMethod.Get))
+{
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="first-name-search">Ime kontakta</label>
+                <div id="first-name-search">
+                    @Html.TextBox("FirstName", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Ime kontakta" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="last-name-search">Prezime kontakta</label>
+                <div id="last-name-search">
+                    @Html.TextBox("LastName", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Prezime kontakta" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="title-search">Titula / funkcija</label>
+                <div id="title-search">
+                    @Html.TextBox("TitleFunction", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Titula / funkcija" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="organization-search">Tvrtka</label>
+                <div id="organization-search">
+                    @Html.TextBox("Organization", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Tvrtka" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="phone-search">Broj telefona ili mobitela</label>
+                <div id="phone-search">
+                    @Html.TextBox("TelephoneOrMobile", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Broj telefona ili mobitela" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="contact-type-search">Tip kontakta</label>
+                <div id="contact-type-search">
+                    @Html.DropDownList("ContactType", new SelectList(contactTypeList, "Value", "Text"), "Odaberi tip kontakta", new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="email-search">Email</label>
+                <div id="email-search">
+                    @Html.TextBox("Email", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Email" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="agent-search">Agent</label>
+                <div id="agent-search">
+                    @Html.TextBox("Agent", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Agent" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group" style="margin-bottom:0">
+            <input id="Search" type="submit" class="btn btn-primary btn-sm" value="Traži" />
+            <input id="btn-reset" type="reset" class="btn btn-warning btn-sm" value="Poništi" />
+        </div>
+    </div>
+    <br/>
+}
+<hr/>
 @Html.Grid(Model).Named("PopisKontakata").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
 {
     columns.Add(m => m.ContactFirstName).Encoded(false).Sanitized(false).Titled("Ime kontakta").Sortable(true);
     columns.Add(m => m.ContactLastName).Encoded(false).Sanitized(false).Titled("Prezime kontakta").Sortable(true);
+    columns.Add(m => m.Title).Encoded(false).Sanitized(false).Titled("Titula / funkcija").Sortable(true);
+    columns.Add(m => m.Organization.SubjectName).Encoded(false).Sanitized(false).Titled("Tvrtka").Sortable(true).RenderValueAs(m =>
+    @Html.RouteLink(m.Organization.SubjectName + " (" + m.Organization.VAT + ")", new { action = "Details", controller = "Organizations", area = "", id = m.Organization.MerId }));
+    columns.Add(m => m.TelephoneNumber).Sanitized(false).Encoded(false).Titled("Telefon").Sortable(false);
+    columns.Add(m => m.MobilePhoneNumber).Sanitized(false).Encoded(false).Titled("Mobitelj").Sortable(false);
+    columns.Add(m => m.Email).Sanitized(false).Encoded(false).Titled("Email").Sortable(false);
+    columns.Add(m => m.ContactTypeString).Sanitized(false).Encoded(false).Titled("Tip").Sortable(false);
     columns.Add(m => m.User).Encoded(false).Sanitized(false).Titled("Kontakt agenta").Sortable(true);
 }).WithPaging(20)
