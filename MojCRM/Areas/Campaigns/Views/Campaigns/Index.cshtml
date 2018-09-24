@@ -149,7 +149,7 @@ return @<div><span>@Html.Raw(m.CampaignPlannedEndDate.ToShortDateString())</span
         {
             return @<div><span>
                        <a href="@Url.RouteUrl(new { action = "Details", controller = "Campaigns", area = "Campaigns", id=m.CampaignId, returnUrl = Request.Url })" title="Detalji kampanje"><i class="fa fa-list"></i></a>
-                       <a href="@Url.RouteUrl(new { action = "Edit", controller = "Campaigns", area = "Campaigns", id=m.CampaignId, returnUrl = Request.Url})" title="Uređivanje kampanje"><i class="fa fa-edit"></i></a>
+                       @*<a href="@Url.RouteUrl(new { action = "Edit", controller = "Campaigns", area = "Campaigns", id=m.CampaignId, returnUrl = Request.Url})" title="Uređivanje kampanje"><i class="fa fa-edit"></i></a>*@
                    </span>
                </div>;
     }

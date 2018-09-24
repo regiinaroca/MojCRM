@@ -119,4 +119,11 @@
     columns.Add(m => m.Email).Sanitized(false).Encoded(false).Titled("Email").Sortable(false);
     columns.Add(m => m.ContactTypeString).Sanitized(false).Encoded(false).Titled("Tip").Sortable(false);
     columns.Add(m => m.User).Encoded(false).Sanitized(false).Titled("Kontakt agenta").Sortable(true);
+    columns.Add().Encoded(false).Sanitized(false).RenderValueAs(m =>
+    {
+        return @<span>
+        <a href="@Url.RouteUrl(new { action = "Details", controller = "Contact", area = "", m.ContactId })"><i class="fa fa fa-list"></i></a>
+        <a href="@Url.RouteUrl(new { action = "Delete", controller = "Contact", area = "", m.ContactId, returnUrl = Request.Url })"><i class="fa fa-trash" style="color:gray"></i></a>
+        </span>;
+    });
 }).WithPaging(20)
