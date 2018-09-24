@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -26,13 +25,13 @@ namespace MojCRM.Areas.Campaigns.Models
         public enum MemberRoleEnum
         {
             [Description("Nositelj kampanje")]
-            HEAD,
+            Head,
 
             [Description("Nadzornik kampanje")]
-            SUPERVISOR,
+            Supervisor,
 
             [Description("Član")]
-            MEMBER
+            Member
         }
 
         public string MemberRoleString
@@ -41,9 +40,9 @@ namespace MojCRM.Areas.Campaigns.Models
             {
                 switch (MemberRole)
                 {
-                    case MemberRoleEnum.HEAD: return "Nositelj kampanje";
-                    case MemberRoleEnum.SUPERVISOR: return "Nadzornik kampanje";
-                    case MemberRoleEnum.MEMBER: return "Član kampanje";
+                    case MemberRoleEnum.Head: return "Nositelj kampanje";
+                    case MemberRoleEnum.Supervisor: return "Nadzornik kampanje";
+                    case MemberRoleEnum.Member: return "Član kampanje";
                 }
                 return "Rola";
             }

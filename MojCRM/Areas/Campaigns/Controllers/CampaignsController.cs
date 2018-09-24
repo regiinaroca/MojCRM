@@ -14,6 +14,7 @@ namespace MojCRM.Areas.Campaigns.Controllers
     public class CampaignsController : Controller
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        private readonly CampaignHelperMethods _campaignHelper = new CampaignHelperMethods();
 
         /// <summary>
         /// Index method where we have all of the campaigns listed
@@ -51,6 +52,8 @@ namespace MojCRM.Areas.Campaigns.Controllers
         // GET: Campaigns/Campaigns/Details/5
         public ActionResult Details(int id)
         {
+            _campaignHelper.UpdateCampaignMembers(id);
+
             Campaign campaign = _db.Campaigns.Find(id);
             var model = new CampaignDetailsViewModel();
             var campaignBasesStats = new EmailBasesCampaignStatsViewModel();
