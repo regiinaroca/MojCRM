@@ -55,6 +55,7 @@ namespace MojCRM.Areas.Campaigns.ViewModels
                 {
                     new SelectListItem{ Value = null, Text = @"-- Odaberi status obrade--"},
                     new SelectListItem{ Value= @"0", Text = @"Kreirano"},
+                    new SelectListItem{ Value= @"99", Text = @"Kreirano - sa e-mail adresom"},
                     new SelectListItem{ Value= @"1", Text = @"Dobivena povratna informacija"},
                     new SelectListItem{ Value= @"2", Text = @"Nema odgovora / Ne javlja se"},
                     new SelectListItem{ Value= @"4", Text = @"Ne posluju s korisnikom"},

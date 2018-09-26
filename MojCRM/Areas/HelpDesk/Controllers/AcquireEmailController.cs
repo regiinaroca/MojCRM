@@ -724,7 +724,24 @@ namespace MojCRM.Areas.HelpDesk.Controllers
 
         public ActionResult ChangeStatusBasedOnEntityStatus(AcquireEmailEntityStatusEnum entityStatus, int campaignId, AcquireEmailStatusEnum status)
         {
-            var entites = _db.AcquireEmails.Where(x => x.RelatedCampaignId == campaignId && x.AcquireEmailEntityStatus == entityStatus);
+            IQueryable<AcquireEmail> entites;
+
+            // if default, system checks entries which have email which is not verified and verifies entites
+            if (entityStatus == AcquireEmailEntityStatusEnum.Default)
+            {
+                entites = _db.AcquireEmails.Where(x => x.RelatedCampaignId == campaignId && x.AcquireEmailEntityStatus == AcquireEmailEntityStatusEnum.Created
+                && x.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains(@"@"));
+                foreach (var entity in entites)
+                {
+                    entity.AcquireEmailStatus = AcquireEmailStatusEnum.Verified;
+                    entity.AcquireEmailEntityStatus = AcquireEmailEntityStatusEnum.AcquiredInformation;
+                    entity.UpdateDate = DateTime.Now;
+                }
+                _db.SaveChanges();
+                return Redirect(Request.UrlReferrer?.ToString());
+            }
+
+            entites = _db.AcquireEmails.Where(x => x.RelatedCampaignId == campaignId && x.AcquireEmailEntityStatus == entityStatus);
             foreach (var entity in entites)
             {
                 entity.AcquireEmailStatus = status;

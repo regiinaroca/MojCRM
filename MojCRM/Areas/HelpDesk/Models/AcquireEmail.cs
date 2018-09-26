@@ -115,7 +115,9 @@ namespace MojCRM.Areas.HelpDesk.Models
             NoAnswerOldPost,
 
             [Description("Prikupljena povratna informacija, ne žele obavijest")]
-            AcquiredInformationNoEmail
+            AcquiredInformationNoEmail,
+
+            Default = 99
         }
 
         public string AcquireEmailEntityStatusString
