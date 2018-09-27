@@ -22,32 +22,45 @@
         Ovaj statistički pregled donosi informacije o potencijalnom prihodu od obrade baza korisnika.<br/>
         Sve cijene u pregledu su izražene u kunama u neto iznosu!<br />
         <br />
-        <strong>Napomena: </strong>pregled u startu daje pregled svih kampanja. Za specifičnije upite možete izvršiti pretragu po statusu.
+        <strong>Napomena: </strong>pregled u startu daje pregled svih kampanja. Za specifičnije upite možete izvršiti pretragu po statusu te po periodu u kojem je kampanja započela.
     </p>
 </div>
 <hr />
 @using (Html.BeginForm("AcquireEmailPaymentStat", "Stats", FormMethod.Get))
 {
-    <div class="row">
-        <div class="col-md-3">
-            <div class="form-group">
-                <label for="campaign-status">Status kampanje</label>
-                <div id="campaign-status">
-                    @Html.DropDownList("CampaignStatus", new SelectList(statusList, "Value", "Text"), "-- Svi statusi --", new { @class = "form-control" })
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-
-        </div>
-        <div class="col-md-6">
-            <div class="alert alert-info">
-                <p style="text-align: justify">
-                    Ukupan iznos pretraženih rezultata: <strong>@Model.SumTotalAmount kn</strong>
-                </p>
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="campaign-status">Status kampanje</label>
+            <div id="campaign-status">
+                @Html.DropDownList("CampaignStatus", new SelectList(statusList, "Value", "Text"), "-- Svi statusi --", new { @class = "form-control" })
             </div>
         </div>
     </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="start-date">Početak perioda</label>
+            <div id="start-date">
+                @Html.TextBox("startDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Početak perioda", @type = "text", @id = "start-date", @name = "start-date" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="end-date">Završetak perioda</label>
+            <div id="end-date">
+                @Html.TextBox("endDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Završetak perioda", @type = "text", @id = "end-date", @name = "end-date" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="alert alert-info">
+            <p style="text-align: justify">
+                Ukupan iznos pretraženih rezultata: <strong>@Model.SumTotalAmount kn</strong>
+            </p>
+        </div>
+    </div>
+</div>
     <div class="row">
         <div class="col-md-12">
             <div class="form-group" style="margin-bottom:0">

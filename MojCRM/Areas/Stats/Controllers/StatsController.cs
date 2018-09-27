@@ -579,7 +579,7 @@ namespace MojCRM.Areas.Stats.Controllers
         }
 
         // GET: Stats/AcquireEmailPaymentStat
-        public ActionResult AcquireEmailPaymentStat(Campaign.CampaignStatusEnum? campaignStatus)
+        public ActionResult AcquireEmailPaymentStat(Campaign.CampaignStatusEnum? campaignStatus, string startDate, string endDate)
         {
             var entities = _db.Campaigns.Where(c => c.CampaignType == Campaign.CampaignTypeEnum.EmailBases
             && c.CampaignAttributes.Contains(@"Naplata baze"));
@@ -588,6 +588,18 @@ namespace MojCRM.Areas.Stats.Controllers
             if (campaignStatus != null)
             {
                 entities = entities.Where(c => c.CampaignStatus == campaignStatus);
+            }
+
+            if (!String.IsNullOrEmpty(startDate))
+            {
+                var startDateTemp = Convert.ToDateTime(startDate);
+                entities = entities.Where(c => c.CampaignStartDate >= startDateTemp);
+            }
+
+            if (!String.IsNullOrEmpty(endDate))
+            {
+                var endDateTemp = Convert.ToDateTime(endDate);
+                entities = entities.Where(c => c.CampaignEndDate >= endDateTemp);
             }
 
             var models = new List<AcquireEmailPaymentStatTempViewModel>();
