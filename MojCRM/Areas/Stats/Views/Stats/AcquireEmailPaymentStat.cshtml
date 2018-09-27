@@ -9,7 +9,8 @@
         new ListItem{ Value= @"0", Text = @"Pokrenuto"},
         new ListItem{ Value= @"1", Text = @"U tijeku"},
         new ListItem{ Value= @"2", Text = @"Privremeno zaustavljeno"},
-        new ListItem{ Value= @"3", Text = @"Prekinuto"},
+        new ListItem{ Value= @"5", Text = @"Baza za tipsku"},
+        //new ListItem{ Value= @"3", Text = @"Prekinuto"},
         new ListItem{ Value= @"4", Text = @"Završeno"}
     };
 }
@@ -83,7 +84,7 @@
                     if (campaign.IsNewlyAcquiredCount != 0)
                     {
                         <tr>
-                            <td><a href="@Url.RouteUrl(new { action = "Details", controller = "Campaign", area = "Campaigns", Id = campaign.CampaignId })">@campaign.CampaignName</a></td>
+                            <td><a href="@Url.RouteUrl(new { action = "Details", controller = "Campaigns", area = "Campaigns", Id = campaign.CampaignId })">@campaign.CampaignName</a></td>
                             <td>@campaign.FixedAmount</td>
                             <td>@campaign.IsNewlyAcquiredCount * 1,49 kn</td>
                             <td>@campaign.TotalAmount</td>

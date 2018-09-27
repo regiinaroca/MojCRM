@@ -581,7 +581,8 @@ namespace MojCRM.Areas.Stats.Controllers
         // GET: Stats/AcquireEmailPaymentStat
         public ActionResult AcquireEmailPaymentStat(Campaign.CampaignStatusEnum? campaignStatus)
         {
-            var entities = _db.Campaigns.Where(c => c.CampaignType == Campaign.CampaignTypeEnum.EmailBases);
+            var entities = _db.Campaigns.Where(c => c.CampaignType == Campaign.CampaignTypeEnum.EmailBases
+            && c.CampaignAttributes.Contains(@"Naplata baze"));
             var sumTotalAmount = 0.00;
 
             if (campaignStatus != null)
@@ -595,18 +596,21 @@ namespace MojCRM.Areas.Stats.Controllers
             {
                 var count = _db.AcquireEmails.Count(ae => ae.RelatedCampaignId == campaign.CampaignId && ae.IsNewlyAcquired == true);
 
-                var tempModel = new AcquireEmailPaymentStatTempViewModel()
+                if (count != 0)
                 {
-                    CampaignName = campaign.CampaignName,
-                    CampaignId = campaign.CampaignId,
-                    IsNewlyAcquiredCount = count,
-                    TotalAmount = (count * 1.49) + 19.99
-                };
-                models.Add(tempModel);
-                sumTotalAmount += tempModel.TotalAmount;
+                    var tempModel = new AcquireEmailPaymentStatTempViewModel
+                    {
+                        CampaignName = campaign.CampaignName,
+                        CampaignId = campaign.CampaignId,
+                        IsNewlyAcquiredCount = count,
+                        TotalAmount = (count * 1.49) + 19.99
+                    };
+                    models.Add(tempModel);
+                    sumTotalAmount += tempModel.TotalAmount;
+                }
             }
 
-            var model = new AcquireEmailPaymentStatViewModel()
+            var model = new AcquireEmailPaymentStatViewModel
             {
                 List = models.AsQueryable(),
                 SumTotalAmount = Math.Round((decimal)sumTotalAmount, 2)
