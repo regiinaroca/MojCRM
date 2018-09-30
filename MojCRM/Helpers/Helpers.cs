@@ -119,11 +119,13 @@ namespace MojCRM.Helpers
     public class DailyUpdateReturnModel
     {
         public int NumberOfOrganizationCountriesUpdated { get; set; }
+        public int NumberOfTotalSentAndReceivedUpdated { get; set; }
     }
 
     public class AdminHelperMethods
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        private readonly OrganizationHelperMethods _organizationHelper = new OrganizationHelperMethods();
         public int UpdateOrganizationAttributes()
         {
             int updated = 0;
@@ -259,6 +261,22 @@ namespace MojCRM.Helpers
                 organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Rs;
             else
                 organization.MainCountry = OrganizationDetail.CountryIdentificationCodeEnum.Hr;
+        }
+
+        public int UpdateTotalSentAndReceived()
+        {
+            int updated = 0;
+
+            var forUpdate = _db.Organizations.Where(o => o.FirstSent != null || o.FirstReceived != null);
+
+            foreach (var organization in forUpdate)
+            {
+                _organizationHelper.UpdateOrganization(organization.MerId);
+                updated++;
+            }
+            _db.SaveChanges();
+
+            return updated;
         }
     }
 }

@@ -37,6 +37,7 @@ namespace MojCRM.Controllers
             var model = new DailyUpdateReturnModel();
 
             model.NumberOfOrganizationCountriesUpdated = _adminHelper.UpdateOrganizationCountries();
+            model.NumberOfTotalSentAndReceivedUpdated = _adminHelper.UpdateTotalSentAndReceived();
 
             var returnModel = model;
             return Json(returnModel, JsonRequestBehavior.AllowGet);

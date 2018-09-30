@@ -114,5 +114,44 @@ namespace MojCRM.Helpers
             }
             _db.SaveChanges();
         }
+
+        public void UpdateOrganization(int merId)
+        {
+            var organization = _db.Organizations.First(o => o.MerId == merId);
+
+            using (var mer = new WebClient { Encoding = Encoding.UTF8 })
+            {
+                MerApiGetSubjekt request = new MerApiGetSubjekt
+                {
+                    Id = "12619",
+                    Pass = _db.Users.Where(x => x.MerUserUsername == "12619").Select(x => x.MerUserPassword).First(),
+                    Oib = "99999999927",
+                    PJ = "",
+                    SoftwareId = "MojCRM-001",
+                    SubjektPJ = organization.MerId.ToString()
+                };
+
+                string merRequest = JsonConvert.SerializeObject(request);
+
+                mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
+                var response =
+                    mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getSubjektData").ToString(), "POST",
+                        merRequest);
+                response = response.Replace("[", "").Replace("]", "");
+                MerGetSubjektDataResponse result = JsonConvert.DeserializeObject<MerGetSubjektDataResponse>(response);
+
+                organization.SubjectName = result.Naziv;
+                organization.FirstReceived = result.FirstReceived;
+                organization.FirstSent = result.FirstSent;
+                organization.ServiceProvider = (ServiceProviderEnum)result.ServiceProviderId;
+                organization.UpdateDate = DateTime.Now;
+                organization.LastUpdatedBy = "Moj-CRM - UpdateTotalSentAndReceived";
+                organization.MerUpdateDate = DateTime.Now;
+                organization.MerDeliveryDetail.TotalSent = result.TotalSent;
+                organization.MerDeliveryDetail.TotalReceived = result.TotalReceived;
+            }
+            _db.SaveChanges();
+        }
     }
 }
