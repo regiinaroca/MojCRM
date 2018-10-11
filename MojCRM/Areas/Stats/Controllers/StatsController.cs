@@ -22,6 +22,7 @@ namespace MojCRM.Areas.Stats.Controllers
             return View();
         }
 
+        #region Activities
         // GET: Stats/PersonalDailyActivities
         public ActionResult PersonalDailyActivities(string name, string agent, string searchDate)
         {
@@ -437,6 +438,8 @@ namespace MojCRM.Areas.Stats.Controllers
 
             return View(model);
         }
+        #endregion
+
 
         // GET: Stats/Delivery
         public ActionResult Delivery(string search)
@@ -516,6 +519,7 @@ namespace MojCRM.Areas.Stats.Controllers
             return View(model);
         }
 
+        #region Organization
         // GET: Stats/OrganizationsByCountry
         public ActionResult OrganizationsByCountry()
         {
@@ -537,6 +541,16 @@ namespace MojCRM.Areas.Stats.Controllers
 
             return View(model.OrderByDescending(x => x.NumberOfOrganizations).AsQueryable());
         }
+
+        // GET: Stats/OrganizationsForMeeting
+        public ActionResult OrganizationsForMeeting()
+        {
+            var entities = _db.Opportunities.Where(o => o.OpportunityStatus == Opportunity.OpportunityStatusEnum.Arrangemeeting).Distinct();
+
+            return View(entities);
+        }
+
+#endregion
 
         // GET: Stats/OpportunityEntryChannel
         public ActionResult OpportunityEntryChannel(string startDate, string endDate)
@@ -570,14 +584,7 @@ namespace MojCRM.Areas.Stats.Controllers
             return View(model.OrderByDescending(x => x.NumberOfOpportunities).AsQueryable());
         }
 
-        // GET: Stats/OrganizationsForMeeting
-        public ActionResult OrganizationsForMeeting()
-        {
-            var entities = _db.Opportunities.Where(o => o.OpportunityStatus == Opportunity.OpportunityStatusEnum.Arrangemeeting).Distinct();
-
-            return View(entities);
-        }
-
+        #region AcquireEmail
         // GET: Stats/AcquireEmailPaymentStat
         public ActionResult AcquireEmailPaymentStat(Campaign.CampaignStatusEnum? campaignStatus, string startDate, string endDate)
         {
@@ -680,7 +687,7 @@ namespace MojCRM.Areas.Stats.Controllers
 
             return View(resultList.AsQueryable());
         }
-
+#endregion
 
         // GET: Stats/Sales
         public ActionResult SalesStat(string agent, string searchDateStart, string searchDateEnd)
@@ -745,7 +752,6 @@ namespace MojCRM.Areas.Stats.Controllers
              };
  
              return View(salesStat);
- 
          }
     }
 }

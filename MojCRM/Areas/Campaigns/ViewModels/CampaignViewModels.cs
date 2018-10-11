@@ -241,6 +241,87 @@ namespace MojCRM.Areas.Campaigns.ViewModels
             return model.AsQueryable();
         }
 
+        public IQueryable<CampaignStatusHelper> GetEmailBasesEntityStats(Campaign.CampaignStatusEnum campaignStatus)
+        {
+            var entites = _db.AcquireEmails.Where(x => x.Campaign.CampaignStatus == campaignStatus).GroupBy(x => x.AcquireEmailEntityStatus);
+            var model = new List<CampaignStatusHelper>();
+
+            foreach (var entity in entites)
+            {
+                string status;
+                switch (entity.Key)
+                {
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.Created:
+                        status = "Kreirano";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.AcquiredInformation:
+                        status = "Prikupljena povratna informacija";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.NoAnswer:
+                        status = "Nema odgovora / Ne javlja se";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.ClosedOrganization:
+                        status = "Zatvorena tvrtka";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.OldPartner:
+                        status = "Ne poslujus s korisnikom";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.PartnerWillContactUser:
+                        status = "Partner će se javiti korisniku samostalno";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.WrittenConfirmationRequired:
+                        status = "Potrebno poslati pisanu suglasnost";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.WrongTelephoneNumber:
+                        status = "Neispravan kontakt broj";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.PoslovnaHrvatska:
+                        status = "Kontakt u bazi";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.NoTelehoneNumber:
+                        status = "Ne postoji ispravan kontakt broj";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.Bankruptcy:
+                        status = "Subjekt u stečaju / likvidaciji";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.NoFinancialAccount:
+                        status = "Subjekt nema žiro račun";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.ToBeClosed:
+                        status = "Najava brisanja subjekta";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.Post:
+                        status = "Žele primati račune poštom";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.Foreign:
+                        status = "Inozemna tvrtka";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.OnHold:
+                        status = "Tvrtka u mirovanju";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.PostChecked:
+                        status = "Pošta provjereno";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.NoAnswerOldPost:
+                        status = "Ne javlja se, PSP";
+                        break;
+                    case AcquireEmail.AcquireEmailEntityStatusEnum.AcquiredInformationNoEmail:
+                        status = "Prikupljena povratna informacija, ne žele obavijest";
+                        break;
+                    default:
+                        status = "Status unosa";
+                        break;
+                }
+                var temp = new CampaignStatusHelper()
+                {
+                    StatusName = status,
+                    SumOfEntities = entity.Count()
+                };
+                model.Add(temp);
+            }
+            return model.AsQueryable();
+        }
+
         public IQueryable<CampaignStatusHelper> GetOpportunitiesSalesStatusStats(int campaignId)
         {
             var entites = _db.Opportunities.Where(x => x.RelatedCampaignId == campaignId).GroupBy(x => x.OpportunityStatus);

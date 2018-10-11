@@ -308,7 +308,7 @@ columns.Add(m => m.MerDocumentTypeIdString).Encoded(false).Sanitized(false).Titl
         <a data-mer-id="@Html.Raw(m.MerElectronicId)" data-ticket-id="@Html.Raw(m.Id)" href="#" class="remove-from-list-ajax" title="Ukloni s popisa za dostavu"><i style="color: red" class="fa fa-remove"></i></a>
     </span>;
 
-        if (m.DocumentStatus == 30 && (m.IsAssigned == true && (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")) || m.AssignedTo == User.Identity.Name))
+        if (m.DocumentStatus == 30 && (m.IsAssigned == true && (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")) || m.AssignedTo == User.Identity.Name || User.Identity.Name == "Filip Klarić"))
             return @<span>
         <a href="@Url.RouteUrl(new { action = "Details", controller = "Delivery", area = "HelpDesk", m.Id, m.ReceiverId, returnUrl = Request.Url })" title="Detalji kartice"><i class="fa fa-edit"></i></a>
     </span>;

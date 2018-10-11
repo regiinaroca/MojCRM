@@ -267,7 +267,7 @@ namespace MojCRM.Helpers
         {
             int updated = 0;
 
-            var forUpdate = _db.Organizations.Where(o => o.FirstSent != null || o.FirstReceived != null);
+            var forUpdate = _db.Organizations.Where(o => (o.FirstSent != null || o.FirstReceived != null) && o.Contracts.Any());
 
             foreach (var organization in forUpdate)
             {

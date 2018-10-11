@@ -671,7 +671,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             }
 
             _helper.LogActivity(User.Identity.Name + " je izmijenio e-mail adresu za dostavu eDokumenta iz " + model.OldEmail + " u " + model.NewEmail + " i ponovno poslao obavijest za dokument broj: " + model.InvoiceNumber,
-                User.Identity.Name, model.TicketId, ActivityLog.ActivityTypeEnum.Mailchange, ActivityLog.DepartmentEnum.Delivery, ActivityLog.ModuleEnum.Delivery);
+                User.Identity.Name, 0, ActivityLog.ActivityTypeEnum.Mailchange, ActivityLog.DepartmentEnum.Delivery, ActivityLog.ModuleEnum.Delivery);
 
             return RedirectToAction("Details", new { id = model.TicketId, receiverId = model.ReceiverId });
         }

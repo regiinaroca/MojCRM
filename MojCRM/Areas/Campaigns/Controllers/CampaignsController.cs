@@ -217,10 +217,25 @@ namespace MojCRM.Areas.Campaigns.Controllers
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Method which prepares report with statistical data on Email Bases Campaigns
+        /// </summary>
+        /// <returns>View with list of all Campaigns for Email Bases</returns>
         public ActionResult EmailBasesStats()
         {
             var model = new EmailBasesCampaignStatsViewModel();
 
+            return View(model.GetModels());
+        }
+
+        /// <summary>
+        /// Method which prepares report with detailed statistical data on Email Bases
+        /// </summary>
+        /// <returns>View with list of all Campaigns for Email Bases matching query criteria, grouped by CampaignStatus</returns>
+        public ActionResult EmailBasesCampaignStatusStats()
+        {
+            var model = new EmailBasesCampaignStatusStatsViewModel();
+            
             return View(model.GetModels());
         }
 

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MojCRM.Areas.Campaigns.Helpers;
 using MojCRM.Areas.HelpDesk.Models;
 using MojCRM.Areas.Sales.Models;
 using MojCRM.Models;
@@ -151,6 +152,47 @@ namespace MojCRM.Areas.Campaigns.ViewModels
                 };
                 return newCampaign;
             }
+        }
+    }
+
+    public class EmailBasesCampaignStatusStatsViewModel
+    {
+        public int StartedCount { get; set; }
+        public int InProgressCount { get; set; }
+        public int StartedTotalCount { get; set; }
+        public int StartedCreatedCount { get; set; }
+        public int InProgressTotalCount { get; set; }
+        public int InProgressCreatedCount { get; set; }
+        public decimal StartedPercent { get; set; }
+        public decimal InProgressPercent { get; set; }
+        public IQueryable<CampaignStatusHelper> StartedEntityStatusStats { get; set; }
+        public IQueryable<CampaignStatusHelper> InProgressEntityStatusStats { get; set; }
+
+        private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        public EmailBasesCampaignStatusStatsViewModel GetModels()
+        {
+            var model = new EmailBasesCampaignStatusStatsViewModel();
+            var campaignBasesStats = new CampaignDetailsViewModel();
+
+            var campaignsStarted = _db.Campaigns.Where(c => c.CampaignType == Campaign.CampaignTypeEnum.EmailBases && c.CampaignStatus == Campaign.CampaignStatusEnum.Start);
+            var campaignsInProgress = _db.Campaigns.Where(c => c.CampaignType == Campaign.CampaignTypeEnum.EmailBases && c.CampaignStatus == Campaign.CampaignStatusEnum.InProgress);
+            var startedTotalCount = _db.AcquireEmails.Count(x => x.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.Start && x.Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases);
+            var startedCreatedCount = _db.AcquireEmails.Count(x => x.Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases && x.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.Start && x.AcquireEmailStatus == AcquireEmail.AcquireEmailStatusEnum.Created);
+            var inProgressTotalCount = _db.AcquireEmails.Count(x => x.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.InProgress && x.Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases);
+            var inProgressCreatedCount = _db.AcquireEmails.Count(x => x.Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases && x.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.InProgress && x.AcquireEmailStatus == AcquireEmail.AcquireEmailStatusEnum.Created);
+
+            model.StartedCount = campaignsStarted.Count();
+            model.InProgressCount = campaignsInProgress.Count();
+            model.StartedTotalCount = startedTotalCount;
+            model.StartedCreatedCount = startedCreatedCount;
+            model.InProgressTotalCount = inProgressTotalCount;
+            model.InProgressCreatedCount = inProgressCreatedCount;
+            model.StartedPercent = Math.Round(startedCreatedCount / (decimal) startedTotalCount * 100, 0);
+            model.InProgressPercent = Math.Round(inProgressCreatedCount / (decimal) inProgressTotalCount * 100, 0);
+            model.StartedEntityStatusStats = campaignBasesStats.GetEmailBasesEntityStats(Campaign.CampaignStatusEnum.Start);
+            model.InProgressEntityStatusStats = campaignBasesStats.GetEmailBasesEntityStats(Campaign.CampaignStatusEnum.InProgress);
+
+            return model;
         }
     }
 }

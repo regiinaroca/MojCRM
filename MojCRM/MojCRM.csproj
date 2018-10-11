@@ -805,6 +805,7 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
+    <Content Include="Areas\Campaigns\Views\Campaigns\EmailBasesCampaignStatusStats.cshtml" />
     <None Include="Properties\PublishProfiles\MerDeployCIS.pubxml" />
     <Content Include="Scripts\daterangepicker.js" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
