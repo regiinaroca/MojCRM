@@ -123,7 +123,7 @@ namespace MojCRM.Helpers
         public int GracePeriod { get; set; }
         public string Note { get; set; }
         public int? UserId { get; set; }
-        public DateTime ActivatedDate { get; set; }
+        public DateTime? ActivatedDate { get; set; }
         public int? ActivatedUserId { get; set; }
         public DateTime? DeactivatedDate { get; set; }
         public int? DeactivatedUserId { get; set; }

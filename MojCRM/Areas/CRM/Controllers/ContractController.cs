@@ -48,6 +48,7 @@ namespace MojCRM.Areas.CRM.Controllers
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         public JsonResult GetContracts(Guid user)
         {
             var credentials = new { MerUser = "", MerPass = "" };
@@ -64,8 +65,12 @@ namespace MojCRM.Areas.CRM.Controllers
                     select new { MerUser = u.MerUserUsername, MerPass = u.MerUserPassword }).First();
             }
 
-            var referenceDate = DateTime.Today.AddDays(-1); //ovo će biti na produkciji
+            //var referenceDate = DateTime.Today.AddDays(-1); //ovo će biti na produkciji
             //var referenceDate = new DateTime(2016, 1, 1); //init verzija
+            var referenceDate = _db.ActivityLogs.OrderByDescending(x => x.Id).First(x => x.ActivityType == ActivityLog.ActivityTypeEnum.System
+                                                               && x.Department == ActivityLog.DepartmentEnum.MojCrm
+                                                               && x.Module == ActivityLog.ModuleEnum.Crm
+                                                               && x.Description.StartsWith("Preuzeto ugovora: ")).InsertDate.Date;
             int importedContracts;
             int updatedContracts = 0;
             int newContracts = 0;
@@ -165,6 +170,7 @@ namespace MojCRM.Areas.CRM.Controllers
                         var contractTemp = _db.Contracts.First(c => c.MerId == result.Id);
 
                         contractTemp.IsActive = result.IsActive;
+                        contractTemp.MerActivationDate = result.ActivatedDate;
                         contractTemp.MerDeactivationDate = result.DeactivatedDate;
                         contractTemp.MerDeactivationReason = result.DeactivateReason;
                         contractTemp.EndDate = result.DateTo;

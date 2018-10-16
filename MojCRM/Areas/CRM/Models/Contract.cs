@@ -28,7 +28,7 @@ namespace MojCRM.Areas.CRM.Models
         public string MerContractNote { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public DateTime MerActivationDate { get; set; }
+        public DateTime? MerActivationDate { get; set; }
         public DateTime? MerDeactivationDate { get; set; }
         public string MerDeactivationReason { get; set; }
         public int GracePeriod { get; set; }
