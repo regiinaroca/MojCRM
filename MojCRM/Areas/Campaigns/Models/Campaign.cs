@@ -45,6 +45,9 @@ namespace MojCRM.Areas.Campaigns.Models
         [Display(Name = "Završetak")]
         public DateTime? CampaignEndDate { get; set; }
 
+        [Display(Name = "Datum početka ugovora")]
+        public DateTime? ContractStartDate { get; set; }
+
         [Display(Name = "Datum kreiranja")]
         public DateTime InsertDate { get; set; }
 

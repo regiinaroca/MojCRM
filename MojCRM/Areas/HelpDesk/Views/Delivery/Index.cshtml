@@ -132,7 +132,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="sent-date-search">Datum slanja dokumenta</label>
-                    <div>
+                    <div id="sent-date-search">
                         @Html.TextBox("SentDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Datum slanja dokumenta", @type = "text", @id = "sent-date-search", @name = "sent-date-search" })
                     </div>
                 </div>
@@ -140,7 +140,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="ticket-date-search">Datum kreiranja kartice</label>
-                    <div>
+                    <div id="ticket-date-search">
                         @Html.TextBox("TicketDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Datum kreiranja kartice", @type = "text", @id = "ticket-date-search", @name = "ticket-date-search" })
                     </div>
                 </div>
@@ -148,7 +148,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="ticket-status-search">Status dokumenta</label>
-                    <div id="delivery-detail-contact">
+                    <div id="ticket-status-search">
                         @Html.DropDownList("DocumentStatus", new SelectList(documentStatusList, "Value", "Text"), "Odaberi status dokumenta", new { @class = "form-control" })
                     </div>
                 </div>
@@ -156,7 +156,7 @@
             <div class="col-md-3">
                     <div class="form-group">
                         <label for="document-type-search">Tip dokumenta</label>
-                        <div>
+                        <div id="document-type-search">
                             @Html.DropDownList("DocumentType", new SelectList(documentTypeList, "Value", "Text"), "Odaberi tip dokumenta", new { @class = "form-control" })
                         </div>
                     </div>
@@ -167,7 +167,7 @@
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="ticket-type-search">Tip kartice</label>
-                    <div>
+                    <div id="ticket-type-search">
                         @Html.DropDownList("TicketType", new SelectList(ticketTypeList, "Value", "Text"), "Sve", new { @class = "form-control" })
                     </div>
                 </div>
@@ -175,7 +175,7 @@
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="assigned-search">Dodijeljeno</label>
-                    <div>
+                    <div id="assigned-search">
                         @Html.DropDownList("Assigned", new SelectList(assigned, "Value", "Text"), "Sve", new { @class = "form-control" })
                     </div>
                 </div>

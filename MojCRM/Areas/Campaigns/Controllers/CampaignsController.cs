@@ -7,6 +7,7 @@ using MojCRM.Areas.Campaigns.Helpers;
 using MojCRM.Areas.Campaigns.Models;
 using MojCRM.Models;
 using MojCRM.Areas.Campaigns.ViewModels;
+using MojCRM.Areas.CRM.Helpers;
 using Newtonsoft.Json;
 
 namespace MojCRM.Areas.Campaigns.Controllers
@@ -15,6 +16,7 @@ namespace MojCRM.Areas.Campaigns.Controllers
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
         private readonly CampaignHelperMethods _campaignHelper = new CampaignHelperMethods();
+        private readonly ContractHelperMethods _contractHelper = new ContractHelperMethods();
 
         /// <summary>
         /// Index method where we have all of the campaigns listed
@@ -34,6 +36,11 @@ namespace MojCRM.Areas.Campaigns.Controllers
             if (!String.IsNullOrEmpty(model.CampaignName))
             {
                 campaigns = campaigns.Where(x => x.CampaignName.Contains(model.CampaignName));
+            }
+            if (!string.IsNullOrEmpty(model.ContractStartDate))
+            {
+                var dateTemp = Convert.ToDateTime(model.ContractStartDate);
+                campaigns = campaigns.Where(c => c.ContractStartDate == dateTemp);
             }
             if (model.CampaignType != null)
             {
@@ -62,6 +69,10 @@ namespace MojCRM.Areas.Campaigns.Controllers
             {
                 return HttpNotFound();
             }
+
+            if (_contractHelper.GetContractDate(campaign.RelatedCompanyId) != null)
+                campaign.ContractStartDate = _contractHelper.GetContractDate(campaign.RelatedCompanyId);
+            _db.SaveChanges();
 
             var list = _db.CampaignMembers.Where(cm => cm.CampaignId == id);
             // Preparing DetailsView based on the CampaignType

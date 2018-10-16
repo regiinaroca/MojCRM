@@ -114,7 +114,7 @@ namespace MojCRM.Areas.HelpDesk.Models
             [Description("Ne javlja se, prethodni status POŠTA")]
             NoAnswerOldPost,
 
-            [Description("Prikupljena povratna informacija, ne žele obavijest")]
+            [Description("Prikupljena povratna informacija - bez tipske")]
             AcquiredInformationNoEmail,
 
             Default = 99
@@ -144,7 +144,7 @@ namespace MojCRM.Areas.HelpDesk.Models
                     case AcquireEmailEntityStatusEnum.OnHold: return "Tvrtka u mirovanju";
                     case AcquireEmailEntityStatusEnum.PostChecked: return "POŠTA PROVJERENO";
                     case AcquireEmailEntityStatusEnum.NoAnswerOldPost: return "Ne javlja se, PSP";
-                    case AcquireEmailEntityStatusEnum.AcquiredInformationNoEmail: return "Prikupljena povratna informacija, ne žele obavijest";
+                    case AcquireEmailEntityStatusEnum.AcquiredInformationNoEmail: return "Prikupljena povratna informacija - bez tipske";
                 }
                 return "Status unosa";
             }

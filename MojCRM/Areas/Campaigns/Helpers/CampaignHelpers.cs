@@ -10,6 +10,7 @@ namespace MojCRM.Areas.Campaigns.Helpers
     {
         public string Organization { get; set; }
         public string CampaignName { get; set; }
+        public string ContractStartDate { get; set; }
         public int? CampaignStatus { get; set; }
         public int? CampaignType { get; set; }
     }

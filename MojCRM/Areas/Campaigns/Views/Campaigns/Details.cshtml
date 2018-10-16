@@ -425,6 +425,14 @@
                 <dd>
                     @Html.DisplayFor(model => model.Campaign.CampaignStatusString)
                 </dd>
+                
+                <dt>
+                    @Html.DisplayNameFor(model => model.Campaign.ContractStartDate)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Campaign.ContractStartDate)
+                </dd>
 
                 <dt>
                     @Html.DisplayNameFor(model => model.Campaign.CampaignStartDate)
@@ -441,14 +449,17 @@
                 <dd>
                     @Html.DisplayFor(model => model.Campaign.CampaignPlannedEndDate)
                 </dd>
+                
+                @if (Model.Campaign.CampaignEndDate != null)
+                {
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Campaign.CampaignEndDate)
+                    </dt>
 
-                <dt>
-                    @Html.DisplayNameFor(model => model.Campaign.CampaignEndDate)
-                </dt>
-
-                <dd>
-                    @Html.DisplayFor(model => model.Campaign.CampaignEndDate)
-                </dd>
+                    <dd>
+                        @Html.DisplayFor(model => model.Campaign.CampaignEndDate)
+                    </dd>   
+                }
 
                 <dt>
                     @Html.DisplayNameFor(model => model.Campaign.InsertDate)

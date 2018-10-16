@@ -26,19 +26,27 @@
 
 <h2 style="text-align:center"><strong>Pregled kampanja</strong></h2>
 
-@*<hr />
+<hr />
 
 <div>
-    <div class="row" style="text-align:center">
+    <div class="row">
         <div class="col-md-12">
-            <div class="btn btn-group" role="group">
-                <a href="@Url.Action("Create", "Campaigns")" class="btn btn-default btn-sm" title="Dodaj kampanju">
-                    <i class="fa fa-plus"></i>
-                </a>
+            <div class="alert alert-info">
+                <p style="text-align: justify">
+                    Brojno stanje kampanja:<br />
+                    <br />
+                    <ul>
+                        <li>Broj pokrenutih kampanja: <strong>@Model.Count(x => x.CampaignStatus == Campaign.CampaignStatusEnum.Start)</strong></li>
+                        <li>Broj kampanja u tijeku: <strong>@Model.Count(x => x.CampaignStatus == Campaign.CampaignStatusEnum.InProgress)</strong></li>
+                        <li>Broj privremeno zaustavljenih kampanja: <strong>@Model.Count(x => x.CampaignStatus == Campaign.CampaignStatusEnum.Hold)</strong></li>
+                        <li>Broj kampanja spremnih za tipsku: <strong>@Model.Count(x => x.CampaignStatus == Campaign.CampaignStatusEnum.ReadyForEmailNotification)</strong></li>
+                        <li>Broj dovršenih kampanja: <strong>@Model.Count(x => x.CampaignStatus == Campaign.CampaignStatusEnum.Completed)</strong></li>
+                    </ul>
+                </p>
             </div>
         </div>
     </div>
-</div>*@
+</div>
 
 @if (User.IsInRole("Administrator") || User.IsInRole("Board") || User.IsInRole("Superadmin") || User.IsInRole("Management"))
 {
@@ -62,7 +70,15 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="contract-start-date">Datum početka UO</label>
+                    <div id="contract-start-date">
+                        @Html.TextBox("ContractStartDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Datum početka UO", @type = "text", @id = "contract-start-date", @name = "contract-start-date" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
                 <div class="form-group">
                     <label for="campaign-status">Tip kampanje</label>
                     <div id="campaign-status">
@@ -70,7 +86,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="form-group">
                     <label for="campaign-status">Status kampanje</label>
                     <div id="campaign-status">
@@ -96,7 +112,7 @@
 columns.Add(m => m.RelatedCompany.VAT).Encoded(false).Sanitized(false).Titled("Povezana tvrtka").RenderValueAs(x =>
     Html.RouteLink(x.RelatedCompany.SubjectName + " (" + x.RelatedCompany.VAT + ") ", new {action = "Details", controller = "Organizations", area = "", id = x.RelatedCompany.MerId})).Sortable(true);
 columns.Add(m => m.CampaignName).Encoded(false).Sanitized(false).Titled("Naziv kampanje").Sortable(false);
-columns.Add(m => m.CampaignDescription).Encoded(false).Sanitized(false).Titled("Opis kampanje").Sortable(false);
+//columns.Add(m => m.CampaignDescription).Encoded(false).Sanitized(false).Titled("Opis kampanje").Sortable(false);
 columns.Add(m => m.CampaignInitiatior).Encoded(false).Sanitized(false).Titled("Pokrenuo").Sortable(false);
 columns.Add(m => m.CampaignTypeString).Encoded(false).Sanitized(false).Titled("Tip kampanje").Sortable(false);
 columns.Add(m => m.CampaignStatusString).Encoded(false).Sanitized(false).Titled("Status").Sortable(true).RenderValueAs(m =>
@@ -143,6 +159,7 @@ columns.Add(m => m.CampaignPlannedEndDate).Encoded(false).Sanitized(false).Title
 return @<div><span>@Html.Raw(m.CampaignPlannedEndDate.ToShortDateString())</span></div>;
 });
     columns.Add(m => m.CampaignEndDate).Encoded(false).Sanitized(false).Titled("Datum završetka").Sortable(false);
+    columns.Add(m => m.ContractStartDate).Encoded(false).Sanitized(false).Titled("Datum početka UO").Sortable(true);
     columns.Add().Encoded(false).Sanitized(false).RenderValueAs(m =>
     {
         if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Management") || m.CampaignInitiatior == User.Identity.Name)
