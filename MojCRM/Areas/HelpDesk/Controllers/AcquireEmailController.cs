@@ -232,7 +232,8 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             var entity = _db.AcquireEmails.First(x => x.Id == entityId);
             int indetifierTemp;
 
-            if (entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains("@") && entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation != null)
+            if (entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation.Contains("@") && entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation != null
+                && identifier != 18)
                 indetifierTemp = 1; //check if agent inserted an email and set identifier to AcquiredInformation by default
             else if (String.IsNullOrEmpty(entity.Organization.MerDeliveryDetail.AcquiredReceivingInformation) && identifier == 1)
                 indetifierTemp = 99; //check if the information IsNullOrEmpty and if true don't change the EntityStatus
