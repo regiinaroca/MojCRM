@@ -338,7 +338,14 @@
                     </div>
                 </div>
                 <div class="col-md-2">
-
+                    <h5>Ukloni atribut iz kampanje</h5>
+                </div>
+                <div class="col-md-2">
+                    <div class="btn-group" role="group">
+                        <a href="@Url.RouteUrl(new {action = "RemoveAttribute", controller = "Campaigns", area = "Campaigns", campaignId = Model.Campaign.CampaignId, attribute = "Naplata baze"})" class="btn btn-sm btn-default" title="Naplata baze"><i class="fa fa-money"></i></a>
+                        <a href="@Url.RouteUrl(new {action = "RemoveAttribute", controller = "Campaigns", area = "Campaigns", campaignId = Model.Campaign.CampaignId, attribute = "Poslana tipska obavijest"})" class="btn btn-sm btn-default" title="Poslana tipska obavijest"><i class="fa fa-sign-out"></i></a>
+                        <a href="@Url.RouteUrl(new {action = "RemoveAttribute", controller = "Campaigns", area = "Campaigns", campaignId = Model.Campaign.CampaignId, attribute = "Baza je dostavljena klijentu"})" class="btn btn-sm btn-default" title="Dostavljena baza klijentu"><i class="fa fa-check"></i></a>
+                    </div>
                 </div>
                 <div class="col-md-2">
                     <h5>Broj novoprikupljenih e-mailova: <strong style="color:red">@Model.NumberOfNewlyAcquiredReceivingInformation</strong></h5>

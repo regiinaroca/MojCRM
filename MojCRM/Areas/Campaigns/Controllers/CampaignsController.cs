@@ -306,7 +306,7 @@ namespace MojCRM.Areas.Campaigns.Controllers
         {
             Campaign campaign = _db.Campaigns.First(x => x.CampaignId == campaignId);
 
-            if (campaign.CampaignAttributes == null)
+            if (String.IsNullOrEmpty(campaign.CampaignAttributes))
             {
                 campaign.CampaignAttributes = attribute + " (" + DateTime.Now.ToShortDateString() + ")";
                 campaign.UpdateDate = DateTime.Now;
@@ -317,6 +317,24 @@ namespace MojCRM.Areas.Campaigns.Controllers
                 campaign.UpdateDate = DateTime.Now;
             }
             _db.SaveChanges();
+
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
+        public ActionResult RemoveAttribute(int campaignId, string attribute)
+        {
+            Campaign campaign = _db.Campaigns.First(x => x.CampaignId == campaignId);
+
+            if (campaign.CampaignAttributes.Contains(attribute))
+            {
+                var attributeTemp = campaign.CampaignAttributes.Split(Char.Parse(";"));
+                attributeTemp = attributeTemp.Where(x => x.Contains(attribute)).ToArray();
+                campaign.CampaignAttributes = campaign.CampaignAttributes.Replace(attributeTemp[0], string.Empty);
+                campaign.CampaignAttributes = campaign.CampaignAttributes.Trim(Char.Parse(";"));
+                campaign.CampaignAttributes = campaign.CampaignAttributes.Trim(Char.Parse(" "));
+                campaign.UpdateDate = DateTime.Now;
+                _db.SaveChanges();
+            }
 
             return Redirect(Request.UrlReferrer?.ToString());
         }
