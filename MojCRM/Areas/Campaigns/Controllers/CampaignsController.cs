@@ -49,8 +49,17 @@ namespace MojCRM.Areas.Campaigns.Controllers
             }
             if (model.CampaignStatus != null)
             {
-                var tempStatus = (Campaign.CampaignStatusEnum)model.CampaignStatus;
-                campaigns = campaigns.Where(x => x.CampaignStatus == tempStatus);
+                if (model.CampaignStatus == 99)
+                {
+                    campaigns = campaigns.Where(x =>
+                        x.CampaignStatus == Campaign.CampaignStatusEnum.Start ||
+                        x.CampaignStatus == Campaign.CampaignStatusEnum.InProgress);
+                }
+                else
+                {
+                    var tempStatus = (Campaign.CampaignStatusEnum)model.CampaignStatus;
+                    campaigns = campaigns.Where(x => x.CampaignStatus == tempStatus);
+                }
             }
 
             return View(campaigns.OrderByDescending(c => c.InsertDate));
