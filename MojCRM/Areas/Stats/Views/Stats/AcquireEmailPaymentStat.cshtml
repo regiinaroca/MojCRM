@@ -10,8 +10,16 @@
         new ListItem{ Value= @"1", Text = @"U tijeku"},
         new ListItem{ Value= @"2", Text = @"Privremeno zaustavljeno"},
         new ListItem{ Value= @"5", Text = @"Baza za tipsku"},
+        new ListItem{ Value= @"6", Text = @"Baza za tipsku - cross"},
         //new ListItem{ Value= @"3", Text = @"Prekinuto"},
         new ListItem{ Value= @"4", Text = @"Završeno"}
+    };
+
+    var paidStatus = new List<ListItem>
+    {
+        new ListItem{ Value= @"0", Text = @"Ništa naplaćeno"},
+        new ListItem{ Value= @"1", Text = @"Naplaćen cross"},
+        new ListItem{ Value= @"2", Text = @"Naplaćeno sve"},
     };
 }
 
@@ -20,6 +28,7 @@
 <div class="alert alert-info">
     <p style="text-align: justify">
         Ovaj statistički pregled donosi informacije o potencijalnom prihodu od obrade baza korisnika.<br/>
+        Za sve kampanje koje su pokrenute prije <strong>1.11.2018.</strong> obračunava se naknada s fiksnim iznosom, a za sve ostale se obračunava naknada po adresama koje se daju korisniku.<br />
         Sve cijene u pregledu su izražene u kunama u neto iznosu!<br />
         <br />
         <strong>Napomena: </strong>pregled u startu daje pregled svih kampanja. Za specifičnije upite možete izvršiti pretragu po statusu te po periodu u kojem je kampanja započela.
@@ -29,11 +38,19 @@
 @using (Html.BeginForm("AcquireEmailPaymentStat", "Stats", FormMethod.Get))
 {
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="form-group">
             <label for="campaign-status">Status kampanje</label>
             <div id="campaign-status">
-                @Html.DropDownList("CampaignStatus", new SelectList(statusList, "Value", "Text"), "-- Svi statusi --", new { @class = "form-control" })
+                @Html.DropDownList("campaignStatus", new SelectList(statusList, "Value", "Text"), "-- Svi statusi --", new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <label for="paid-status">Status naplate</label>
+            <div id="paid-status">
+                @Html.DropDownList("paidStatus", new SelectList(paidStatus, "Value", "Text"), "-- Svi statusi --", new { @class = "form-control" })
             </div>
         </div>
     </div>
@@ -86,6 +103,7 @@
                 <thead>
                 <tr>
                     <th>Naziv kampanje</th>
+                    <th>Broj e-mailova u crossu</th>
                     <th>Fiksni iznos</th>
                     <th>Broj novoprikupljenih podataka</th>
                     <th>Ukupan prihod</th>
@@ -96,12 +114,27 @@
                 {
                     if (campaign.IsNewlyAcquiredCount != 0)
                     {
-                        <tr>
-                            <td><a href="@Url.RouteUrl(new { action = "Details", controller = "Campaigns", area = "Campaigns", Id = campaign.CampaignId })">@campaign.CampaignName</a></td>
+                    <tr>
+                        <td><a href="@Url.RouteUrl(new { action = "Details", controller = "Campaigns", area = "Campaigns", Id = campaign.CampaignId })">@campaign.CampaignName</a></td>
+                        @if (campaign.HasFixedAmount)
+                        {
+                            <td>-</td>
+                        }
+                        @if (!campaign.HasFixedAmount)
+                        {
+                            <td>@campaign.CrossCount * 1,49 kn</td>
+                        }
+                        @if (campaign.HasFixedAmount)
+                        {
                             <td>@campaign.FixedAmount</td>
-                            <td>@campaign.IsNewlyAcquiredCount * 1,49 kn</td>
-                            <td>@campaign.TotalAmount</td>
-                        </tr>
+                        }
+                        @if (!campaign.HasFixedAmount)
+                        {
+                            <td>0,00</td>
+                        }
+                        <td>@campaign.IsNewlyAcquiredCount * 1,49 kn</td>
+                        <td>@campaign.TotalAmount</td>
+                    </tr>
                     }
                 }
                 </tbody>

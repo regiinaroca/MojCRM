@@ -38,9 +38,11 @@ namespace MojCRM.Areas.Campaigns.ViewModels
                 {
                     new SelectListItem {Value = null, Text = @"-- Odaberi status kampanje --"},
                     new SelectListItem {Value = "1", Text = @"U tijeku"},
+                    new SelectListItem {Value= "99", Text = @"Pokrenuto i U tijeku"},
                     new SelectListItem {Value = "2", Text = @"Privremeno zaustavljeno"},
                     //new SelectListItem {Value = "3", Text = @"Prekinuto"},
                     new SelectListItem {Value = "5", Text = @"Baza za tipsku"},
+                    new SelectListItem {Value = "6", Text = @"Baza za tipsku - cross"},
                     new SelectListItem {Value = "4", Text = @"Završeno"}
                 };
                 return statusList.AsQueryable();

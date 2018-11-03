@@ -586,7 +586,7 @@ namespace MojCRM.Areas.Stats.Controllers
 
         #region AcquireEmail
         // GET: Stats/AcquireEmailPaymentStat
-        public ActionResult AcquireEmailPaymentStat(Campaign.CampaignStatusEnum? campaignStatus, string startDate, string endDate)
+        public ActionResult AcquireEmailPaymentStat(Campaign.CampaignStatusEnum? campaignStatus, int? paidStatus, string startDate, string endDate)
         {
             var entities = _db.Campaigns.Where(c => c.CampaignType == Campaign.CampaignTypeEnum.EmailBases
             && c.CampaignAttributes.Contains(@"Naplata baze"));
@@ -595,6 +595,23 @@ namespace MojCRM.Areas.Stats.Controllers
             if (campaignStatus != null)
             {
                 entities = entities.Where(c => c.CampaignStatus == campaignStatus);
+            }
+
+            if (paidStatus != null)
+            {
+                switch (paidStatus)
+                {
+                    case 0:
+                        entities = entities.Where(c => !c.CampaignAttributes.Contains(@"Naplaćen cross")
+                        && !c.CampaignAttributes.Contains(@"Naplaćeno sve"));
+                        break;
+                    case 1:
+                        entities = entities.Where(c => c.CampaignAttributes.Contains(@"Naplaćen cross"));
+                        break;
+                    case 2:
+                        entities = entities.Where(c => c.CampaignAttributes.Contains(@"Naplaćeno sve"));
+                        break;
+                }
             }
 
             if (!String.IsNullOrEmpty(startDate))
@@ -613,19 +630,38 @@ namespace MojCRM.Areas.Stats.Controllers
 
             foreach (var campaign in entities)
             {
-                var count = _db.AcquireEmails.Count(ae => ae.RelatedCampaignId == campaign.CampaignId && ae.IsNewlyAcquired == true);
+                var emails = _db.AcquireEmails.Where(ae => ae.RelatedCampaignId == campaign.CampaignId);
 
-                if (count != 0)
+                if (emails.Count() != 0)
                 {
-                    var tempModel = new AcquireEmailPaymentStatTempViewModel
+                    if (campaign.CampaignStartDate >= new DateTime(2018, 11, 1)) // implementation of new model price model
                     {
-                        CampaignName = campaign.CampaignName,
-                        CampaignId = campaign.CampaignId,
-                        IsNewlyAcquiredCount = count,
-                        TotalAmount = (count * 1.49) + 19.99
-                    };
-                    models.Add(tempModel);
-                    sumTotalAmount += tempModel.TotalAmount;
+                        var tempModel = new AcquireEmailPaymentStatTempViewModel
+                        {
+                            CampaignName = campaign.CampaignName,
+                            CampaignId = campaign.CampaignId,
+                            HasFixedAmount = false,
+                            CrossCount = emails.Count(x => x.IsNewlyAcquired == false || x.IsNewlyAcquired == null),
+                            IsNewlyAcquiredCount = emails.Count(x => x.IsNewlyAcquired == true),
+                            TotalAmount = emails.Count() * 1.49
+                        };
+                        models.Add(tempModel);
+                        sumTotalAmount += tempModel.TotalAmount;
+                    }
+                    else
+                    {
+                        var tempModel = new AcquireEmailPaymentStatTempViewModel
+                        {
+                            CampaignName = campaign.CampaignName,
+                            CampaignId = campaign.CampaignId,
+                            HasFixedAmount = true,
+                            CrossCount = emails.Count(x => x.IsNewlyAcquired == false || x.IsNewlyAcquired == null),
+                            IsNewlyAcquiredCount = emails.Count(x => x.IsNewlyAcquired == true),
+                            TotalAmount = (emails.Count(x => x.IsNewlyAcquired == true) * 1.49) + 19.99
+                        };
+                        models.Add(tempModel);
+                        sumTotalAmount += tempModel.TotalAmount;
+                    }
                 }
             }
 

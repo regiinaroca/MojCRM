@@ -464,8 +464,10 @@ namespace MojCRM.Areas.Stats.ViewModels
         [DisplayFormat(DataFormatString = "{0:C0}")]
         [DataType(DataType.Currency)]
         public double FixedAmount = 19.99;
+        public bool HasFixedAmount { get; set; }
         public string CampaignName { get; set; }
         public int CampaignId { get; set; }
+        public int CrossCount { get; set; }
         public int IsNewlyAcquiredCount { get; set; }
         [DisplayFormat(DataFormatString = "{0:C0}")]
         [DataType(DataType.Currency)]

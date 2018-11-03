@@ -92,7 +92,7 @@
                                 </ul>
                             </li>
                         }
-                        @if (User.IsInRole("Management") || User.IsInRole("Board") || User.IsInRole("Administrator") || User.IsInRole("Superadmin"))
+                        @if (User.IsInRole("Management") || User.IsInRole("Board") || User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Support"))
                         {
                             <li>
                                 <a href="@Url.RouteUrl(new { action = "Index", controller = "Campaigns", area = "Campaigns"})"><i class="fa fa-phone"></i><span class="text">Kampanje</span></a>

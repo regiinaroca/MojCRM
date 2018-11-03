@@ -64,7 +64,7 @@
                                             {
                                                 <td><span class="label label-medium">@campaign.Campaign.CampaignStatusString</span></td>
                                             }
-                                            @if (campaign.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.ReadyForEmailNotification)
+                                            @if (campaign.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.ReadyForEmailNotification || campaign.Campaign.CampaignStatus.Equals == Campaign.CampaignStatusEnum.ReadyForEmailNotificationCross)
                                             {
                                                 <td><span class="label label-warning">@campaign.Campaign.CampaignStatusString</span></td>
                                             }
