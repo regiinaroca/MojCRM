@@ -135,9 +135,14 @@ columns.Add(m => m.CampaignStatusString).Encoded(false).Sanitized(false).Titled(
         return @<div><span class="label label-low">@m.CampaignStatusString</span>
                </div>;
     }
-    if (m.CampaignStatus == Campaign.CampaignStatusEnum.ReadyForEmailNotification || m.CampaignStatus == Campaign.CampaignStatusEnum.ReadyForEmailNotificationCross)
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.ReadyForEmailNotification)
     {
         return @<div><span class="label label-warning">@m.CampaignStatusString</span>
+               </div>;
+    }
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.ReadyForEmailNotificationCross)
+    {
+        return @<div><span class="label label-urgent">@m.CampaignStatusString</span>
                </div>;
     }
     if (m.CampaignStatus == Campaign.CampaignStatusEnum.Ended)
