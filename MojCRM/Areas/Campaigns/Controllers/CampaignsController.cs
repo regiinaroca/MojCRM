@@ -55,6 +55,13 @@ namespace MojCRM.Areas.Campaigns.Controllers
                         x.CampaignStatus == Campaign.CampaignStatusEnum.Start ||
                         x.CampaignStatus == Campaign.CampaignStatusEnum.InProgress);
                 }
+                if (model.CampaignStatus == 98)
+                {
+                    campaigns = campaigns.Where(x =>
+                    x.CampaignStatus == Campaign.CampaignStatusEnum.ReadyForEmailNotification ||
+                    x.CampaignStatus == Campaign.CampaignStatusEnum.ReadyForEmailNotificationCross ||
+                    x.CampaignStatus == Campaign.CampaignStatusEnum.CompletedCross);
+                }
                 else
                 {
                     var tempStatus = (Campaign.CampaignStatusEnum)model.CampaignStatus;
