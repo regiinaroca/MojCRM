@@ -91,7 +91,7 @@ namespace MojCRM.Areas.CRM.Controllers
             {
                 mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                 mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                var response = mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/GetContracts").ToString(), "POST", merRequest);
+                var response = mer.UploadString(new Uri(App.MerEndpoint + @"apis/v21/GetContracts").ToString(), "POST", merRequest);
                 MerGetContractsResponse[] results = JsonConvert.DeserializeObject<MerGetContractsResponse[]>(response);
 
                 foreach (var result in results)

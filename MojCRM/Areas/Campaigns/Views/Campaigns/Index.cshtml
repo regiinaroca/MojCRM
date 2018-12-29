@@ -45,6 +45,7 @@
                         <li>Broj privremeno zaustavljenih kampanja: <strong>@Model.Count(x => x.CampaignStatus == Campaign.CampaignStatusEnum.Hold)</strong></li>
                         <li>Broj kampanja spremnih za tipsku (cross): <strong>@Model.Count(x => x.CampaignStatus == Campaign.CampaignStatusEnum.ReadyForEmailNotificationCross)</strong></li>
                         <li>Broj kampanja spremnih za tipsku: <strong>@Model.Count(x => x.CampaignStatus == Campaign.CampaignStatusEnum.ReadyForEmailNotification)</strong></li>
+                        <li>Broj kampanja s dovršenim crossom: <strong>@Model.Count(x => x.CampaignStatus == Campaign.CampaignStatusEnum.CompletedCross)</strong></li>
                         <li>Broj dovršenih kampanja: <strong>@Model.Count(x => x.CampaignStatus == Campaign.CampaignStatusEnum.Completed)</strong></li>
                     </ul>
                 </p>
@@ -153,6 +154,11 @@ columns.Add(m => m.CampaignStatusString).Encoded(false).Sanitized(false).Titled(
                </div>;
     }
     if (m.CampaignStatus == Campaign.CampaignStatusEnum.Completed)
+    {
+        return @<div><span class="label label-success" title="@m.CampaignAttributes">@m.CampaignStatusString</span>
+               </div>;
+    }
+    if (m.CampaignStatus == Campaign.CampaignStatusEnum.CompletedCross)
     {
         return @<div><span class="label label-success" title="@m.CampaignAttributes">@m.CampaignStatusString</span>
                </div>;

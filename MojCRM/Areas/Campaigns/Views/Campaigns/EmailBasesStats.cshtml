@@ -82,7 +82,11 @@
                                             }
                                             @if (campaign.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.Completed)
                                             {
-                                                <td><span class="label label-primary">@campaign.Campaign.CampaignStatusString</span></td>
+                                                <td><span class="label label-success">@campaign.Campaign.CampaignStatusString</span></td>
+                                            }
+                                            @if (campaign.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.CompletedCross)
+                                            {
+                                                <td><span class="label label-success">@campaign.Campaign.CampaignStatusString</span></td>
                                             }
                                             <td>@campaign.Campaign.CampaignStartDate.ToShortDateString()</td>
                                             <td>@campaign.Campaign.CampaignPlannedEndDate.ToShortDateString()</td>

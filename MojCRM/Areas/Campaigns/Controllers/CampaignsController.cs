@@ -31,7 +31,7 @@ namespace MojCRM.Areas.Campaigns.Controllers
             //Search Engine
             if (!String.IsNullOrEmpty(model.Organization))
             {
-                campaigns = campaigns.Where(x => x.RelatedCompany.SubjectName.Contains(model.Organization));
+                campaigns = campaigns.Where(x => x.RelatedCompany.SubjectName.Contains(model.Organization) || x.RelatedCompany.VAT.Contains(model.Organization));
             }
             if (!String.IsNullOrEmpty(model.CampaignName))
             {

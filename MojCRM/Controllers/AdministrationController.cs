@@ -32,6 +32,10 @@ namespace MojCRM.Controllers
         }
 
         // GET: DailyUpdates
+        /// <summary>
+        /// Method which is used for daily updates of some data on Organizations
+        /// </summary>
+        /// <returns>JSON with data on updated entries</returns>
         public JsonResult DailyUpdates()
         {
             var model = new DailyUpdateReturnModel();
@@ -44,6 +48,11 @@ namespace MojCRM.Controllers
         }
 
         // POST: MassUpdateClosedSubjects
+        /// <summary>
+        /// Method which is used for mass update of Active/Inactive information on Organization
+        /// </summary>
+        /// <param name="file">Excel table where we have VAT number of companies which we want to update</param>
+        /// <returns>Returns us to the Index page on Administration</returns>
         [HttpPost]
         public ActionResult MassUpdateClosedSubjects(HttpPostedFileBase file)
         {

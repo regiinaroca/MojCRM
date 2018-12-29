@@ -198,7 +198,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             {
                 mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                 mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                var responseFirstTime = mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getNondeliveredDocuments").ToString(), "POST", merRequestFirstTime);
+                var responseFirstTime = mer.UploadString(new Uri(App.MerEndpoint + @"apis/v21/getNondeliveredDocuments").ToString(), "POST", merRequestFirstTime);
                 //var responseFirstTime = mer.UploadString(new Uri(@"http://localhost/apis/v21/getNondeliveredDocuments").ToString(), "POST", merRequestFirstTime);
                 //ResponseFirstTime = ResponseFirstTime.Replace("[", "").Replace("]", "");
                 MerGetNondeliveredDocumentsResponse[] resultsFirstTime = JsonConvert.DeserializeObject<MerGetNondeliveredDocumentsResponse[]>(responseFirstTime);
@@ -266,7 +266,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             {
                 mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                 mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                var responseRegularDelivery = mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getNondeliveredDocuments").ToString(), "POST", merRequestFirstTime);
+                var responseRegularDelivery = mer.UploadString(new Uri(App.MerEndpoint + @"apis/v21/getNondeliveredDocuments").ToString(), "POST", merRequestFirstTime);
                 //var responseRegularDelivery = mer.UploadString(new Uri(@"http://localhost/apis/v21/getNondeliveredDocuments").ToString(), "POST", merRequestFirstTime);
                 //ResponseRegularDelivery = ResponseRegularDelivery.Replace("[", "").Replace("]", "");
                 MerGetNondeliveredDocumentsResponse[] resultsRegularDelivery = JsonConvert.DeserializeObject<MerGetNondeliveredDocumentsResponse[]>(responseRegularDelivery);
@@ -401,7 +401,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                                     {
                                         Mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                                         Mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                                        var Response = Mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getSubjektData").ToString(), "POST", MerRequest);
+                                        var Response = Mer.UploadString(new Uri(App.MerEndpoint + @"apis/v21/getSubjektData").ToString(), "POST", MerRequest);
                                         Response = Response.Replace("[", "").Replace("]", "");
                                         MerGetSubjektDataResponse ResultOrg = JsonConvert.DeserializeObject<MerGetSubjektDataResponse>(Response);
                                         _db.Organizations.Add(new Organizations
@@ -469,7 +469,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         public ActionResult UpdateStatusIndex(int id)
         {
             var ticketForUpdate = _db.DeliveryTicketModels.First(x => x.Id == id);
-            var merString = "https://www.moj-eracun.hr/exchange/getstatus?id=" + ticketForUpdate.MerElectronicId + "&ver=5115e32c-6be4-4a92-8e92-afe122e99d1c";
+            var merString = App.MerEndpoint + "exchange/getstatus?id=" + ticketForUpdate.MerElectronicId + "&ver=5115e32c-6be4-4a92-8e92-afe122e99d1c";
 
             MerDeliveryJsonResponse response = ParseJson(merString);
 
@@ -485,7 +485,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         public ActionResult UpdateStatusDetails(int TicketId, int ReceiverId)
         {
             var TicketForUpdate = _db.DeliveryTicketModels.Find(TicketId);
-            var MerString = "https://www.moj-eracun.hr/exchange/getstatus?id=" + TicketForUpdate.MerElectronicId + "&ver=5115e32c-6be4-4a92-8e92-afe122e99d1c";
+            var MerString = App.MerEndpoint + "exchange/getstatus?id=" + TicketForUpdate.MerElectronicId + "&ver=5115e32c-6be4-4a92-8e92-afe122e99d1c";
 
             MerDeliveryJsonResponse Response = ParseJson(MerString);
 
@@ -500,7 +500,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
         public void UpdateStatus(int Id)
         {
             var TicketForUpdate = _db.DeliveryTicketModels.Find(Id);
-            var MerString = "https://www.moj-eracun.hr/exchange/getstatus?id=" + TicketForUpdate.MerElectronicId + "&ver=5115e32c-6be4-4a92-8e92-afe122e99d1c";
+            var MerString = App.MerEndpoint + "exchange/getstatus?id=" + TicketForUpdate.MerElectronicId + "&ver=5115e32c-6be4-4a92-8e92-afe122e99d1c";
 
             MerDeliveryJsonResponse Response = ParseJson(MerString);
 
@@ -520,7 +520,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             foreach (var ticket in openTickets)
             {
                 //var TicketForUpdate = db.DeliveryTicketModels.Find(Ticket.Id);
-                var merString = "https://www.moj-eracun.hr/exchange/getstatus?id=" + ticket.MerElectronicId + "&ver=13ca6cad-60a4-4894-ba38-1a6f86b25a3c";
+                var merString = App.MerEndpoint + "exchange/getstatus?id=" + ticket.MerElectronicId + "&ver=13ca6cad-60a4-4894-ba38-1a6f86b25a3c";
                 MerDeliveryJsonResponse result = ParseJson(merString);
 
                 ticket.DocumentStatus = result.Status;
@@ -540,7 +540,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
 
             foreach (var Ticket in OpenTickets)
             {
-                var MerString = "https://www.moj-eracun.hr/exchange/getstatus?id=" + Ticket.MerElectronicId + "&ver=13ca6cad-60a4-4894-ba38-1a6f86b25a3c";
+                var MerString = App.MerEndpoint + "exchange/getstatus?id=" + Ticket.MerElectronicId + "&ver=13ca6cad-60a4-4894-ba38-1a6f86b25a3c";
                 MerDeliveryJsonResponse Result = ParseJson(MerString);
 
                 Ticket.DocumentStatus = Result.Status;
@@ -592,7 +592,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             {
                 Mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                 Mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                Mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/changeEmail").ToString(), "POST", MerRequest);
+                Mer.UploadString(new Uri(App.MerEndpoint + @"apis/v21/changeEmail").ToString(), "POST", MerRequest);
             }
 
             if (InvoiceNumber == null)
@@ -632,7 +632,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             {
                 mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                 mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/changeEmail").ToString(), "POST", merRequest);
+                mer.UploadString(new Uri(App.MerEndpoint + @"apis/v21/changeEmail").ToString(), "POST", merRequest);
             }
 
             _helper.LogActivity(User.Identity.Name + " je izmijenio e-mail adresu za dostavu eDokumenta iz " + model.OldEmail + " u " + model.NewEmail + " i ponovno poslao obavijest za dokument broj: " + model.InvoiceNumber,
@@ -667,7 +667,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             {
                 mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                 mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/changeEmail").ToString(), "POST", merRequest);
+                mer.UploadString(new Uri(App.MerEndpoint + @"apis/v21/changeEmail").ToString(), "POST", merRequest);
             }
 
             _helper.LogActivity(User.Identity.Name + " je izmijenio e-mail adresu za dostavu eDokumenta iz " + model.OldEmail + " u " + model.NewEmail + " i ponovno poslao obavijest za dokument broj: " + model.InvoiceNumber,
@@ -814,7 +814,7 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 {
                     mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                     mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                    var responseRegularDelivery = mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getSentDocuments").ToString(), "POST", merRequest);
+                    var responseRegularDelivery = mer.UploadString(new Uri(App.MerEndpoint + @"apis/v21/getSentDocuments").ToString(), "POST", merRequest);
                     //ResponseRegularDelivery = ResponseRegularDelivery.Replace("[", "").Replace("]", "");
                     resultsDocumentHistory = JsonConvert.DeserializeObject<MerGetSentDocumentsResponse[]>(responseRegularDelivery);
 

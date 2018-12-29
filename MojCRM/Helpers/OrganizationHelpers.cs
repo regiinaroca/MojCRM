@@ -88,7 +88,7 @@ namespace MojCRM.Helpers
                 mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                 mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
                 var response =
-                    mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getSubjektData").ToString(), "POST",
+                    mer.UploadString(new Uri(App.MerEndpoint + @"apis/v21/getSubjektData").ToString(), "POST",
                         merRequest);
                 response = response.Replace("[", "").Replace("]", "");
                 MerGetSubjektDataResponse result = JsonConvert.DeserializeObject<MerGetSubjektDataResponse>(response);
@@ -136,7 +136,7 @@ namespace MojCRM.Helpers
                 mer.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                 mer.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
                 var response =
-                    mer.UploadString(new Uri(@"https://www.moj-eracun.hr/apis/v21/getSubjektData").ToString(), "POST",
+                    mer.UploadString(new Uri(App.MerEndpoint + @"apis/v21/getSubjektData").ToString(), "POST",
                         merRequest);
                 response = response.Replace("[", "").Replace("]", "");
                 MerGetSubjektDataResponse result = JsonConvert.DeserializeObject<MerGetSubjektDataResponse>(response);
