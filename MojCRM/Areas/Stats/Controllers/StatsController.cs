@@ -526,7 +526,7 @@ namespace MojCRM.Areas.Stats.Controllers
             var model = new List<OrganizationsByCountryViewModel>();
 
             var organizations = _db.OrganizationDetails.Where(x => x.Organization.SubjectBusinessUnit == "" || x.Organization.SubjectBusinessUnit == "11").GroupBy(x => x.MainCountry).Select(gx => gx);
-            var organizationCount = _db.OrganizationDetails.Count(x => x.Organization.SubjectBusinessUnit == "" || x.Organization.SubjectBusinessUnit == "11");
+            var organizationCount = _db.Organizations.Count(x => x.SubjectBusinessUnit == "" || x.SubjectBusinessUnit == "11");
 
             foreach (var organization in organizations)
             {
