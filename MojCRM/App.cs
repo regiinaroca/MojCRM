@@ -19,5 +19,16 @@ namespace MojCRM
                 return ConfigurationManager.AppSettings["MerEndpoint"];
             }
         }
+
+        /// <summary>
+        /// Country where Moj-CRM system is setup (e.g. Croatia, Serbia)
+        /// </summary>
+        public static string Country
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["Country"];
+            }
+        }
     }
 }
