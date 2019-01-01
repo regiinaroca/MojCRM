@@ -604,10 +604,10 @@ namespace MojCRM.Controllers
         }
 
         [HttpPost]
-        public JsonResult MarkAsVerified(int merId)
+        public JsonResult MarkAsVerified(int merId, bool unmark = false)
         {
             var organization = _db.MerDeliveryDetails.First(o => o.MerId == merId);
-            organization.AcquiredReceivingInformationIsVerified = true;
+            organization.AcquiredReceivingInformationIsVerified = !unmark;
             organization.Organization.LastUpdatedBy = User.Identity.Name;
             organization.Organization.UpdateDate = DateTime.Now;
             _db.SaveChanges();

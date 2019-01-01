@@ -106,13 +106,14 @@
                     <i class="fa fa-envelope text-warning" style="color: gold"></i>
                 </div>
             }
-            <div class="col-md-1" title="Uredi prikupljenu informaciju o zaprimanju eRačuna za ovog subjekta">
-                <a href="#editAcquiredReceivingInformation" data-toggle="modal"><i class="fa fa-edit"></i></a>
-                @if (Model.MerDeliveryDetails.RequiredPostalService == false)
-                {
-                   <a onclick="MarkPostalService()" class="mark-postal"><i class="fa fa-envelope"></i></a>
-                }
-            </div>
+                <div class="col-md-1" title="Uredi prikupljenu informaciju o zaprimanju eRačuna za ovog subjekta">
+                    <a href="#editAcquiredReceivingInformation" data-toggle="modal"><i class="fa fa-edit"></i></a>
+                    <a onclick="UnmarkVerified()" class="mark-verified"><i class="fa fa-check"></i></a>
+                    @if (Model.MerDeliveryDetails.RequiredPostalService == false)
+                    {
+                        <a onclick="MarkPostalService()" class="mark-postal"><i class="fa fa-envelope"></i></a>
+                    }
+                </div>
         </div>
     }
     @if (Model.MerDeliveryDetails.AcquiredReceivingInformationIsVerified == false)
@@ -170,6 +171,27 @@
                 success: function (data) {
                     if (data.Status === 'OK')
                         alert("Uspješno ste označili informaciju o zaiprimanju kao verificiranu!");
+                    else
+                        alert("Greška!");
+                },
+                dataType: 'json'
+            });
+            window.location.reload(true);
+        });
+    }
+    function UnmarkVerified() {
+        $(document).on("click", "a.mark-verified", function (e) {
+            e.preventDefault();
+            $.ajax({
+                method: 'POST',
+                url: '@Url.RouteUrl(new { action = "MarkAsVerified", controller = "Organizations", area = "" })',
+                data: {
+                    merId: "@Model.Organization.MerId",
+                    unmark: true
+                },
+                success: function (data) {
+                    if (data.Status === 'OK')
+                        alert("Uspješno ste uklonili oznaku za verificiranu informaciju o zaprimanju!");
                     else
                         alert("Greška!");
                 },
