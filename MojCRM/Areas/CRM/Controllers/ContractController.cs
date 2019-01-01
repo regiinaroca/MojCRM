@@ -44,6 +44,26 @@ namespace MojCRM.Areas.CRM.Controllers
         }
 
         /// <summary>
+        /// Method which finds contracts which expire in one month from the day when a user requests report
+        /// </summary>
+        /// <param name="search">Date for search based on expiration date</param>
+        /// <returns>Report with contracts which will expire</returns>
+        public ActionResult ContractsForExpiration(string search)
+        {
+            // this date formats are formatted like this because of the default entries in the DB
+            var referenceDate = new DateTime(DateTime.Today.Year, DateTime.Today.AddMonths(2).Month, 1, 23, 59, 59).AddDays(-1); 
+            var searchDate = Convert.ToDateTime(search).AddHours(23).AddMinutes(59).AddSeconds(59);
+            IQueryable<Contract> contracts;
+
+            if (search != null)
+                contracts = _db.Contracts.Where(c => c.EndDate == searchDate);
+            else
+                contracts = _db.Contracts.Where(c => c.EndDate == referenceDate);
+
+            return View(contracts.OrderBy(c => c.EndDate));
+        }
+
+        /// <summary>
         /// Method which gets the contracts from Moj-eRačun
         /// </summary>
         /// <param name="user"></param>

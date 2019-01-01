@@ -1,0 +1,73 @@
+﻿@model IQueryable<MojCRM.Areas.CRM.Models.Contract>
+@{
+    ViewBag.Title = "Ugovori pred istekom";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+}
+
+<h2>Pregled ugovora pred istekom</h2>
+<br />
+<div class="alert alert-info">
+    <p style="text-align: justify">
+        Ovaj pregled donosi podatke o ugovorima korisnika koji su pred istekom.<br />
+        <br />
+        <strong>Napomena:</strong> ukoliko se ne koristi pretraga, sustav automatski vraća sve ugovore koji istiću krajem sljedećeg kalendarskog mjeseca u odnosu na onaj u kojem se nalazimo.
+    </p>
+</div>
+<hr />
+@using (Html.BeginForm("ContractsForExpiration", "Contract", FormMethod.Get))
+{
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="search">Datum završetka UO</label>
+                <div id="search">
+                    @Html.TextBox("search", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Datum završetka UO", @type = "text", @id = "search-date", @name = "search-date" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" style="margin-top:22px">
+            <div class="form-group">
+                <div>
+                    <input id="Search" type="submit" class="btn btn-primary btn-sm" value="Traži" />
+                    <input id="btn-reset" type="reset" class="btn btn-warning btn-sm" value="Poništi" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<hr />
+<div class="row">
+    <div class="widget widget-table">
+        <div class="widget-header">
+            <h3><i class="fa fa-bars"></i> Pregled podataka</h3> <em>- Podaci o ugovorima pred istekom</em>
+            <div class="btn-group widget-header-toolbar">
+                <a href="#" title="Fokusiraj" class="btn-borderless btn-focus"><i class="fa fa-eye"></i></a>
+                <a href="#" title="Proširi/Sažmi" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a>
+            </div>
+        </div>
+        <div class="widget-content">
+            <table id="ticket-table" class="table table-sorting">
+                <thead>
+                    <tr>
+                        <th>Broj ugovora</th>
+                        <th>Naziv tvrtke</th>
+                        <th>Datum početka</th>
+                        <th>Datum završetka</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var contract in Model)
+                    {
+                    <tr>
+                        <td>@contract.MerContractNumber</td>
+                        <td>@contract.Organization.SubjectName</td>
+                        <td>@contract.StartDate.ToShortDateString()</td>
+                        <td>@contract.EndDate.ToShortDateString()</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
