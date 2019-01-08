@@ -264,7 +264,8 @@ namespace MojCRM.Controllers
                 string postalCode;
                 string mainCity;
 
-                if (organization.OrganizationDetail.MainCountry == OrganizationDetail.CountryIdentificationCodeEnum.Hr)
+                if (organization.OrganizationDetail.MainCountry == OrganizationDetail.CountryIdentificationCodeEnum.Hr
+                    || organization.OrganizationDetail.MainCountry == OrganizationDetail.CountryIdentificationCodeEnum.Rs)
                 {
                     postalCode = result.Mjesto.Substring(0, 5).Trim();
                     mainCity = result.Mjesto.Substring(6).Trim();
