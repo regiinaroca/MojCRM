@@ -79,6 +79,7 @@ namespace MojCRM.Models
 
         public enum LegalFormEnum
         {
+            #region Croatia
             [Description("Nije navedeno")]
             NOINFO,
 
@@ -98,7 +99,22 @@ namespace MojCRM.Models
             OBRT,
 
             [Description("Ostali pravni oblici (Zadruge, OPG, Udruge, Ustanove i sl.")]
-            OTHER
+            OTHER,
+            #endregion
+
+            #region Serbia
+            [Description("Preduzetnik")]
+            Preduzetnik,
+
+            [Description("Ortačko društvo")]
+            Ortak,
+
+            [Description("Komanditno društvo")]
+            KD,
+
+            [Description("Akcionarsko društvo")]
+            AD
+            #endregion
         }
         public enum ServiceProviderEnum
         {

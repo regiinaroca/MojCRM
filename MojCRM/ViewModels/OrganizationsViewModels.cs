@@ -30,17 +30,28 @@ namespace MojCRM.ViewModels
         {
             get
             {
-                var legalFormList = new List<SelectListItem>
+                var legalFormList = new List<SelectListItem>();
+                if (App.Country == "Croatia")
                 {
-                    new SelectListItem{ Value = null, Text = @"-- Odaberi pravni oblik --"},
-                    new SelectListItem{ Value = "0", Text = @"Nije navedeno" },
-                    new SelectListItem{ Value = "1", Text = @"Društvo s ograničenom odgovornošću" },
-                    new SelectListItem{ Value = "2", Text = @"Jednostavno društvo s ograničenom odgovornošću" },
-                    new SelectListItem{ Value = "3", Text = @"Dioničko društvo" },
-                    new SelectListItem{ Value = "4", Text = @"Ostala trgovačka društva (Komanditno društvo, Javno trgovačko društvo)" },
-                    new SelectListItem{ Value = "5", Text = @"Obrt" },
-                    new SelectListItem{ Value = "6", Text = @"Ostali pravni oblici (Zadruge, OPG, Udruge, Ustanove i sl.)" },
-                };
+                    legalFormList.Add(new SelectListItem { Value = null, Text = @"-- Odaberi pravni oblik --" });
+                    legalFormList.Add(new SelectListItem { Value = "0", Text = @"Nije navedeno" });
+                    legalFormList.Add(new SelectListItem { Value = "1", Text = @"Društvo s ograničenom odgovornošću" });
+                    legalFormList.Add(new SelectListItem { Value = "2", Text = @"Jednostavno društvo s ograničenom odgovornošću" });
+                    legalFormList.Add(new SelectListItem { Value = "3", Text = @"Dioničko društvo" });
+                    legalFormList.Add(new SelectListItem { Value = "4", Text = @"Ostala trgovačka društva (Komanditno društvo, Javno trgovačko društvo)" });
+                    legalFormList.Add(new SelectListItem { Value = "5", Text = @"Obrt" });
+                    legalFormList.Add(new SelectListItem { Value = "6", Text = @"Ostali pravni oblici (Zadruge, OPG, Udruge, Ustanove i sl.)" });
+                }
+                else if (App.Country == "Serbia")
+                {
+                    legalFormList.Add(new SelectListItem { Value = null, Text = @"-- Odaberi pravnu formu --" });
+                    legalFormList.Add(new SelectListItem { Value = "0", Text = @"Nije navedeno" });
+                    legalFormList.Add(new SelectListItem { Value = "1", Text = @"Društvo s ograničenom odgovornošću" });
+                    legalFormList.Add(new SelectListItem { Value = "7", Text = @"Preduzetnik" });
+                    legalFormList.Add(new SelectListItem { Value = "8", Text = @"Ortačko društvo" });
+                    legalFormList.Add(new SelectListItem { Value = "9", Text = @"Komanditno društvo" });
+                    legalFormList.Add(new SelectListItem { Value = "10", Text = @"Akcionarsko društvo" });
+                }
                 return legalFormList;
             }
         }
@@ -117,6 +128,10 @@ namespace MojCRM.ViewModels
                     case Organizations.LegalFormEnum.KDJTD: return "Ostala trgovačka društva (Komanditno društvo, Javno trgovačko društvo)";
                     case Organizations.LegalFormEnum.OBRT: return "Obrt";
                     case Organizations.LegalFormEnum.OTHER: return "Ostali pravni oblici (Zadruge, OPG, Udruge, Ustanove i sl.)";
+                    case Organizations.LegalFormEnum.Preduzetnik: return "Preduzetnik";
+                    case Organizations.LegalFormEnum.Ortak: return "Ortačko društvo";
+                    case Organizations.LegalFormEnum.KD: return "Komanditno društvo";
+                    case Organizations.LegalFormEnum.AD: return "Akcionarsko društvo";
                 }
                 return "Nije navedeno";
             }
@@ -306,17 +321,28 @@ namespace MojCRM.ViewModels
         {
             get
             {
-                var legalFormList = new List<SelectListItem>
+                var legalFormList = new List<SelectListItem>();
+                if (App.Country == "Croatia")
                 {
-                    new SelectListItem{ Value = null, Text = @"-- Odaberi pravni oblik --"},
-                    new SelectListItem{ Value = "0", Text = @"Nije navedeno" },
-                    new SelectListItem{ Value = "1", Text = @"Društvo s ograničenom odgovornošću" },
-                    new SelectListItem{ Value = "2", Text = @"Jednostavno društvo s ograničenom odgovornošću" },
-                    new SelectListItem{ Value = "3", Text = @"Dioničko društvo" },
-                    new SelectListItem{ Value = "4", Text = @"Ostala trgovačka društva (Komanditno društvo, Javno trgovačko društvo)" },
-                    new SelectListItem{ Value = "5", Text = @"Obrt" },
-                    new SelectListItem{ Value = "6", Text = @"Ostali pravni oblici (Zadruge, OPG, Udruge, Ustanove i sl.)" },
-                };
+                    legalFormList.Add(new SelectListItem { Value = null, Text = @"-- Odaberi pravni oblik --" });
+                    legalFormList.Add(new SelectListItem { Value = "0", Text = @"Nije navedeno" });
+                    legalFormList.Add(new SelectListItem { Value = "1", Text = @"Društvo s ograničenom odgovornošću" });
+                    legalFormList.Add(new SelectListItem { Value = "2", Text = @"Jednostavno društvo s ograničenom odgovornošću" });
+                    legalFormList.Add(new SelectListItem { Value = "3", Text = @"Dioničko društvo" });
+                    legalFormList.Add(new SelectListItem { Value = "4", Text = @"Ostala trgovačka društva (Komanditno društvo, Javno trgovačko društvo)" });
+                    legalFormList.Add(new SelectListItem { Value = "5", Text = @"Obrt" });
+                    legalFormList.Add(new SelectListItem { Value = "6", Text = @"Ostali pravni oblici (Zadruge, OPG, Udruge, Ustanove i sl.)" });
+                }
+                else if (App.Country == "Serbia")
+                {
+                    legalFormList.Add(new SelectListItem { Value = null, Text = @"-- Odaberi pravnu formu --" });
+                    legalFormList.Add(new SelectListItem { Value = "0", Text = @"Nije navedeno" });
+                    legalFormList.Add(new SelectListItem { Value = "1", Text = @"Društvo s ograničenom odgovornošću" });
+                    legalFormList.Add(new SelectListItem { Value = "7", Text = @"Preduzetnik" });
+                    legalFormList.Add(new SelectListItem { Value = "8", Text = @"Ortačko društvo" });
+                    legalFormList.Add(new SelectListItem { Value = "9", Text = @"Komanditno društvo" });
+                    legalFormList.Add(new SelectListItem { Value = "10", Text = @"Akcionarsko društvo" });
+                }
                 return legalFormList;
             }
         }
