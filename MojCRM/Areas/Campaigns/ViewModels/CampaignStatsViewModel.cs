@@ -51,6 +51,48 @@ namespace MojCRM.Areas.Campaigns.ViewModels
         }
     }
 
+    public class EducationCampaignStatsViewModel
+    {
+        public Campaign Campaign { get; set; }
+        public int TotalCount { get; set; }
+        public int StartedCount { get; set; }
+        public int NotStartedCount { get; set; }
+        public decimal NotStartedPercent { get; set; }
+        private readonly ApplicationDbContext _db = new ApplicationDbContext();
+
+        public EducationCampaignStatsViewModel GetModel(int id)
+        {
+            var campaign = _db.Campaigns.First(c => c.CampaignType == Campaign.CampaignTypeEnum.Education && c.CampaignId == id);
+
+            if (_db.Educations.Count(op => op.RelatedCampaignId == id) != 0)
+            {
+                var newCampaign = new EducationCampaignStatsViewModel()
+                {
+                    Campaign = campaign,
+                    TotalCount = _db.Educations.Count(op => op.RelatedCampaignId == campaign.CampaignId),
+                    StartedCount = _db.Educations.Count(op => op.RelatedCampaignId == campaign.CampaignId && op.EducationEntityStatus == Education.EducationEntityStatusEnum.Created),
+                    NotStartedCount = _db.Educations.Count(op => op.RelatedCampaignId == campaign.CampaignId && op.EducationEntityStatus != Education.EducationEntityStatusEnum.Created),
+                    NotStartedPercent = Math.Round(((_db.Educations.Count(op => op.RelatedCampaignId == campaign.CampaignId && op.EducationEntityStatus != Education.EducationEntityStatusEnum.Created)
+                                                     / (decimal)_db.Educations.Count(op => op.RelatedCampaignId == campaign.CampaignId)) * 100), 0),
+                };
+
+                return newCampaign;
+            }
+            else
+            {
+                var newCampaign = new EducationCampaignStatsViewModel()
+                {
+                    Campaign = campaign,
+                    TotalCount = 0,
+                    StartedCount = 0,
+                    NotStartedCount = 0,
+                    NotStartedPercent = 0
+                };
+                return newCampaign;
+            }
+        }
+    }
+
     public class EmailBasesCampaignStatsViewModel
     {
         public Campaign Campaign { get; set; }

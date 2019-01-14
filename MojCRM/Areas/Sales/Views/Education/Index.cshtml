@@ -1,0 +1,159 @@
+﻿@using GridMvc.Html
+@using System.Web.UI.WebControls
+@model IQueryable<MojCRM.Areas.Sales.Models.Education>
+
+@{
+    ViewBag.Title = "Pregled prodajnih prilika - edukacije";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+}
+
+@{ 
+    var opportunityStatusList = new List<ListItem>
+        {
+            new ListItem{ Value= @"0", Text = @"Kreirano"},
+            new ListItem{ Value= @"1", Text = @"U kontaktu"},
+            new ListItem{ Value= @"2", Text = @"Poslan poziv"},
+            new ListItem{ Value= @"3", Text = @"Odbijeno"},
+            new ListItem{ Value= @"4", Text = @"Prihvaćeno"}
+        };
+    var opportunityRejectReasonList = new List<ListItem>
+        {
+            new ListItem{ Value= @"3", Text = @"Ne želi navesti"},
+            new ListItem{ Value= @"0", Text = @"Neodgovarajući termin"},
+            new ListItem{ Value= @"1", Text = @"Nezainteresiranost"},
+            new ListItem{ Value= @"2", Text = @"Usluga nije potrebna"}
+        };
+    var assigned = new List<ListItem>
+        {
+            new ListItem{ Value = @"1", Text = @"Nedodijeljene"},
+            new ListItem{ Value = @"2", Text = @"Dodijeljene"}
+        };
+}
+
+<h2 style="text-align:center"><strong>Pregled prodajnih prilika - edukacije</strong></h2>
+
+<hr />
+
+@using (Html.BeginForm("Index", "Education", new { area = "Sales" }, FormMethod.Get))
+    {
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="campaign-search">Naziv kampanje</label>
+            <div id="campaign-search">
+                @Html.TextBox("Campaign", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Naziv kampanje" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="opportunity-search">Naziv prilike</label>
+            <div id="opportunity-search">
+                @Html.TextBox("Education", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Naziv prilike" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="organization-search">Naziv ili OIB tvrtke</label>
+            <div id="organization-search">
+                @Html.TextBox("Organization", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Naziv ili OIB tvrtke" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="opportunity-status-search">Status prilike</label>
+            <div id="opportunity-status-search">
+                @Html.DropDownList("EducationStatus", new SelectList(opportunityStatusList, "Value", "Text"), "-- Odaberi status prilike --", new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="reject-reason-search">Razlog odbijanja</label>
+            <div id="reject-reason-search">
+                @Html.DropDownList("RejectReason", new SelectList(opportunityRejectReasonList, "Value", "Text"), "-- Odaberi razlog odbijanja --", new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+    @if (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin"))
+    {
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="assigned-search">Dodijeljeno</label>
+                <div id="assigned-search">
+                    @Html.DropDownList("Assigned", new SelectList(assigned, "Value", "Text"), "-- Odaberi --", new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    }
+    <div class="col-md-3">
+        <div class="alert alert-info">
+            Broj rezultata pretrage: <strong title="Ukupan broj rezultata pretrage">@ViewBag.SearchResults</strong> <strong style="color:green" title="Broj rezultata pretrage koji su dodijeljeni">(@ViewBag.SearchResultsAssigned)</strong>
+        </div>
+    </div>
+</div>
+<br />
+<div class="col-md-12">
+    <div class="form-group" style="margin-bottom:0">
+        <input id="Search" type="submit" class="btn btn-primary btn-sm" value="Traži" />
+        <input id="btn-reset" type="reset" class="btn btn-warning btn-sm" value="Poništi" />
+    </div>
+</div>
+    }
+
+<hr />
+
+@Html.Grid(Model).Named("PopisProdajnihPrilika").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
+{
+columns.Add(m => m.RelatedCampaign.CampaignName).Encoded(false).Sanitized(false).Titled("Naziv kampanje").Sortable(true);
+columns.Add(m => m.EducationEntityTitle).Encoded(false).Sanitized(false).Titled("Naziv prilike").Sortable(false);
+columns.Add(m => m.RelatedOrganization.SubjectName).Encoded(false).Sanitized(false).Titled("Naziv tvrtke").Sortable(false).RenderValueAs(m =>
+Html.RouteLink(m.RelatedOrganization.SubjectName, new { action = "Details", controller = "Organizations", area = "", id = m.RelatedOrganizationId}));
+columns.Add(m => m.EducationEntityStatus).Encoded(false).Sanitized(false).Titled("Status prilike").Sortable(true).RenderValueAs(m =>
+{
+    if (m.EducationEntityStatus == MojCRM.Areas.Sales.Models.Education.EducationEntityStatusEnum.Created)
+    {
+        return @<div><span class="label label-default">@Html.Raw(m.EducationEntityStatusString)</span></div>;
+        }
+        if (m.EducationEntityStatus == MojCRM.Areas.Sales.Models.Education.EducationEntityStatusEnum.InContact)
+        {
+            return @<div><span class="label label-primary">@Html.Raw(m.EducationEntityStatusString)</span></div>;
+        }
+        if (m.EducationEntityStatus == MojCRM.Areas.Sales.Models.Education.EducationEntityStatusEnum.InvitationSent)
+        {
+        return @<div><span class="label label-primary">@Html.Raw(m.EducationEntityStatusString)</span></div>;
+        }
+        if (m.EducationEntityStatus == MojCRM.Areas.Sales.Models.Education.EducationEntityStatusEnum.Accepted)
+        {
+            return @<div><span class="label label-success">@Html.Raw(m.EducationEntityStatusString)</span></div>;
+        }
+
+    return @<div><span class="label label-danger">@Html.Raw(m.EducationEntityStatusString)</span><br /><span style="color:red">@Html.Raw(m.EducationRejectReasonString)</span></div>;
+    });
+    columns.Add().Encoded(false).Sanitized(false).Titled("").Sortable(false).RenderValueAs(m =>
+    {
+        if (m.IsAssigned == false && (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
+        {
+            return @<div><i title="Prilika je slobodna za dodijeljivanje" class="fa fa-check-circle-o fa-2x text-success"></i></div>;
+        }
+        return @<div><span><i class="fa fa-times-circle-o fa-2x text-danger" title="Prilika je već dodijeljena"></i> Dodijeljeno agentu: <strong>@Html.Raw(m.AssignedTo)</strong></span></div>;
+    });
+    columns.Add().Encoded(false).Sanitized(false).RenderValueAs(m =>
+    {
+        if ((User.Identity.Name == m.AssignedTo) || (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
+        {
+            return @<div><span>
+        <a href="@Url.RouteUrl(new { action = "Details", controller = "Education", area = "Sales", id = m.Id })" title="Detalji prodajne prilike"><i class="fa fa-list"></i></a>
+    </span></div>;
+        }
+        if (User.IsInRole("Administrator") || User.IsInRole("Superadmin"))
+        {
+            return @<div><span>
+        <a href="@Url.RouteUrl(new { action = "Delete", controller = "Opportunities", area = "Sales", id = m.Id })" title="Brisanje kampanje"><i class="fa fa-trash"></i></a>
+    </span></div>;
+        }
+            return @<span></span>;
+});
+}).WithPaging(20)

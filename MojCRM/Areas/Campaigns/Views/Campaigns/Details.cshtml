@@ -13,7 +13,7 @@
 }
 
 <!--Modal - Change Status-->
-@using (Html.BeginForm("ChangeStatus", "Campaigns", new { area = "Campaigns"}, FormMethod.Post))
+@using (Html.BeginForm("ChangeStatus", "Campaigns", new { area = "Campaigns" }, FormMethod.Post))
 {
     <div class="modal fade" id="ChangeStatus" tabindex="-1" role="dialog" aria-labelledby="ChangeStatus">
         <div class="modal-dialog modal-sm" role="document">
@@ -94,7 +94,7 @@
                         </div>
                         @if (Model.AssignedMembers.Count() != 0)
                         {
-                            <br/>
+                            <br />
                             <div class="row">
                                 <label>Dodijeljeni agenti</label>
                                 <table class="table">
@@ -110,7 +110,7 @@
                                         </tr>
                                     }
                                 </table>
-                            </div>   
+                            </div>
                         }
                     </div>
                 </div>
@@ -143,11 +143,11 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label for="file">Učitaj tablicu s podacima:</label>
-                                <input type="file" name="file" id="file"/><br><br>
-                                <br/>
+                                <input type="file" name="file" id="file" /><br><br>
+                                <br />
                                 <div class="hidden">
                                     <div id="ticketid">
-                                        @Html.TextBox("campaignId", ViewBag.CurrentFilter as string, new {@class = "form-control", @Value = Model.Campaign.CampaignId})
+                                        @Html.TextBox("campaignId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Campaign.CampaignId })
                                     </div>
                                 </div>
                             </div>
@@ -162,6 +162,48 @@
         </div>
     </div>
 }
+
+<!--Modal - Upload File Educations-->
+@using (Html.BeginForm("InsertEntities", "Education", new { area = "Sales" }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="modal fade" id="insertEducationEntities" tabindex="-1" role="dialog" aria-labelledby="insertEducationEntities">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content" style="overflow:hidden">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4>Učitavanje podataka</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-12">
+                                Molimo odaberite tablicu iz koje želite pročitati podatke.
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="file">Učitaj tablicu s podacima:</label>
+                                <input type="file" name="file" id="file" /><br><br>
+                                <br />
+                                <div class="hidden">
+                                    <div id="ticketid">
+                                        @Html.TextBox("campaignId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Campaign.CampaignId })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Učitaj</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Prekini</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 <!--Modal - Admin Assign-->
 @using (Html.BeginForm("AdminAssignEntities", "AcquireEmail", new { area = "HelpDesk" }, FormMethod.Post))
 {
@@ -219,13 +261,13 @@
                                     @foreach (var agent in Model.AssignedAgents)
                                     {
                                         if (agent.NumberOfAssignedEntities != 0)
-                                         {
-                                             <tr>
-                                                 <td>@agent.Agent</td>
-                                                 <td>@agent.NumberOfAssignedEntities</td>
-                                                 <td><a href="@Url.RouteUrl(new { action = "AdminUnassignEntities", controller = "AcquireEmail", area = "HelpDesk", campaignId=Model.Campaign.CampaignId, agent = agent.Agent, returnUrl = Request.Url })" title="Makni dodjelu za ovog agenta"><i class="fa fa-remove" style="color: red"></i></a></td>
-                                             </tr>   
-                                         }
+                                        {
+                                            <tr>
+                                                <td>@agent.Agent</td>
+                                                <td>@agent.NumberOfAssignedEntities</td>
+                                                <td><a href="@Url.RouteUrl(new { action = "AdminUnassignEntities", controller = "AcquireEmail", area = "HelpDesk", campaignId=Model.Campaign.CampaignId, agent = agent.Agent, returnUrl = Request.Url })" title="Makni dodjelu za ovog agenta"><i class="fa fa-remove" style="color: red"></i></a></td>
+                                            </tr>
+                                        }
                                     }
                                 </table>
                             </div>
@@ -298,34 +340,38 @@
 <div>
     <h4 style="text-align:center">Kampanja - @Html.Raw(Model.Campaign.CampaignName)</h4>
     <div>
-    <div class="row" style="text-align:center">
-        <div class="col-md-12">
-            <div class="btn-group" role="group">
-                @if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Management"))
-                {
-                    <a href="@Url.RouteUrl(new {action = "Edit", controller = "Campaigns", area = "Campaigns", id = Model.Campaign.CampaignId, returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Uređivanje kampanje"><i class="fa fa-edit"></i></a>
-                    <button type="button" title="Promijeni status kampanje" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangeStatus"><i class="fa fa-refresh"></i></button>
-                    <button type="button" title="Dodijeli agenta kampanji" class="btn btn-sm btn-default" data-toggle="modal" href="#AddAgent"><i class="fa fa-plus"></i> <i class="fa fa-user"></i></button>
-                    if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases)
+        <div class="row" style="text-align:center">
+            <div class="col-md-12">
+                <div class="btn-group" role="group">
+                    @if (User.IsInRole("Administrator") || User.IsInRole("Superadmin") || User.IsInRole("Management"))
                     {
-                        <button type="button" title="Dodijeli predmete" class="btn btn-default btn-sm" data-toggle="modal" href="#adminAssign"><i class="fa fa-reply-all"></i></button>
-                        <button type="button" title="Kreiraj unose za ažuriranje baze" class="btn btn-sm btn-default" data-toggle="modal" href="#checkEntities"><i class="fa fa-plus"></i></button>
-                        <a href="@Url.RouteUrl(new {action = "UpdateEntityStatusToCreated", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId })" class="btn btn-sm btn-default" title="Vrati statuse obrade u kreirano za predmete u ovoj kampanji"><i class="fa fa-repeat" style="color: yellow"></i></a>
-                        <a href="@Url.RouteUrl(new {action = "ExportEntities", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId, identifier = 1 })" class="btn btn-sm btn-default" title="Preuzmi sve rezultate"><i class="fa fa-file-excel-o" style="color: lightgreen"></i></a>
-                        <a href="@Url.RouteUrl(new {action = "ExportEntities", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId, identifier = 2 })" class="btn btn-sm btn-default" title="Preuzmi samo revidirane rezultate"><i class="fa fa-file-excel-o" style="color: blue"></i></a>
-                        <a href="@Url.RouteUrl(new {action = "ExportEntitiesCsv", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId })" class="btn btn-sm btn-default" title="Preuzmi rezultate u csv formatu">.csv</a>
-                        <a href="@Url.RouteUrl(new {action = "ExportEntitiesForEmailNotification", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId })" class="btn btn-sm btn-default" title="Preuzmi rezultate formirane za tipsku obavijest"><i class="fa fa-file-excel-o" style="color: yellow"></i></a>
-                        <button type="button" title="Promijeni status predmeta u kampanji" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangeStatusAcquireEmail"><i class="fa fa-refresh" style="color:yellow"></i></button>
-                        <a href="@Url.RouteUrl(new {action = "Index", controller = "AcquireEmail", area = "HelpDesk", CampaignName = Model.Campaign.CampaignName ,returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Pregled predmeta za ovu kampanju"><i class="fa fa-bars"></i> <i class="fa fa-arrow-right"></i></a>
+                        <a href="@Url.RouteUrl(new {action = "Edit", controller = "Campaigns", area = "Campaigns", id = Model.Campaign.CampaignId, returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Uređivanje kampanje"><i class="fa fa-edit"></i></a>
+                        <button type="button" title="Promijeni status kampanje" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangeStatus"><i class="fa fa-refresh"></i></button>
+                        <button type="button" title="Dodijeli agenta kampanji" class="btn btn-sm btn-default" data-toggle="modal" href="#AddAgent"><i class="fa fa-plus"></i> <i class="fa fa-user"></i></button>
+                        if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases)
+                        {
+                            <button type="button" title="Dodijeli predmete" class="btn btn-default btn-sm" data-toggle="modal" href="#adminAssign"><i class="fa fa-reply-all"></i></button>
+                            <button type="button" title="Kreiraj unose za ažuriranje baze" class="btn btn-sm btn-default" data-toggle="modal" href="#checkEntities"><i class="fa fa-plus"></i></button>
+                            <a href="@Url.RouteUrl(new {action = "UpdateEntityStatusToCreated", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId })" class="btn btn-sm btn-default" title="Vrati statuse obrade u kreirano za predmete u ovoj kampanji"><i class="fa fa-repeat" style="color: yellow"></i></a>
+                            <a href="@Url.RouteUrl(new {action = "ExportEntities", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId, identifier = 1 })" class="btn btn-sm btn-default" title="Preuzmi sve rezultate"><i class="fa fa-file-excel-o" style="color: lightgreen"></i></a>
+                            <a href="@Url.RouteUrl(new {action = "ExportEntities", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId, identifier = 2 })" class="btn btn-sm btn-default" title="Preuzmi samo revidirane rezultate"><i class="fa fa-file-excel-o" style="color: blue"></i></a>
+                            <a href="@Url.RouteUrl(new {action = "ExportEntitiesCsv", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId })" class="btn btn-sm btn-default" title="Preuzmi rezultate u csv formatu">.csv</a>
+                            <a href="@Url.RouteUrl(new {action = "ExportEntitiesForEmailNotification", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId })" class="btn btn-sm btn-default" title="Preuzmi rezultate formirane za tipsku obavijest"><i class="fa fa-file-excel-o" style="color: yellow"></i></a>
+                            <button type="button" title="Promijeni status predmeta u kampanji" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangeStatusAcquireEmail"><i class="fa fa-refresh" style="color:yellow"></i></button>
+                            <a href="@Url.RouteUrl(new {action = "Index", controller = "AcquireEmail", area = "HelpDesk", CampaignName = Model.Campaign.CampaignName ,returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Pregled predmeta za ovu kampanju"><i class="fa fa-bars"></i> <i class="fa fa-arrow-right"></i></a>
+                        }
+                        if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.Education)
+                        {
+                            <button type="button" title="Kreiraj unose za edukacijsku kampanju" class="btn btn-sm btn-default" data-toggle="modal" href="#insertEducationEntities"><i class="fa fa-plus"></i></button>
+                        }
+                        <a href="@Url.RouteUrl(new {action = "Index", controller = "Campaigns", area = "Campaigns", returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Povratak na popis kampanja"><i class="fa fa-arrow-left"></i></a>
                     }
-                    <a href="@Url.RouteUrl(new {action = "Index", controller = "Campaigns", area = "Campaigns", returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Povratak na popis kampanja"><i class="fa fa-arrow-left"></i></a>
-                }
+                </div>
             </div>
         </div>
-    </div>
-    @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases)
-    {
-        <hr />
+        @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases)
+        {
+            <hr />
             <div class="row" style="text-align: center">
                 <div class="col-md-2">
                     <h5>Dodaj atribut kampanji</h5>
@@ -357,16 +403,25 @@
                     <h5>Broj novoprikupljenih e-mailova: <strong style="color:red">@Model.NumberOfNewlyAcquiredReceivingInformation</strong></h5>
                 </div>
             </div>
-        if (Model.Campaign.CampaignAttributes != null)
-        {
-            <br/>
-            <table class="table" style="word-break:break-word;">
-                <tr>
-                    <th>Dodijeljeni atributi: @Model.CampaignAttributes</th>
-                </tr>
-            </table>
+            if (Model.Campaign.CampaignAttributes != null)
+            {
+                <br />
+                <table class="table" style="word-break:break-word;">
+                    <tr>
+                        <th>Dodijeljeni atributi: @Model.CampaignAttributes</th>
+                    </tr>
+                </table>
+            }
         }
-    }
+        @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.Education)
+        {
+            <hr />
+            <div class="row" style="text-align: center">
+                <div class="col-md-2">
+                    <h5>Broj polaznika: <strong style="color:red">@Model.NumberOfEducationAtendees</strong></h5>
+                </div>
+            </div>
+        }
     </div>
     <hr />
     @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.Sales && Model.SalesStats.TotalCount != 0)
@@ -384,6 +439,15 @@
         <div id="bases-progress" class="progress">
             <div class="progress-bar" role="progressbar" aria-valuenow="@Model.EmailBasesStats.VerifiedPercent" aria-valuemin="0" aria-valuemax="100" style="width: @Model.EmailBasesStats.VerifiedPercent%;">
                 @Model.EmailBasesStats.VerifiedPercent% dovršeno
+            </div>
+        </div>
+    }
+    @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.Education && Model.EducationStats.TotalCount != 0)
+    {
+        <label for="bases-progress" title="Broj obrađenih prodajnih prilika">Status obrade: @Model.EducationStats.NotStartedCount / @Model.EducationStats.TotalCount</label>
+        <div id="bases-progress" class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="@Model.EducationStats.NotStartedPercent" aria-valuemin="0" aria-valuemax="100" style="width: @Model.EducationStats.NotStartedPercent%;">
+                @Model.EducationStats.NotStartedPercent% dovršeno
             </div>
         </div>
     }
@@ -438,14 +502,17 @@
                 <dd>
                     @Html.DisplayFor(model => model.Campaign.CampaignStatusString)
                 </dd>
-                
-                <dt>
-                    @Html.DisplayNameFor(model => model.Campaign.ContractStartDate)
-                </dt>
 
-                <dd>
-                    @Html.DisplayFor(model => model.Campaign.ContractStartDate)
-                </dd>
+                @if (Model.Campaign.CampaignType != Campaign.CampaignTypeEnum.Education)
+                {
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Campaign.ContractStartDate)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Campaign.ContractStartDate)
+                    </dd>
+                }
 
                 <dt>
                     @Html.DisplayNameFor(model => model.Campaign.CampaignStartDate)
@@ -462,7 +529,7 @@
                 <dd>
                     @Html.DisplayFor(model => model.Campaign.CampaignPlannedEndDate)
                 </dd>
-                
+
                 @if (Model.Campaign.CampaignEndDate != null)
                 {
                     <dt>
@@ -471,7 +538,7 @@
 
                     <dd>
                         @Html.DisplayFor(model => model.Campaign.CampaignEndDate)
-                    </dd>   
+                    </dd>
                 }
 
                 <dt>
@@ -525,6 +592,25 @@
                 <dl class="dl-horizontal">
 
                     @foreach (var stat in Model.SalesLeadsStatusStats)
+                    {
+                        <dt>
+                            @stat.StatusName
+                        </dt>
+
+                        <dd>
+                            @stat.SumOfEntities
+                        </dd>
+                    }
+
+                </dl>
+            </div>
+        }
+        @if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.Education)
+        {
+            <div class="col-md-8" title="Statistički podaci o statusu predmeta za edukaciju">
+                <dl class="dl-horizontal">
+
+                    @foreach (var stat in Model.EducationStatusStats)
                     {
                         <dt>
                             @stat.StatusName
@@ -632,13 +718,13 @@
                         @*<a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a>*@
                     </div>
                 </div>
-                <br/>
+                <br />
                 <div classs="row">
                     <div class="col-md-12">
                         <div class="alert alert-info">
                             <p>
-                                Ovaj pregled sadrži podatke o uspješnosti agenata u ostvarenju prodaje u ovoj kampanji.<br/>
-                                Podatak o <strong>postotku konverzije</strong> govori o uspješnosti agenta da iz prodajne prilike ostvari lead. Ukoliko agent ima postotak konverzije manji od <strong>@minConversion %</strong> on se smatra kritičnim, dok se postotak veći od <strong>@maxConversion %</strong> smatra dobrim rezultatom.<br/>
+                                Ovaj pregled sadrži podatke o uspješnosti agenata u ostvarenju prodaje u ovoj kampanji.<br />
+                                Podatak o <strong>postotku konverzije</strong> govori o uspješnosti agenta da iz prodajne prilike ostvari lead. Ukoliko agent ima postotak konverzije manji od <strong>@minConversion %</strong> on se smatra kritičnim, dok se postotak veći od <strong>@maxConversion %</strong> smatra dobrim rezultatom.<br />
                                 Podatak o <strong>postotku prihvaćenih leadova</strong> govori o uspješnosti agenta da iz leada ostvari prodaju. Ukoliko agent ima postotak prihvaćanja manji od <strong>@minAccepted %</strong> on se smatra kritičnim, dok se postotak veći od <strong>@maxAccepted %</strong> smatra dobrim rezultatom.<br />
                                 Podatak o <strong>postotku odbijenih leadova</strong> govori o neuspješnosti agenta da iz leada ostvari prodaju. Ukoliko agent ima postotak odbijanja veći od <strong>@maxRejected %</strong> on se smatra kritičnim, dok se postotak manji od <strong>@minRejected %</strong> smatra dobrim rezultatom.<br />
                             </p>
@@ -648,60 +734,60 @@
                 <div class="widget-content">
                     <table id="ticket-table" class="table table-sorting">
                         <thead>
-                        <tr>
-                            <th>Agent</th>
-                            <th>Ukupan broj prodajnih prilika</th>
-                            <th>Ukupan broj leadova</th>
-                            <th>Postotak konverzije</th>
-                            <th>Broj prihvaćenih leadova (postotak)</th>
-                            <th>Broj odbijenih leadova (postotak)</th>
-                        </tr>
+                            <tr>
+                                <th>Agent</th>
+                                <th>Ukupan broj prodajnih prilika</th>
+                                <th>Ukupan broj leadova</th>
+                                <th>Postotak konverzije</th>
+                                <th>Broj prihvaćenih leadova (postotak)</th>
+                                <th>Broj odbijenih leadova (postotak)</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        @foreach (var entity in Model.CampaignLeadsAgentEfficiencies)
-                        {
-                            <tr>
-                                <td>@entity.Agent</td>
-                                <td>@entity.NumberOfOpportunitiesTotal</td>
-                                <td>@entity.AssignedTotalCount</td>
-                                @if (entity.ConverionPercent < minConversion)
-                                {
-                                    <td style="color: red"><strong>@entity.ConverionPercent %</strong></td>   
-                                }
-                                @if (entity.ConverionPercent > maxConversion)
-                                {
-                                    <td style="color: green"><strong>@entity.ConverionPercent %</strong></td>
-                                }
-                                @if (entity.ConverionPercent < maxConversion && entity.ConverionPercent > minConversion)
-                                {
-                                    <td>@entity.ConverionPercent %</td>
-                                }
-                                @if (entity.AcceptedPercent < minAccepted)
-                                {
-                                    <td style="color: red"><strong>@entity.AcceptedCount (@entity.AcceptedPercent %)</strong></td>
-                                }
-                                @if (entity.AcceptedPercent > maxAccepted)
-                                {
-                                    <td style="color: green"><strong>@entity.AcceptedCount (@entity.AcceptedPercent %)</strong></td>
-                                }
-                                @if (entity.AcceptedPercent < maxAccepted && entity.AcceptedPercent > minAccepted)
-                                {
-                                    <td>@entity.AcceptedCount (@entity.AcceptedPercent %)</td>
-                                }
-                                @if (entity.RejectedPercent < minRejected)
-                                {
-                                    <td style="color: green"><strong>@entity.RejectedCount (@entity.RejectedPercent %)</strong></td>
-                                }
-                                @if (entity.RejectedPercent > maxRejected)
-                                {
-                                    <td style="color: red"><strong>@entity.RejectedCount (@entity.RejectedPercent %)</strong></td>
-                                }
-                                @if (entity.RejectedPercent < maxRejected && entity.RejectedPercent > minRejected)
-                                {
-                                    <td>@entity.RejectedCount (@entity.RejectedPercent %)</td>
-                                }
-                            </tr>
-                        }
+                            @foreach (var entity in Model.CampaignLeadsAgentEfficiencies)
+                            {
+                                <tr>
+                                    <td>@entity.Agent</td>
+                                    <td>@entity.NumberOfOpportunitiesTotal</td>
+                                    <td>@entity.AssignedTotalCount</td>
+                                    @if (entity.ConverionPercent < minConversion)
+                                    {
+                                        <td style="color: red"><strong>@entity.ConverionPercent %</strong></td>
+                                    }
+                                    @if (entity.ConverionPercent > maxConversion)
+                                    {
+                                        <td style="color: green"><strong>@entity.ConverionPercent %</strong></td>
+                                    }
+                                    @if (entity.ConverionPercent < maxConversion && entity.ConverionPercent > minConversion)
+                                    {
+                                        <td>@entity.ConverionPercent %</td>
+                                    }
+                                    @if (entity.AcceptedPercent < minAccepted)
+                                    {
+                                        <td style="color: red"><strong>@entity.AcceptedCount (@entity.AcceptedPercent %)</strong></td>
+                                    }
+                                    @if (entity.AcceptedPercent > maxAccepted)
+                                    {
+                                        <td style="color: green"><strong>@entity.AcceptedCount (@entity.AcceptedPercent %)</strong></td>
+                                    }
+                                    @if (entity.AcceptedPercent < maxAccepted && entity.AcceptedPercent > minAccepted)
+                                    {
+                                        <td>@entity.AcceptedCount (@entity.AcceptedPercent %)</td>
+                                    }
+                                    @if (entity.RejectedPercent < minRejected)
+                                    {
+                                        <td style="color: green"><strong>@entity.RejectedCount (@entity.RejectedPercent %)</strong></td>
+                                    }
+                                    @if (entity.RejectedPercent > maxRejected)
+                                    {
+                                        <td style="color: red"><strong>@entity.RejectedCount (@entity.RejectedPercent %)</strong></td>
+                                    }
+                                    @if (entity.RejectedPercent < maxRejected && entity.RejectedPercent > minRejected)
+                                    {
+                                        <td>@entity.RejectedCount (@entity.RejectedPercent %)</td>
+                                    }
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>

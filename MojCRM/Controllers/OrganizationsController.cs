@@ -93,6 +93,7 @@ namespace MojCRM.Controllers
                     Contacts = _db.Contacts.Where(c => c.OrganizationId == id),
                     CampaignsFor = _db.Campaigns.Where(c => c.RelatedCompanyId == id),
                     AcquireEmails = _db.AcquireEmails.Where(a => a.RelatedOrganizationId == id),
+                    Educations = _db.Educations.Where(e => e.RelatedOrganizationId == id),
                     Opportunities = _db.Opportunities.Where(op => op.RelatedOrganizationId == id),
                     OpportunitiesCount = _db.Opportunities.Count(op => op.RelatedOrganizationId == id),
                     Leads = _db.Leads.Where(l => l.RelatedOrganizationId == id),

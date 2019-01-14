@@ -69,7 +69,10 @@ namespace MojCRM.Areas.Campaigns.Models
             Sales,
 
             [Description("CRM kampanja")]
-            Crm
+            Crm,
+
+            [Description("Edukacijske kampanje")]
+            Education
         }
 
         public enum CampaignStatusEnum
@@ -109,6 +112,7 @@ namespace MojCRM.Areas.Campaigns.Models
                     case CampaignTypeEnum.EmailBases: return "Ažuriranje baze korisnika";
                     case CampaignTypeEnum.Sales: return "Prodajna kampanja";
                     case CampaignTypeEnum.Crm: return "CRM kampanja";
+                    case CampaignTypeEnum.Education: return "Edukacijska kampanja";
                 }
                 return "Tip kampanje";
             }

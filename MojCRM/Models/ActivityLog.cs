@@ -104,7 +104,10 @@ namespace MojCRM.Models
             Quotes,
 
             [Description("CRM")]
-            Crm
+            Crm,
+
+            [Description("Edukacije")]
+            Educations
         }
 
         public string ActivityTypeString

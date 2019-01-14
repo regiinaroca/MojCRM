@@ -10,6 +10,9 @@ using MojCRM.Areas.CRM.Models;
 
 namespace MojCRM.ViewModels
 {
+    /// <summary>
+    /// ViewModel which is used for Organizations/Index View
+    /// </summary>
     public class OrganizationIndexViewModel
     {
         public IQueryable<Organizations> OrganizationList { get; set; }
@@ -92,6 +95,9 @@ namespace MojCRM.ViewModels
         public int ResultsCount { get; set; }
     }
 
+    /// <summary>
+    /// ViewModel which is used for Organizations/Details View
+    /// </summary>
     public class OrganizationDetailsViewModel
     {
         public Organizations Organization { get; set; }
@@ -101,6 +107,7 @@ namespace MojCRM.ViewModels
         public IQueryable<Contact> Contacts { get; set; }
         public IQueryable<Campaign> CampaignsFor { get; set; } //Campaigns where Campaign was created for them
         public IQueryable<AcquireEmail> AcquireEmails { get; set; }
+        public IQueryable<Education> Educations { get; set; }
         public IQueryable<Opportunity> Opportunities { get; set; }
         public int OpportunitiesCount { get; set; }
         public IQueryable<Lead> Leads { get; set; }
@@ -416,7 +423,8 @@ namespace MojCRM.ViewModels
                     new SelectListItem{ Value = null, Text = @"-- Odaberi tip kampanje --" },
                     new SelectListItem{ Value = "1", Text = @"Ažuriranje baza kupaca" },
                     new SelectListItem{ Value = "2", Text = @"Prodajna kampanja" },
-                    new SelectListItem{ Value = "3", Text = @"CRM kampanja" }
+                    new SelectListItem{ Value = "3", Text = @"CRM kampanja" },
+                    new SelectListItem{ Value = "4", Text = @"Edukacijska kampanja" }
                 };
                 return campaignTypeList;
             }
@@ -451,6 +459,9 @@ namespace MojCRM.ViewModels
         }
     }
 
+    /// <summary>
+    /// ViewModel which is used on Organizations/AddAttribute view
+    /// </summary>
     public class AddOrganizationAttributeViewModel
     {
         public int MerId { get; set; }

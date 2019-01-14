@@ -3,7 +3,7 @@
 @model IQueryable<MojCRM.Areas.Sales.Models.Opportunity>
 
 @{
-    ViewBag.Title = "Pregled prodajnih prilika";
+    ViewBag.Title = "Pregled prodajnih prilika - servis";
     Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 }
 
@@ -48,7 +48,7 @@
         };
 }
 
-<h2 style="text-align:center"><strong>Pregled prodajnih prilika</strong></h2>
+<h2 style="text-align:center"><strong>Pregled prodajnih prilika - servis</strong></h2>
 
 <hr />
 
@@ -99,7 +99,7 @@
         <div class="form-group">
             <label for="opportunity-status-search">Status prilike</label>
             <div id="opportunity-status-search">
-                @Html.DropDownList("OpportunityStatus", new SelectList(opportunityStatusList, "Value", "Text"), "Odaberi status prilike", new { @class = "form-control" })
+                @Html.DropDownList("OpportunityStatus", new SelectList(opportunityStatusList, "Value", "Text"), "-- Odaberi status prilike --", new { @class = "form-control" })
             </div>
         </div>
     </div>
@@ -107,7 +107,7 @@
         <div class="form-group">
             <label for="reject-reason-search">Razlog odbijanja</label>
             <div id="reject-reason-search">
-                @Html.DropDownList("RejectReason", new SelectList(opportunityRejectReasonList, "Value", "Text"), "Odaberi razlog odbijanja", new { @class = "form-control" })
+                @Html.DropDownList("RejectReason", new SelectList(opportunityRejectReasonList, "Value", "Text"), "-- Odaberi razlog odbijanja --", new { @class = "form-control" })
             </div>
         </div>
     </div>
@@ -117,7 +117,7 @@
             <div class="form-group">
                 <label for="assigned-search">Dodijeljeno</label>
                 <div id="assigned-search">
-                    @Html.DropDownList("Assigned", new SelectList(assigned, "Value", "Text"), "Odaberi", new { @class = "form-control" })
+                    @Html.DropDownList("Assigned", new SelectList(assigned, "Value", "Text"), "-- Odaberi --", new { @class = "form-control" })
                 </div>
             </div>
         </div>
@@ -125,7 +125,7 @@
             <div class="form-group">
                 <label for="assigned-to-search">Dodijeljeno agentu</label>
                 <div id="assigned-to-search">
-                    @Html.DropDownList("AssignedTo", new SelectList(salesAgents, "Value", "Text"), "Dodijeljeno agentu", new { @class = "form-control" })
+                    @Html.DropDownList("AssignedTo", new SelectList(salesAgents, "Value", "Text"), "-- Dodijeljeno agentu --", new { @class = "form-control" })
                 </div>
             </div>
         </div>
@@ -208,7 +208,7 @@ columns.Add(m => m.OpportunityStatus).Encoded(false).Sanitized(false).Titled("St
 
     return @<div><span class="label label-danger">@Html.Raw(m.OpportunityStatusString)</span><br /><span style="color:red">@Html.Raw(m.OpportunityRejectReasonString)</span></div>;
     });
-    columns.Add(m => m.OpportunityDescription).Encoded(false).Sanitized(false).Titled("Opis prilike").Sortable(false).RenderValueAs(m =>
+    columns.Add(m => m.OpportunityDescription).Encoded(false).Sanitized(false).Sortable(false).RenderValueAs(m =>
     {
         if (m.IsAssigned == false && (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
         {

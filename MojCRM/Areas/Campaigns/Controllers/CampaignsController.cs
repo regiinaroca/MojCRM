@@ -81,6 +81,7 @@ namespace MojCRM.Areas.Campaigns.Controllers
             var model = new CampaignDetailsViewModel();
             var campaignBasesStats = new EmailBasesCampaignStatsViewModel();
             var campaignSalesStats = new SalesCampaignStatsViewModel();
+            var campaignEducationStats = new EducationCampaignStatsViewModel();
             if (campaign == null)
             {
                 return HttpNotFound();
@@ -100,6 +101,7 @@ namespace MojCRM.Areas.Campaigns.Controllers
                         Campaign = campaign,
                         EmailBasesStats = campaignBasesStats.GetModel(id),
                         SalesStats = null,
+                        EducationStats = null,
                         NumberOfUnassignedEntities = model.GetUnassignedEntities(id),
                         NumberOfUnassignedEntitiesWithoutTelephone = model.GetUnassignedEntitiesWithoutTelephone(id),
                         AssignedMembers = list,
@@ -108,9 +110,11 @@ namespace MojCRM.Areas.Campaigns.Controllers
                         SalesOpportunitiesStatusStats = null,
                         SalesLeadsStatusStats = null,
                         SalesGeneralStatus = null,
+                        EducationStatusStats = null,
                         CampaignLeadsAgentEfficiencies = null,
                         CampaignAttributes = campaign.CampaignAttributes,
-                        NumberOfNewlyAcquiredReceivingInformation = _db.AcquireEmails.Count(ae => ae.RelatedCampaignId == id && ae.IsNewlyAcquired == true)
+                        NumberOfNewlyAcquiredReceivingInformation = _db.AcquireEmails.Count(ae => ae.RelatedCampaignId == id && ae.IsNewlyAcquired == true),
+                        NumberOfEducationAtendees = null
                     };
                     return View(model);
                 case Campaign.CampaignTypeEnum.Sales:
@@ -119,6 +123,7 @@ namespace MojCRM.Areas.Campaigns.Controllers
                         Campaign = campaign,
                         EmailBasesStats = null,
                         SalesStats = campaignSalesStats.GetModel(id),
+                        EducationStats = null,
                         NumberOfUnassignedEntities = model.GetUnassignedEntities(id),
                         NumberOfUnassignedEntitiesWithoutTelephone = model.GetUnassignedEntitiesWithoutTelephone(id),
                         AssignedMembers = list,
@@ -127,9 +132,33 @@ namespace MojCRM.Areas.Campaigns.Controllers
                         SalesOpportunitiesStatusStats = model.GetOpportunitiesSalesStatusStats(id),
                         SalesLeadsStatusStats = model.GetLeadsSalesStatusStats(id),
                         SalesGeneralStatus = model.GetSalesGeneralStatus(id),
+                        EducationStatusStats = null,
                         CampaignLeadsAgentEfficiencies = model.GetCampaignLeadsAgentEfficiencies(id),
                         CampaignAttributes = campaign.CampaignAttributes,
-                        NumberOfNewlyAcquiredReceivingInformation = null
+                        NumberOfNewlyAcquiredReceivingInformation = null,
+                        NumberOfEducationAtendees = null
+                    };
+                    return View(model);
+                case Campaign.CampaignTypeEnum.Education:
+                    model = new CampaignDetailsViewModel
+                    {
+                        Campaign = campaign,
+                        EmailBasesStats = null,
+                        SalesStats = null,
+                        EducationStats = campaignEducationStats.GetModel(id),
+                        NumberOfUnassignedEntities = 0,
+                        NumberOfUnassignedEntitiesWithoutTelephone = 0,
+                        AssignedMembers = list,
+                        AssignedAgents = model.GetAssignedAgentsInfo(id),
+                        EmailsBasesEntityStatusStats = null,
+                        SalesOpportunitiesStatusStats = null,
+                        SalesLeadsStatusStats = null,
+                        SalesGeneralStatus = null,
+                        EducationStatusStats = model.GetEducationStatusStats(id),
+                        CampaignLeadsAgentEfficiencies = null,
+                        CampaignAttributes = campaign.CampaignAttributes,
+                        NumberOfNewlyAcquiredReceivingInformation = null,
+                        NumberOfEducationAtendees = _db.Educations.Where(e => e.RelatedCampaignId == id && e.AtendeesNumber != null).Sum(c => c.AtendeesNumber)
                     };
                     return View(model);
             }

@@ -30,6 +30,9 @@ namespace MojCRM.Models
         }
     }
 
+    /// <summary>
+    /// Class which is the base for the Database
+    /// </summary>
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
@@ -41,6 +44,8 @@ namespace MojCRM.Models
         {
             return new ApplicationDbContext();
         }
+
+        // Database tables
 
         public DbSet<Delivery> DeliveryTicketModels { get; set; }
 
@@ -91,5 +96,9 @@ namespace MojCRM.Models
         public DbSet<ContractedService> ContractedServices { get; set; }
 
         public DbSet<ContractRate> ContractRates { get; set; }
+
+        public DbSet<Education> Educations { get; set; }
+
+        public DbSet<EducationNote> EducationNotes { get; set; }
     }
 }

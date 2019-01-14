@@ -1,0 +1,63 @@
+﻿@model MojCRM.ViewModels.OrganizationDetailsViewModel
+@{
+    Layout = null;
+}
+<div class="col-md-3">
+
+</div>
+<div class="col-md-9">
+    @if (Model.Educations.Count() != 0)
+    {
+        <table class="table">
+            <tr>
+                <th>Naziv kampanje</th>
+                <th>Status</th>
+                <th>Zadnji kontakt</th>
+                <th>Dodijeljeno agentu</th>
+                <th></th>
+            </tr>
+            @foreach (var Education in Model.Educations)
+            {
+                <tr>
+                    <td>@Education.RelatedCampaign.CampaignName</td>
+                    @if (Education.EducationEntityStatus == MojCRM.Areas.Sales.Models.Education.EducationEntityStatusEnum.Created)
+                    {
+                        <td><span class="label label-default">@Html.Raw(Education.EducationEntityStatusString)</span></td>
+                    }
+                    @if (Education.EducationEntityStatus == MojCRM.Areas.Sales.Models.Education.EducationEntityStatusEnum.InContact)
+                    {
+                        <td><span class="label label-primary">@Html.Raw(Education.EducationEntityStatusString)</span></td>
+                    }
+                    @if (Education.EducationEntityStatus == MojCRM.Areas.Sales.Models.Education.EducationEntityStatusEnum.InvitationSent)
+                    {
+                        <td><span class="label label-primary">@Html.Raw(Education.EducationEntityStatusString)</span></td>
+                    }
+                    @if (Education.EducationEntityStatus == MojCRM.Areas.Sales.Models.Education.EducationEntityStatusEnum.Accepted)
+                    {
+                        <td><span class="label label-success">@Html.Raw(Education.EducationEntityStatusString)</span></td>
+                    }
+                    @if (Education.EducationEntityStatus == MojCRM.Areas.Sales.Models.Education.EducationEntityStatusEnum.Rejected)
+                    {
+                        <td><span class="label label-danger">@Html.Raw(Education.EducationEntityStatusString)</span><br /><span style="color:red">@Html.Raw(Education.EducationRejectReasonString)</span></td>
+                    }
+                    <td>@Education.LastContactDate</td>
+                    <td>@Education.AssignedTo</td>
+                    @if ((User.Identity.Name == Education.AssignedTo) || (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
+                    {
+                        <td>
+                            <span>
+                                <a href="@Url.RouteUrl(new { action = "Details", controller = "Education", area = "Sales", id = Education.Id })" title="Detalji leada"><i class="fa fa-list"></i></a>
+                            </span>
+                        </td>
+                    }
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <p>Za ovu tvrtku nisu kreirani pozivi na edukacije</p>
+    }
+</div>
+
+

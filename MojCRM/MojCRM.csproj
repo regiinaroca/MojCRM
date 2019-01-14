@@ -364,12 +364,16 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Areas\Sales\Controllers\EducationController.cs" />
     <Compile Include="Areas\Sales\Controllers\LeadsController.cs" />
     <Compile Include="Areas\Sales\Controllers\OpportunitiesController.cs" />
     <Compile Include="Areas\Sales\Controllers\QuotesController.cs" />
+    <Compile Include="Areas\Sales\Helpers\EducationHelpers.cs" />
     <Compile Include="Areas\Sales\Helpers\LeadHelpers.cs" />
     <Compile Include="Areas\Sales\Helpers\OpportunityHelpers.cs" />
     <Compile Include="Areas\Sales\Helpers\QuoteHelpers.cs" />
+    <Compile Include="Areas\Sales\Models\Education.cs" />
+    <Compile Include="Areas\Sales\Models\EducationNote.cs" />
     <Compile Include="Areas\Sales\Models\Lead.cs" />
     <Compile Include="Areas\Sales\Models\LeadNote.cs" />
     <Compile Include="Areas\Sales\Models\Opportunity.cs" />
@@ -379,6 +383,7 @@
     <Compile Include="Areas\Sales\Models\QuoteMember.cs" />
     <Compile Include="Areas\Sales\Models\Service.cs" />
     <Compile Include="Areas\Sales\SalesAreaRegistration.cs" />
+    <Compile Include="Areas\Sales\ViewModels\EducationDetailViewModel.cs" />
     <Compile Include="Areas\Sales\ViewModels\LeadDetailViewModel.cs" />
     <Compile Include="Areas\Sales\ViewModels\OpportunityDetailViewModel.cs" />
     <Compile Include="Areas\Sales\ViewModels\QuoteViewModels.cs" />
@@ -631,6 +636,10 @@
     <Compile Include="Migrations\201810161705592_Oct162018Update_2.Designer.cs">
       <DependentUpon>201810161705592_Oct162018Update_2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201901132224023_Jan132019Update.cs" />
+    <Compile Include="Migrations\201901132224023_Jan132019Update.Designer.cs">
+      <DependentUpon>201901132224023_Jan132019Update.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ActivityLog.cs" />
@@ -816,6 +825,9 @@
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
     <Content Include="Areas\Campaigns\Views\Campaigns\EmailBasesCampaignStatusStats.cshtml" />
     <Content Include="Areas\CRM\Views\Contract\ContractsForExpiration.cshtml" />
+    <Content Include="Areas\Sales\Views\Education\Index.cshtml" />
+    <Content Include="Areas\Sales\Views\Education\Details.cshtml" />
+    <Content Include="Areas\Sales\Views\Education\InsertEntities.cshtml" />
     <None Include="Properties\PublishProfiles\MerDeployCIS.pubxml" />
     <Content Include="Scripts\daterangepicker.js" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
@@ -978,6 +990,7 @@
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
     <Content Include="Views\Administration\SystemLogs.cshtml" />
+    <Content Include="Views\Organizations\_Educations.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1173,6 +1186,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201810161705592_Oct162018Update_2.resx">
       <DependentUpon>201810161705592_Oct162018Update_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901132224023_Jan132019Update.resx">
+      <DependentUpon>201901132224023_Jan132019Update.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -1,0 +1,58 @@
+﻿@model MojCRM.Areas.Sales.Helpers.EducationImportResults
+@{
+    ViewBag.Title = "Unos predmeta za edukacijsku kampanju";
+    Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
+}
+
+<h2>Unos predmeta za edukacijsku kampanju</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <a href="@Url.RouteUrl(new { action = "Details", controller = "Campaigns", area = "Campaigns", id = Model.CampaignId })" title="Nastavi na detalje kampanje"><i class="fa fa-arrow-right"></i></a>
+    </div>
+</div>
+<br/>
+<div class="row">
+    <div class="col-md-6">
+        <p>
+            <strong>Broj OIB-ova koji se nalaze u bazi podataka i za koje su kreirani predmeti: </strong> @Model.ValidEntities
+        </p>
+        <br/>
+        <table class="table">
+            <tr>
+                <th>OIB</th>
+            </tr>
+            @foreach (var entity in Model.ValidVATs)
+            {
+                <tr>
+                    <td>@entity</td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="col-md-6">
+        <p>
+            <strong>Broj OIB-ova koji se ne nalaze u bazi podataka i za koje nisu kreirani predmeti: </strong> @Model.InvalidEntities
+        </p>
+        <br />
+        <table class="table">
+            <tr>
+                <th>OIB</th>
+            </tr>
+            @foreach (var entity in Model.InvalidVATs)
+            {
+                <tr>
+                    <td>@entity</td>
+                </tr>
+            }
+        </table>
+    </div>    
+</div>
+@if (@Model.ImportedEntities != 0)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <p style="color: red">Broj importiranih predmeta: @Model.ImportedEntities</p>
+        </div>
+    </div>   
+}

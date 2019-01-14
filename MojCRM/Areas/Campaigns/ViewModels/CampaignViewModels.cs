@@ -18,6 +18,7 @@ namespace MojCRM.Areas.Campaigns.ViewModels
         public Campaign Campaign { get; set; }
         public EmailBasesCampaignStatsViewModel EmailBasesStats { get; set; }
         public SalesCampaignStatsViewModel SalesStats { get; set; }
+        public EducationCampaignStatsViewModel EducationStats { get; set; }
         public int NumberOfUnassignedEntities { get; set; }
         public int NumberOfUnassignedEntitiesWithoutTelephone { get; set; }
         public IQueryable<CampaignMember> AssignedMembers { get; set; }
@@ -26,9 +27,11 @@ namespace MojCRM.Areas.Campaigns.ViewModels
         public IQueryable<CampaignStatusHelper> SalesOpportunitiesStatusStats { get; set; }
         public IQueryable<CampaignStatusHelper> SalesLeadsStatusStats { get; set; }
         public GeneralCampaignStatusViewModel SalesGeneralStatus { get; set; }
+        public IQueryable<CampaignStatusHelper> EducationStatusStats { get; set; }
         public IQueryable<CampaignLeadsAgentEfficiency> CampaignLeadsAgentEfficiencies { get; set; }
         public string CampaignAttributes { get; set; }
         public int? NumberOfNewlyAcquiredReceivingInformation { get; set; }
+        public int? NumberOfEducationAtendees { get; set; }
 
         public IQueryable<SelectListItem> CampaignStatusList
         {
@@ -377,6 +380,45 @@ namespace MojCRM.Areas.Campaigns.ViewModels
                         break;
                     default:
                         status = "Status leada";
+                        break;
+                }
+                var temp = new CampaignStatusHelper
+                {
+                    StatusName = status,
+                    SumOfEntities = entity.Count()
+                };
+                model.Add(temp);
+            }
+            return model.AsQueryable();
+        }
+
+        public IQueryable<CampaignStatusHelper> GetEducationStatusStats(int campaignId)
+        {
+            var entites = _db.Educations.Where(x => x.RelatedCampaignId == campaignId).GroupBy(x => x.EducationEntityStatus);
+            var model = new List<CampaignStatusHelper>();
+
+            foreach (var entity in entites)
+            {
+                string status;
+                switch (entity.Key)
+                {
+                    case Education.EducationEntityStatusEnum.Created:
+                        status = "Kreirano";
+                        break;
+                    case Education.EducationEntityStatusEnum.InContact:
+                        status = "U kontaktu";
+                        break;
+                    case Education.EducationEntityStatusEnum.InvitationSent:
+                        status = "Poslan poziv";
+                        break;
+                    case Education.EducationEntityStatusEnum.Accepted:
+                        status = "Prihvaćeno";
+                        break;
+                    case Education.EducationEntityStatusEnum.Rejected:
+                        status = "Odbijeno";
+                        break;
+                    default:
+                        status = "Status edukacije";
                         break;
                 }
                 var temp = new CampaignStatusHelper
