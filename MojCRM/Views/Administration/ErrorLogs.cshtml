@@ -1,21 +1,20 @@
 ﻿@using GridMvc.Html
-@model IQueryable<MojCRM.Models.ActivityLog>
+@model IQueryable<MojCRM.Models.LogError>
 @{
-    ViewBag.Title = "Logovi sustava";
+    ViewBag.Title = "Logovi grešaka";
     Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
 }
 
 <body>
-    <h2 style="text-align:center"><strong>Logovi sustava</strong></h2>
+    <h2 style="text-align:center"><strong>Logovi grešaka</strong></h2>
     <hr />
     @Html.Grid(Model).Named("Popis logova").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
     {
     columns.Add(m => m.Id).Encoded(false).Sanitized(false).Titled("ID").Sortable(true);
-    columns.Add(m => m.ActivityType).Encoded(false).Sanitized(false).Titled("Tip aktivnosti").Sortable(true).RenderValueAs(m =>
-    {
-            return @<div><span>@Html.Raw(m.ActivityTypeString)</span></div>;
-    });
-    columns.Add(m => m.Description).Encoded(false).Sanitized(false).Titled("Opis zapisa").Sortable(true);
+    columns.Add(m => m.Method).Encoded(false).Sanitized(false).Titled("Metoda").Sortable(true);
+    columns.Add(m => m.Parameters).Encoded(false).Sanitized(false).Titled("Parametri").Sortable(true);
+    columns.Add(m => m.Message).Encoded(false).Sanitized(false).Titled("Poruka greške").Sortable(true);
+    columns.Add(m => m.InnerException).Encoded(false).Sanitized(false).Titled("Opis greške").Sortable(true);
     columns.Add(m => m.User).Encoded(false).Sanitized(false).Titled("Korisnik").Sortable(true);
     columns.Add(m => m.InsertDate).Encoded(false).Sanitized(false).Titled("Datum i vrijeme kreiranja").Sortable(true).RenderValueAs(m =>
     {

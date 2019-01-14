@@ -25,9 +25,24 @@ namespace MojCRM.Controllers
         }
 
         // GET: Administration/SystemLogs
+        /// <summary>
+        /// Method used for reviewing System Logs
+        /// </summary>
+        /// <returns></returns>
         public ActionResult SystemLogs()
         {
             var logs = _db.ActivityLogs.Where(x => x.ActivityType == ActivityLog.ActivityTypeEnum.System).OrderByDescending(x => x.Id);
+            return View(logs);
+        }
+
+        // GET: Administration/ErrorLogs
+        /// <summary>
+        /// Method used for reviewing Error Logs
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ErrorLogs()
+        {
+            var logs = _db.LogError.OrderByDescending(x => x.InsertDate);
             return View(logs);
         }
 
