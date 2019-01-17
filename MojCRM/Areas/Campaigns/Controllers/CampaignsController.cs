@@ -37,6 +37,11 @@ namespace MojCRM.Areas.Campaigns.Controllers
             {
                 campaigns = campaigns.Where(x => x.CampaignName.Contains(model.CampaignName));
             }
+            if (!string.IsNullOrEmpty(model.CampaignStartDate))
+            {
+                var dateTemp = Convert.ToDateTime(model.CampaignStartDate);
+                campaigns = campaigns.Where(c => c.CampaignStartDate == dateTemp);
+            }
             if (!string.IsNullOrEmpty(model.ContractStartDate))
             {
                 var dateTemp = Convert.ToDateTime(model.ContractStartDate);

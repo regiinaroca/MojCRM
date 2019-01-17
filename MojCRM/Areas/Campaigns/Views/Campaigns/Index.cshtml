@@ -61,7 +61,7 @@
     using (Html.BeginForm("Index", "Campaigns", FormMethod.Get))
     {
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="form-group">
                     <label for="organization">Povezana tvrtka</label>
                     <div id="organization">
@@ -69,11 +69,19 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="form-group">
                     <label for="campaign-name">Naziv kampanje</label>
                     <div id="campaign-name">
                         @Html.TextBox("CampaignName", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Naziv kampanje" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="contract-start-date">Datum početka kampanje</label>
+                    <div id="contract-start-date">
+                        @Html.TextBox("CampaignStartDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Datum početka kampanje", @type = "text", @id = "contract-start-date", @name = "contract-start-date" })
                     </div>
                 </div>
             </div>
