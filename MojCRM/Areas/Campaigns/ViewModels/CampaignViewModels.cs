@@ -37,19 +37,26 @@ namespace MojCRM.Areas.Campaigns.ViewModels
         {
             get
             {
-                var statusList = new List<SelectListItem>
+                var statusList = new List<SelectListItem>();
+                if (Campaign.CampaignType == Campaign.CampaignTypeEnum.EmailBases)
                 {
-                    new SelectListItem {Value = null, Text = @"-- Odaberi status kampanje --"},
-                    new SelectListItem {Value = "1", Text = @"U tijeku"},
-                    new SelectListItem {Value= "99", Text = @"Pokrenuto i U tijeku"},
-                    //new SelectListItem {Value = "2", Text = @"Privremeno zaustavljeno"},
-                    //new SelectListItem {Value = "3", Text = @"Prekinuto"},
-                    new SelectListItem {Value = "5", Text = @"Baza za tipsku"},
-                    new SelectListItem {Value = "6", Text = @"Baza za tipsku - cross"},
-                    new SelectListItem {Value= "98", Text = @"FILTER - tipska"},
-                    new SelectListItem {Value = "4", Text = @"Završeno"},
-                    new SelectListItem {Value = "7", Text = @"Završeno - cross"}
-                };
+                    statusList.Add(new SelectListItem { Value = null, Text = @"-- Odaberi status kampanje --" });
+                    statusList.Add(new SelectListItem { Value = "1", Text = @"U tijeku" });
+                    statusList.Add(new SelectListItem { Value = "99", Text = @"Pokrenuto i U tijeku" });
+                    statusList.Add(new SelectListItem { Value = "5", Text = @"Baza za tipsku" });
+                    statusList.Add(new SelectListItem { Value = "6", Text = @"Baza za tipsku - cross" });
+                    statusList.Add(new SelectListItem { Value = "98", Text = @"FILTER - tipska" });
+                    statusList.Add(new SelectListItem { Value = "4", Text = @"Završeno" });
+                    statusList.Add(new SelectListItem { Value = "7", Text = @"Završeno - cross" });
+                }
+                else if (Campaign.CampaignType != Campaign.CampaignTypeEnum.EmailBases)
+                {
+                    statusList.Add(new SelectListItem { Value = null, Text = @"-- Odaberi status kampanje --" });
+                    statusList.Add(new SelectListItem { Value = "1", Text = @"U tijeku" });
+                    statusList.Add(new SelectListItem { Value = "2", Text = @"Privremeno zaustavljeno" });
+                    statusList.Add(new SelectListItem { Value = "3", Text = @"Prekinuto" });
+                    statusList.Add(new SelectListItem { Value = "4", Text = @"Završeno" });
+                }
                 return statusList.AsQueryable();
             }
         }

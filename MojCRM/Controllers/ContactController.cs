@@ -162,7 +162,7 @@ namespace MojCRM.Controllers
             }
         }
 
-        // POST: Contact/CreateFromDelivery
+        // POST: Contact/CreateFromSales
         [HttpPost]
         public ActionResult CreateFromSales(SalesContactHelper model)
         {
@@ -189,13 +189,40 @@ namespace MojCRM.Controllers
             return Redirect(Request.UrlReferrer?.ToString());
         }
 
-        // POST: Contact/CreateFromDelivery
+        // POST: Contact/CreateFromSalesLead
         [HttpPost]
         public ActionResult CreateFromSalesLead(SalesContactHelper model)
         {
             var organizationId = (from o in _db.Leads
                                    where o.LeadId == model.RelatedEntityId
                                    select o.RelatedOrganizationId).First().ToString();
+
+            _db.Contacts.Add(new Contact
+            {
+                OrganizationId = Int32.Parse(organizationId),
+                ContactFirstName = model.FirstName,
+                ContactLastName = model.LastName,
+                Title = model.TitleFunction,
+                TelephoneNumber = model.Telephone,
+                MobilePhoneNumber = model.Mobile,
+                Email = model.ContactEmail,
+                User = User.Identity.Name,
+                InsertDate = DateTime.Now,
+                ContactType = Contact.ContactTypeEnum.Sales,
+            });
+
+            _db.SaveChanges();
+
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
+        // POST: Contact/CreateFromSalesEducation
+        [HttpPost]
+        public ActionResult CreateFromSalesEducation(SalesContactHelper model)
+        {
+            var organizationId = (from o in _db.Educations
+                                  where o.Id == model.RelatedEntityId
+                                  select o.RelatedOrganizationId).First().ToString();
 
             _db.Contacts.Add(new Contact
             {
