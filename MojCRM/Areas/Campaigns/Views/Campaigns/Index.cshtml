@@ -126,10 +126,10 @@
 {
 columns.Add(m => m.RelatedCompany.VAT).Encoded(false).Sanitized(false).Titled("Povezana tvrtka").RenderValueAs(x =>
     Html.RouteLink(x.RelatedCompany.SubjectName + " (" + x.RelatedCompany.VAT + ") ", new {action = "Details", controller = "Organizations", area = "", id = x.RelatedCompany.MerId})).Sortable(true);
-columns.Add(m => m.CampaignName).Encoded(false).Sanitized(false).Titled("Naziv kampanje").Sortable(false);
+columns.Add(m => m.CampaignName).Encoded(false).Sanitized(false).Titled("Naziv kampanje").Sortable(true);
 //columns.Add(m => m.CampaignDescription).Encoded(false).Sanitized(false).Titled("Opis kampanje").Sortable(false);
-columns.Add(m => m.CampaignInitiatior).Encoded(false).Sanitized(false).Titled("Pokrenuo").Sortable(false);
-columns.Add(m => m.CampaignTypeString).Encoded(false).Sanitized(false).Titled("Tip kampanje").Sortable(false);
+columns.Add(m => m.CampaignInitiatior).Encoded(false).Sanitized(false).Titled("Pokrenuo").Sortable(true);
+columns.Add(m => m.CampaignTypeString).Encoded(false).Sanitized(false).Titled("Tip kampanje").Sortable(true);
 columns.Add(m => m.CampaignStatusString).Encoded(false).Sanitized(false).Titled("Status").Sortable(true).RenderValueAs(m =>
 {
     if (m.CampaignStatus == Campaign.CampaignStatusEnum.Start)
@@ -175,15 +175,15 @@ columns.Add(m => m.CampaignStatusString).Encoded(false).Sanitized(false).Titled(
 
     return @<div></div>;
 });
-columns.Add(m => m.CampaignStartDate).Encoded(false).Sanitized(false).Titled("Datum početka").Sortable(false).RenderValueAs(m =>
+columns.Add(m => m.CampaignStartDate).Encoded(false).Sanitized(false).Titled("Datum početka").Sortable(true).RenderValueAs(m =>
 {
     return @<div><span>@Html.Raw(m.CampaignStartDate.ToShortDateString())</span></div>;
 });
-columns.Add(m => m.CampaignPlannedEndDate).Encoded(false).Sanitized(false).Titled("Planirani završetak").Sortable(false).RenderValueAs(m =>
+columns.Add(m => m.CampaignPlannedEndDate).Encoded(false).Sanitized(false).Titled("Planirani završetak").Sortable(true).RenderValueAs(m =>
 {
 return @<div><span>@Html.Raw(m.CampaignPlannedEndDate.ToShortDateString())</span></div>;
 });
-    columns.Add(m => m.CampaignEndDate).Encoded(false).Sanitized(false).Titled("Datum završetka").Sortable(false);
+    columns.Add(m => m.CampaignEndDate).Encoded(false).Sanitized(false).Titled("Datum završetka").Sortable(true);
     columns.Add(m => m.ContractStartDate).Encoded(false).Sanitized(false).Titled("Datum početka UO").Sortable(true);
     columns.Add().Encoded(false).Sanitized(false).RenderValueAs(m =>
     {
