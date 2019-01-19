@@ -204,7 +204,7 @@
 }
 
 <!--Modal - Create Contact-->
-@using (Html.BeginForm("CreateFromSalesLead", "Contact", new { area = "" }, FormMethod.Post))
+@using (Html.BeginForm("CreateFromSales", "Contact", new { area = "" }, FormMethod.Post))
 {
     <div class="modal fade" id="CreateContact" tabindex="-1" role="dialog" aria-labelledby="CreateContact">
         <div class="modal-dialog modal-lg" role="document">
@@ -258,6 +258,9 @@
                             <div class="hidden">
                                 <div id="delivery-contact-documentid">
                                     @Html.TextBox("RelatedEntityId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
+                                </div>
+                                <div id="entity-id">
+                                    @Html.TextBox("EntityType", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = "Lead" })
                                 </div>
                             </div>
                         </div>

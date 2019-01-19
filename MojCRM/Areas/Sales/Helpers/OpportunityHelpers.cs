@@ -31,6 +31,7 @@ namespace MojCRM.Areas.Sales.Helpers
         public string TitleFunction { get; set; }
         public int? RelatedEntityId { get; set; }
         public string ContactId { get; set; }
+        public string EntityType { get; set; }
     }
 
     public class OpportunityAssignHelper

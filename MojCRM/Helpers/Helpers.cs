@@ -31,6 +31,21 @@ namespace MojCRM.Helpers
             });
             _db.SaveChanges();
         }
+
+        public void LogError(string method, string parameters, string message, string innerException, string request, string user)
+        {
+            _db.LogError.Add(new LogError
+            {
+                Method = method,
+                Parameters = parameters,
+                Message = message,
+                InnerException = innerException,
+                Request = request,
+                User = user,
+                InsertDate = DateTime.Now,
+            });
+            _db.SaveChanges();
+        }
     }
 
     public class ChangeEmailNoTicket

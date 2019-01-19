@@ -14,6 +14,7 @@ namespace MojCRM.Controllers
     public class ContactController : Controller
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        private readonly HelperMethods _helper = new HelperMethods();
 
         /// <summary>
         /// Initial method which provides the list of all contacts and search engine for contacts
@@ -104,6 +105,11 @@ namespace MojCRM.Controllers
         }
 
         // POST: Contact/CreateFromDelivery
+        /// <summary>
+        /// Method used for creating contacts related to Delivery
+        /// </summary>
+        /// <param name="model">Model with contact data</param>
+        /// <returns>Reloads the previous site</returns>
         [HttpPost]
         public ActionResult CreateFromDelivery(DeliveryContactHelper model)
         {
@@ -127,118 +133,91 @@ namespace MojCRM.Controllers
 
                 return Redirect(Request.UrlReferrer?.ToString());
             }
-            // TO DO: This catch part throws DbEntityValidationException in first foreach... I need to check why...
-            catch (DbEntityValidationException e)
+
+            // We are catching the error which validates the Entity status.
+            // On this method we will maybe have wrong e-mail address enteres in the first place and the validation will break.
+            catch (DbEntityValidationException dbeve)
             {
-                foreach (var eve in e.EntityValidationErrors)
+                string dbValidationMessages = string.Empty;
+
+                foreach (var err in dbeve.EntityValidationErrors)
                 {
-                    _db.LogError.Add(new LogError
+                    foreach (var mes in err.ValidationErrors)
                     {
-                        Method = @"Contact - CreateFromDelivery",
-                        Parameters = @"Id = " + model.ReceiverId + @" FirstName = '" + model.FirstName + @"' LastName = '" + model.LastName + @"' TelephoneNumber = '" + model.Telephone + @"' MobilePhoneNumber = '" + model.Mobile + @"' Email = '" + model.Email + @"' User = '" + User.Identity.Name + @"'",
-                        Message = @"Entity of type '" + eve.Entry.Entity.GetType().Name + @"' in state '" + eve.Entry.State + @"' has following validation errors",
-                        InnerException = "",
-                        Request = "",
-                        User = User.Identity.Name,
-                        InsertDate = DateTime.Now
-                    });
-                    _db.SaveChanges();
-                    foreach (var ve in eve.ValidationErrors)
-                    {
-                        _db.LogError.Add(new LogError
-                        {
-                            Method = @"Contact - CreateFromDelivery",
-                            Parameters = "",
-                            Message = "Property " + ve.PropertyName + " Error " + ve.ErrorMessage,
-                            InnerException = "",
-                            Request = "",
-                            User = User.Identity.Name,
-                            InsertDate = DateTime.Now
-                        });
-                        _db.SaveChanges();
+                        dbValidationMessages += mes.ErrorMessage + "/" + mes.PropertyName + ",";
                     }
                 }
-                throw;
+
+                _helper.LogError(@"Contact - CreateFromDelivery", "EntityId: " + model.TicketId + ", Entity: Delivery",
+                    @"Prilikom kreiranja kontakta javila se greška: " + dbeve.Message, "Rezultati validacije: " + dbValidationMessages, string.Empty, User.Identity.Name);
+
+                return View("Error");
             }
         }
 
         // POST: Contact/CreateFromSales
+        /// <summary>
+        /// Method used for creating contacts related to Delivery
+        /// </summary>
+        /// <param name="model">Model with contact data</param>
+        /// <returns>Reloads the previous site</returns>
         [HttpPost]
         public ActionResult CreateFromSales(SalesContactHelper model)
         {
-            var organizationId = (from o in _db.Opportunities
-                                   where o.OpportunityId == model.RelatedEntityId
-                                   select o.RelatedOrganizationId).First().ToString();
-
-            _db.Contacts.Add(new Contact
+            try
             {
-                OrganizationId = Int32.Parse(organizationId),
-                ContactFirstName = model.FirstName,
-                ContactLastName = model.LastName,
-                Title = model.TitleFunction,
-                TelephoneNumber = model.Telephone,
-                MobilePhoneNumber = model.Mobile,
-                Email = model.ContactEmail,
-                User = User.Identity.Name,
-                InsertDate = DateTime.Now,
-                ContactType = Contact.ContactTypeEnum.Sales,
-            });
+                int organizationId = 0;
 
-            _db.SaveChanges();
+                // Determining which Sales module do we look to find the OrganizationId
+                switch (model.EntityType)
+                {
+                    case "Opportunity":
+                        organizationId = (int)_db.Opportunities.First(x => x.OpportunityId == model.RelatedEntityId).RelatedOrganizationId;
+                        break;
+                    case "Lead":
+                        organizationId = (int)_db.Leads.First(x => x.LeadId == model.RelatedEntityId).RelatedOrganizationId;
+                        break;
+                    case "Education":
+                        organizationId = (int)_db.Educations.First(x => x.Id == model.RelatedEntityId).RelatedOrganizationId;
+                        break;
+                }
 
-            return Redirect(Request.UrlReferrer?.ToString());
-        }
+                _db.Contacts.Add(new Contact
+                {
+                    OrganizationId = organizationId,
+                    ContactFirstName = model.FirstName,
+                    ContactLastName = model.LastName,
+                    Title = model.TitleFunction,
+                    TelephoneNumber = model.Telephone,
+                    MobilePhoneNumber = model.Mobile,
+                    Email = model.ContactEmail,
+                    User = User.Identity.Name,
+                    InsertDate = DateTime.Now,
+                    ContactType = Contact.ContactTypeEnum.Sales,
+                });
 
-        // POST: Contact/CreateFromSalesLead
-        [HttpPost]
-        public ActionResult CreateFromSalesLead(SalesContactHelper model)
-        {
-            var organizationId = (from o in _db.Leads
-                                   where o.LeadId == model.RelatedEntityId
-                                   select o.RelatedOrganizationId).First().ToString();
+                _db.SaveChanges();
+            }
 
-            _db.Contacts.Add(new Contact
+            // We are catching the error which validates the Entity status.
+            // On this method we will maybe have wrong e-mail address enteres in the first place and the validation will break.
+            catch (DbEntityValidationException dbeve)
             {
-                OrganizationId = Int32.Parse(organizationId),
-                ContactFirstName = model.FirstName,
-                ContactLastName = model.LastName,
-                Title = model.TitleFunction,
-                TelephoneNumber = model.Telephone,
-                MobilePhoneNumber = model.Mobile,
-                Email = model.ContactEmail,
-                User = User.Identity.Name,
-                InsertDate = DateTime.Now,
-                ContactType = Contact.ContactTypeEnum.Sales,
-            });
+                string dbValidationMessages = string.Empty;
 
-            _db.SaveChanges();
+                foreach (var err in dbeve.EntityValidationErrors)
+                {
+                    foreach (var mes in err.ValidationErrors)
+                    {
+                        dbValidationMessages += mes.ErrorMessage + "/" + mes.PropertyName + ",";
+                    }
+                }
 
-            return Redirect(Request.UrlReferrer?.ToString());
-        }
+                _helper.LogError(@"Contact - CreateFromSales", "EntityId: " + model.RelatedEntityId + ", Entity: " + model.EntityType,
+                    @"Prilikom kreiranja kontakta javila se greška: " + dbeve.Message, "Rezultati validacije: " + dbValidationMessages, string.Empty, User.Identity.Name);
 
-        // POST: Contact/CreateFromSalesEducation
-        [HttpPost]
-        public ActionResult CreateFromSalesEducation(SalesContactHelper model)
-        {
-            var organizationId = (from o in _db.Educations
-                                  where o.Id == model.RelatedEntityId
-                                  select o.RelatedOrganizationId).First().ToString();
-
-            _db.Contacts.Add(new Contact
-            {
-                OrganizationId = Int32.Parse(organizationId),
-                ContactFirstName = model.FirstName,
-                ContactLastName = model.LastName,
-                Title = model.TitleFunction,
-                TelephoneNumber = model.Telephone,
-                MobilePhoneNumber = model.Mobile,
-                Email = model.ContactEmail,
-                User = User.Identity.Name,
-                InsertDate = DateTime.Now,
-                ContactType = Contact.ContactTypeEnum.Sales,
-            });
-
-            _db.SaveChanges();
+                return View("Error");
+            }
 
             return Redirect(Request.UrlReferrer?.ToString());
         }
