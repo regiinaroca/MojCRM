@@ -992,6 +992,7 @@
     <Content Include="Views\Administration\SystemLogs.cshtml" />
     <Content Include="Views\Organizations\_Educations.cshtml" />
     <Content Include="Views\Administration\ErrorLogs.cshtml" />
+    <Content Include="Views\Shared\ErrorNew.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

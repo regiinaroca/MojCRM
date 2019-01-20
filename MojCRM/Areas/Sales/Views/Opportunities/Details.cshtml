@@ -283,6 +283,9 @@
                                 <div id="entity-id">
                                     @Html.TextBox("EntityType", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = "Opportunity" })
                                 </div>
+                                <div id="entity-id">
+                                    @Html.TextBox("OrganizationId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.OrganizationId ?? 0 })
+                                </div>
                             </div>
                         </div>
                     </div>

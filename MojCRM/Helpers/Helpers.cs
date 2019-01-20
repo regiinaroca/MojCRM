@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Web.Mvc;
 using MojCRM.Models;
 
 namespace MojCRM.Helpers
@@ -57,6 +59,15 @@ namespace MojCRM.Helpers
         public string OldEmail { get; set; }
         public int TicketId { get; set; }
         public string Agent { get; set; }
+    }
+
+    public class ErrorModelHelper
+    {
+        public string ErrorTitle { get; set; }
+        public string ErrorDescription { get; set; }
+        public string ErrorArguments { get; set; }
+        public Exception ErrorException { get; set; }
+        public string ErrorSuggestedSolution { get; set; }
     }
 
     public enum OrganizationGroupEnum

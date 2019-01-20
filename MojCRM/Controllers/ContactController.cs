@@ -151,7 +151,16 @@ namespace MojCRM.Controllers
                 _helper.LogError(@"Contact - CreateFromDelivery", "EntityId: " + model.TicketId + ", Entity: Delivery",
                     @"Prilikom kreiranja kontakta javila se greška: " + dbeve.Message, "Rezultati validacije: " + dbValidationMessages, string.Empty, User.Identity.Name);
 
-                return View("Error");
+                var errorModel = new ErrorModelHelper()
+                {
+                    ErrorTitle = @"Greška validacije",
+                    ErrorDescription = @"Prilikom kreiranja kontakta javila se greška: " + dbeve.Message,
+                    ErrorArguments = dbValidationMessages,
+                    ErrorException = dbeve,
+                    ErrorSuggestedSolution = @"Molimo pokušajte ispraviti pogrešno unesene argumente!"
+                };
+
+                return View("ErrorNew", errorModel);
             }
         }
 
@@ -166,25 +175,9 @@ namespace MojCRM.Controllers
         {
             try
             {
-                int organizationId = 0;
-
-                // Determining which Sales module do we look to find the OrganizationId
-                switch (model.EntityType)
-                {
-                    case "Opportunity":
-                        organizationId = (int)_db.Opportunities.First(x => x.OpportunityId == model.RelatedEntityId).RelatedOrganizationId;
-                        break;
-                    case "Lead":
-                        organizationId = (int)_db.Leads.First(x => x.LeadId == model.RelatedEntityId).RelatedOrganizationId;
-                        break;
-                    case "Education":
-                        organizationId = (int)_db.Educations.First(x => x.Id == model.RelatedEntityId).RelatedOrganizationId;
-                        break;
-                }
-
                 _db.Contacts.Add(new Contact
                 {
-                    OrganizationId = organizationId,
+                    OrganizationId = model.OrganizationId,
                     ContactFirstName = model.FirstName,
                     ContactLastName = model.LastName,
                     Title = model.TitleFunction,
@@ -216,7 +209,16 @@ namespace MojCRM.Controllers
                 _helper.LogError(@"Contact - CreateFromSales", "EntityId: " + model.RelatedEntityId + ", Entity: " + model.EntityType,
                     @"Prilikom kreiranja kontakta javila se greška: " + dbeve.Message, "Rezultati validacije: " + dbValidationMessages, string.Empty, User.Identity.Name);
 
-                return View("Error");
+                var errorModel = new ErrorModelHelper()
+                {
+                    ErrorTitle = @"Greška validacije",
+                    ErrorDescription = @"Prilikom kreiranja kontakta javila se greška: " + dbeve.Message,
+                    ErrorArguments = dbValidationMessages,
+                    ErrorException = dbeve,
+                    ErrorSuggestedSolution = @"Molimo pokušajte ispraviti pogrešno unesene argumente!"
+                };
+
+                return View("ErrorNew", errorModel);
             }
 
             return Redirect(Request.UrlReferrer?.ToString());

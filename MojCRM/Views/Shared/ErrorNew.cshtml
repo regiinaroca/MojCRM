@@ -1,0 +1,25 @@
+﻿@model MojCRM.Helpers.ErrorModelHelper
+@{
+    ViewBag.Title = "Moj-CRM -- Greška";
+}
+
+<h1 class="text-danger" style="margin-top: 50px">Greška</h1>
+<h2 class="text-danger">@Model.ErrorTitle</h2>
+<br />
+<h5 class="text-danger">
+    @Model.ErrorDescription
+</h5>
+<br />
+<h5 class="text-danger">Argumenti</h5>
+<h6 class="text-danger">
+    @Model.ErrorArguments
+</h6>
+<br />
+<h5 class="text-danger">Exception</h5>
+<h6 class="text-danger">@Model.ErrorException.Message</h6>
+<h6 class="text-danger">@Model.ErrorException.InnerException</h6>
+<br />
+<h5 class="text-danger">Preporučeno rješenje</h5>
+<h6 class="text-danger">@Model.ErrorSuggestedSolution</h6>
+<br />
+<h5 class="text-danger">Ako se i nakon primjene prethodno opisanog rješenja greška nastavi molimo kontaktirajte administratora.</h5>
