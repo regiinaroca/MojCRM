@@ -849,9 +849,9 @@
         e.preventDefault();
         $.ajax({
             method: 'POST',
-            url: '@Url.RouteUrl(new { action = "AddNote", controller = "Opportunities", area = "Sales" })',
+            url: '@Url.RouteUrl(new { action = "AddNote", controller = "Education", area = "Sales" })',
             data: {
-                RelatedOpportunityId: $(this).data("opportunity-id"),
+                RelatedEducationId: $(this).data("opportunity-id"),
                 User: $(this).data("agent"),
                 Contact: $(this).data("contact"),
                 Note: $(this).data('detail-template'),
@@ -870,7 +870,7 @@
         e.preventDefault();
         $.ajax({
             method: 'POST',
-            url: '@Url.RouteUrl(new { action = "LogEmail", controller = "Opportunities", area = "Sales" })',
+            url: '@Url.RouteUrl(new { action = "LogEmail", controller = "Education", area = "Sales" })',
             data: {
                 User: $(this).data("agent"),
                 Email: $(this).data("email"),
@@ -909,7 +909,7 @@
         e.preventDefault();
         $.ajax({
             method: 'POST',
-            url: '@Url.RouteUrl(new { action = "AddNote", controller = "Opportunities", area = "Sales" })',
+            url: '@Url.RouteUrl(new { action = "AddNote", controller = "Education", area = "Sales" })',
             data: {
                 RelatedOpportunityId: $(this).data("opportunity-id"),
                 Contact: $("#contact-for-note").val(),
