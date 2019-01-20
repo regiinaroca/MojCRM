@@ -142,10 +142,10 @@ namespace MojCRM.Areas.Stats.ViewModels
             var deliveryMail = _db.ActivityLogs.Where(t => (t.InsertDate >= referenceDate) && (t.ActivityType == ActivityLog.ActivityTypeEnum.Email));
             var ticketsAssigned = _db.ActivityLogs.Where(t => (t.InsertDate >= referenceDate) && (t.ActivityType == ActivityLog.ActivityTypeEnum.Ticketassign));
 
-            var agentActivities = (from a in _db.ActivityLogs
+            var agentActivities = from a in _db.ActivityLogs
                                where (a.InsertDate >= referenceDate)
                                group a by a.User into ga
-                               select ga).ToList();
+                               select ga;
             foreach (var day in agentActivities)
             {
                 var dailyActivities = new CallCenterDaily
@@ -167,12 +167,16 @@ namespace MojCRM.Areas.Stats.ViewModels
 
         private DateTime GetLastCallDateTime(string agent)
         {
-            var result = _db.ActivityLogs.OrderByDescending(x => x.Id).First(x =>
-                x.User == agent && (x.ActivityType == ActivityLog.ActivityTypeEnum.Succall ||
-                                    x.ActivityType == ActivityLog.ActivityTypeEnum.Succalshort));
+            var result = new DateTime();
 
-            if (result != null) return result.InsertDate;
-            return DateTime.Now;
+            if (_db.ActivityLogs.OrderByDescending(x => x.Id).Where(x => x.User == agent && (x.ActivityType == ActivityLog.ActivityTypeEnum.Succall ||
+                                    x.ActivityType == ActivityLog.ActivityTypeEnum.Succalshort)).Any())
+                result = _db.ActivityLogs.OrderByDescending(x => x.Id).First(x => x.User == agent && (x.ActivityType == ActivityLog.ActivityTypeEnum.Succall ||
+                                    x.ActivityType == ActivityLog.ActivityTypeEnum.Succalshort)).InsertDate;
+            else
+                result = DateTime.Now;
+
+            return result;
         }
     }
 
