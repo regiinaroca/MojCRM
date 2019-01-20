@@ -847,7 +847,6 @@
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
-    <Content Include="Views\Shared\ErrorNoLead.cshtml" />
     <Content Include="Areas\Cooperation\Views\web.config" />
     <Content Include="Areas\Stats\Views\web.config" />
     <Content Include="Areas\HelpDesk\Views\web.config" />

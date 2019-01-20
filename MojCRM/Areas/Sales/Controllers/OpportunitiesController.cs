@@ -211,16 +211,19 @@ namespace MojCRM.Areas.Sales.Controllers
             }
             catch (InvalidOperationException ioe)
             {
-                _db.LogError.Add(new LogError
+                _helper.LogError(@"Opportunities - Details", id.ToString(), @"Prilikom ulaska u detalje prodajne prilike javila se greška: " + ioe.Message,
+                    ioe.InnerException.Message, string.Empty, User.Identity.Name);
+
+                var errorModel = new ErrorModelHelper()
                 {
-                    Method = @"Opportunities - Details",
-                    Parameters = id.ToString(),
-                    Message = @"Prilikom ulaska u detalje prodajne prilike javila se greška: " + ioe.Message,
-                    User = User.Identity.Name,
-                    InsertDate = DateTime.Now
-                });
-                _db.SaveChanges();
-                return View("ErrorNoLead");
+                    ErrorTitle = @"Nepostojeći lead",
+                    ErrorDescription = @"Prilikom ulaska u detalje prodajne prilike javila se greška:  " + ioe.Message,
+                    ErrorArguments = @"ID prodajne prilike: " + id.ToString(),
+                    ErrorException = ioe,
+                    ErrorSuggestedSolution = @"Ova prodajna prilika ima status 'Kreiran lead', ali nije moguće pronaći povezani lead. Molimo obratite se administratoru kako bi omogućio ulazak u navedenu prodajnu priliku!"
+                };
+
+                return View("ErrorNew", errorModel);
             }
         }
 
