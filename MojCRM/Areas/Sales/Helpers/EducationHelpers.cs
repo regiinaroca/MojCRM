@@ -58,4 +58,12 @@ namespace MojCRM.Areas.Sales.Helpers
         public List<string> ValidVATs { get; set; }
         public List<string> InvalidVATs { get; set; }
     }
+
+    public class AtendeesByEducationStatHelper
+    {
+        public string EducationName { get; set; }
+        public DateTime CampaignStartDate { get; set; }
+        public DateTime? CampaignPlannedEndDate { get; set; }
+        public int? Atendees { get; set; }
+    }
 }

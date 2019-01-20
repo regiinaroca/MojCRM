@@ -448,9 +448,21 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                 wb.Dispose();
                 return View(model);
             }
-            catch (COMException)
+            catch (COMException come)
             {
-                return View("ErrorOldExcel");
+                _helper.LogError(@"AcquireEmail - CheckEntitiesForImport", "CampaignId: " + campaignId,
+                    @"Prilikom učitavanja predmeta za obradu baza javila se greška: " + come.Message, come.InnerException.Message, string.Empty, User.Identity.Name);
+
+                var errorModel = new ErrorModelHelper()
+                {
+                    ErrorTitle = @"Greška u datoteci",
+                    ErrorDescription = @"Prilikom učitavanja predmeta za obradu baza javila se greška: " + come.Message,
+                    ErrorArguments = string.Empty,
+                    ErrorException = come,
+                    ErrorSuggestedSolution = @"Molimo pokušajte učitati datoteku u .xlsx formatu!"
+                };
+
+                return View("ErrorNew", errorModel);
             }
         }
 

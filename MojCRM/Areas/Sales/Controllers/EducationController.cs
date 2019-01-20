@@ -332,10 +332,42 @@ namespace MojCRM.Areas.Sales.Controllers
                 wb.Dispose();
                 return View(model);
             }
-            catch (COMException)
+            catch (COMException come)
             {
-                return View("ErrorOldExcel");
+                _helper.LogError(@"Education - InsertEntities", "CampaignId: " + campaignId ,
+                    @"Prilikom učitavanja predmeta za edukaciju javila se greška: " + come.Message, come.InnerException.Message, string.Empty, User.Identity.Name);
+
+                var errorModel = new ErrorModelHelper()
+                {
+                    ErrorTitle = @"Greška u datoteci",
+                    ErrorDescription = @"Prilikom učitavanja predmeta za edukaciju javila se greška: " + come.Message,
+                    ErrorArguments = string.Empty,
+                    ErrorException = come,
+                    ErrorSuggestedSolution = @"Molimo pokušajte učitati datoteku u .xlsx formatu!"
+                };
+
+                return View("ErrorNew", errorModel);
             }
+        }
+
+        public ActionResult AtendeesByEducation()
+        {
+            var list = new List<AtendeesByEducationStatHelper>();
+            var results = _db.Campaigns.Where(x => x.CampaignType == Campaigns.Models.Campaign.CampaignTypeEnum.Education
+            && x.CampaignStatus != Campaigns.Models.Campaign.CampaignStatusEnum.Completed);
+
+            foreach (var res in results)
+            {
+                list.Add(new AtendeesByEducationStatHelper
+                {
+                    EducationName = res.CampaignName,
+                    CampaignStartDate = res.CampaignStartDate,
+                    CampaignPlannedEndDate = res.CampaignPlannedEndDate,
+                    Atendees = _db.Educations.Where(x => x.RelatedCampaignId == res.CampaignId && x.AtendeesNumber != null).Sum(x => x.AtendeesNumber)
+                });
+            }
+
+            return View(list);
         }
     }
 }

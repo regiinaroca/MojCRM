@@ -788,7 +788,6 @@
     <Content Include="Areas\Stats\Views\Stats\SalesStat.cshtml" />
     <Content Include="Areas\Stats\Views\Stats\CallCenterWeekly.cshtml" />
     <Content Include="Areas\Campaigns\Views\Campaigns\EmailBasesStats.cshtml" />
-    <Content Include="Areas\HelpDesk\Views\AcquireEmail\ErrorOldExcel.cshtml" />
     <Content Include="Areas\HelpDesk\Views\AcquireEmail\AcquireEmailsAssignedStats.cshtml" />
     <Content Include="Areas\Sales\Views\Quotes\CreateFromLead.cshtml" />
     <Content Include="Areas\Sales\Views\Quotes\Create.cshtml" />
@@ -828,6 +827,7 @@
     <Content Include="Areas\Sales\Views\Education\Index.cshtml" />
     <Content Include="Areas\Sales\Views\Education\Details.cshtml" />
     <Content Include="Areas\Sales\Views\Education\InsertEntities.cshtml" />
+    <Content Include="Areas\Sales\Views\Education\AtendeesByEducation.cshtml" />
     <None Include="Properties\PublishProfiles\MerDeployCIS.pubxml" />
     <Content Include="Scripts\daterangepicker.js" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />

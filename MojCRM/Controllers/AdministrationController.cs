@@ -125,9 +125,21 @@ namespace MojCRM.Controllers
                 wb.Dispose();
                 return View("Index");
             }
-            catch (COMException)
+            catch (COMException come)
             {
-                return View("ErrorOldExcel");
+                _helper.LogError(@"Administration - MassUpdateClosedSubjects", string.Empty,
+                    @"Prilikom učitavanja predmeta za masovnu obradu zatvorenih tvrtki javila se greška: " + come.Message, come.InnerException.Message, string.Empty, User.Identity.Name);
+
+                var errorModel = new ErrorModelHelper()
+                {
+                    ErrorTitle = @"Greška u datoteci",
+                    ErrorDescription = @"Prilikom učitavanja predmeta za masovnu obradu zatvorenih tvrtki javila se greška: " + come.Message,
+                    ErrorArguments = string.Empty,
+                    ErrorException = come,
+                    ErrorSuggestedSolution = @"Molimo pokušajte učitati datoteku u .xlsx formatu!"
+                };
+
+                return View("ErrorNew", errorModel);
             }
         }
     }
