@@ -11,6 +11,7 @@ namespace MojCRM.Areas.Sales.Helpers
         public string Campaign { get; set; }
         public string Education { get; set; }
         public string Organization { get; set; }
+        public string LastContactDate { get; set; }
         public EducationEntityStatusEnum? EducationStatus { get; set; }
         public EducationRejectReasonEnum? RejectReason { get; set; }
         public string Assigned { get; set; }

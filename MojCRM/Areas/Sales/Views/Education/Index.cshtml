@@ -37,7 +37,7 @@
 @using (Html.BeginForm("Index", "Education", new { area = "Sales" }, FormMethod.Get))
     {
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="form-group">
             <label for="campaign-search">Naziv kampanje</label>
             <div id="campaign-search">
@@ -45,7 +45,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="form-group">
             <label for="opportunity-search">Naziv prilike</label>
             <div id="opportunity-search">
@@ -53,7 +53,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="form-group">
             <label for="organization-search">Naziv ili OIB tvrtke</label>
             <div id="organization-search">
@@ -61,7 +61,15 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
+        <div class="form-group">
+            <label for="contract-start-date">Datum zadnjeg kontakta</label>
+            <div id="contract-start-date">
+                @Html.TextBox("LastContactDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Datum zadnjeg kontakta", @type = "text", @id = "last-contact-date", @name = "last-contact-date" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
         <div class="form-group">
             <label for="opportunity-status-search">Status prilike</label>
             <div id="opportunity-status-search">
@@ -69,7 +77,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="form-group">
             <label for="reject-reason-search">Razlog odbijanja</label>
             <div id="reject-reason-search">
@@ -79,7 +87,7 @@
     </div>
     @if (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin"))
     {
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="form-group">
                 <label for="assigned-search">Dodijeljeno</label>
                 <div id="assigned-search">
@@ -88,7 +96,7 @@
             </div>
         </div>
     }
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="alert alert-info">
             Broj rezultata pretrage: <strong title="Ukupan broj rezultata pretrage">@ViewBag.SearchResults</strong> <strong style="color:green" title="Broj rezultata pretrage koji su dodijeljeni">(@ViewBag.SearchResultsAssigned)</strong>
         </div>
@@ -108,8 +116,8 @@
 @Html.Grid(Model).Named("PopisProdajnihPrilika").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
 {
 columns.Add(m => m.RelatedCampaign.CampaignName).Encoded(false).Sanitized(false).Titled("Naziv kampanje").Sortable(true);
-columns.Add(m => m.EducationEntityTitle).Encoded(false).Sanitized(false).Titled("Naziv prilike").Sortable(false);
-columns.Add(m => m.RelatedOrganization.SubjectName).Encoded(false).Sanitized(false).Titled("Naziv tvrtke").Sortable(false).RenderValueAs(m =>
+//columns.Add(m => m.EducationEntityTitle).Encoded(false).Sanitized(false).Titled("Naziv prilike").Sortable(true);
+columns.Add(m => m.RelatedOrganization.SubjectName).Encoded(false).Sanitized(false).Titled("Naziv tvrtke").Sortable(true).RenderValueAs(m =>
 Html.RouteLink(m.RelatedOrganization.SubjectName, new { action = "Details", controller = "Organizations", area = "", id = m.RelatedOrganizationId}));
 columns.Add(m => m.EducationEntityStatus).Encoded(false).Sanitized(false).Titled("Status prilike").Sortable(true).RenderValueAs(m =>
 {
@@ -131,6 +139,13 @@ columns.Add(m => m.EducationEntityStatus).Encoded(false).Sanitized(false).Titled
         }
 
     return @<div><span class="label label-danger">@Html.Raw(m.EducationEntityStatusString)</span><br /><span style="color:red">@Html.Raw(m.EducationRejectReasonString)</span></div>;
+    });
+    columns.Add(m => m.LastContactDate).Encoded(false).Sanitized(false).Titled("Datum zadnjeg kontakta").Sortable(true).RenderValueAs(m =>
+    {
+        if (m.LastContactDate != null)
+            return @<div><span>@Html.Raw(m.LastContactDate)</span></div>;
+
+        return @<div><span></span></div>;
     });
     columns.Add().Encoded(false).Sanitized(false).Titled("").Sortable(false).RenderValueAs(m =>
     {

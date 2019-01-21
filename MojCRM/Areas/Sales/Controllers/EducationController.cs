@@ -39,6 +39,12 @@ namespace MojCRM.Areas.Sales.Controllers
                 {
                     educations = educations.Where(op => op.RelatedOrganization.SubjectName.Contains(model.Organization) || op.RelatedOrganization.VAT.Contains(model.Organization));
                 }
+                if (!String.IsNullOrEmpty(model.LastContactDate))
+                {
+                    var dateTemp = Convert.ToDateTime(model.LastContactDate);
+                    var dateTempPlus = dateTemp.AddDays(1);
+                    educations = educations.Where(op => op.LastContactDate >= dateTemp && op.LastContactDate < dateTempPlus);
+                }
                 if (!String.IsNullOrEmpty(model.EducationStatus.ToString()))
                 {
                     educations = educations.Where(op => op.EducationEntityStatus == model.EducationStatus);
@@ -74,6 +80,12 @@ namespace MojCRM.Areas.Sales.Controllers
                 if (!String.IsNullOrEmpty(model.Organization))
                 {
                     educations = educations.Where(op => op.RelatedOrganization.SubjectName.Contains(model.Organization) || op.RelatedOrganization.VAT.Contains(model.Organization));
+                }
+                if (!String.IsNullOrEmpty(model.LastContactDate))
+                {
+                    var dateTemp = Convert.ToDateTime(model.LastContactDate);
+                    var dateTempPlus = dateTemp.AddDays(1);
+                    educations = educations.Where(op => op.LastContactDate >= dateTemp && op.LastContactDate < dateTempPlus);
                 }
                 if (!String.IsNullOrEmpty(model.EducationStatus.ToString()))
                 {
@@ -261,6 +273,15 @@ namespace MojCRM.Areas.Sales.Controllers
             education.LastUpdatedBy = User.Identity.Name;
             _db.SaveChanges(); 
             return Redirect(Request.UrlReferrer?.ToString());
+        }
+
+        public void LogEmail(EducationNoteHelper model)
+        {
+            var relatedEducation = _db.Educations.First(o => o.Id == model.RelatedEducationId);
+
+            relatedEducation.LastContactDate = DateTime.Now;
+            relatedEducation.LastContactedBy = model.User;
+            _helper.LogActivity(model.User + " je poslao e-mail na adresu: " + model.Email + " s pozivom na edukaciju u sklopu kampanje: " + relatedEducation.RelatedCampaign.CampaignName, User.Identity.Name, model.RelatedEducationId, ActivityTypeEnum.Email, DepartmentEnum.Sales, ModuleEnum.Educations);
         }
 
         [HttpPost]
