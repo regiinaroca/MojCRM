@@ -32,13 +32,25 @@ namespace MojCRM.Models
         public CountryIdentificationCodeEnum CorrespondenceCountry { get; set; }
 
         [StringLength(1000, ErrorMessage = "Nedovoljan broj znakova"/*, MinimumLength = 6*/)]
+        [Display(Name = "Broj telefona")]
         public string TelephoneNumber { get; set; }
+
         [StringLength(1000, ErrorMessage = "Nedovoljan broj znakova"/*, MinimumLength = 6*/)]
+        [Display(Name = "Broj mobitela")]
         public string MobilePhoneNumber { get; set; }
+
+        [Display(Name = "E-mail adresa")]
         public string EmailAddress { get; set; }
+
+        [Display(Name = "ERP program")]
         public string ERP { get; set; }
+
+        [Display(Name = "Broj IRA mjesečno")]
         public string NumberOfInvoicesSent { get; set; }
+
+        [Display(Name = "Broj URA mjesečno")]
         public string NumberOfInvoicesReceived { get; set; }
+
         public OrganizationGroupEnum OrganizationGroup { get; set; }
 
         public int? MerSendSoftware { get; set; }

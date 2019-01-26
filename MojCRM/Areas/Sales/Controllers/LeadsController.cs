@@ -121,8 +121,6 @@ namespace MojCRM.Areas.Sales.Controllers
             var relatedLeadNotes = _db.LeadNotes.Where(n => n.RelatedLeadId == lead.LeadId).OrderByDescending(n => n.InsertDate);
             var relatedLeadActivities = _db.ActivityLogs.Where(a =>
                 a.ReferenceId == lead.LeadId && a.Module == ModuleEnum.Leads).OrderByDescending(a => a.InsertDate);
-            var relatedOrganization = _db.Organizations.First(o => o.MerId == lead.RelatedOrganizationId);
-            var relatedOrganizationDetail = _db.OrganizationDetails.First(od => od.MerId == lead.RelatedOrganizationId);
             if (lead.RelatedCampaignId != null)
             {
                 var relatedCampaign = _db.Campaigns.First(c => c.CampaignId == lead.RelatedCampaignId);
@@ -168,31 +166,15 @@ namespace MojCRM.Areas.Sales.Controllers
 
             var leadDetails = new LeadDetailViewModel()
             {
-                LeadId = id,
-                LeadDescription = lead.LeadDescription,
-                LeadStatus = lead.LeadStatusString,
-                RejectReason = lead.LeadRejectReasonString,
-                OrganizationId = lead.RelatedOrganizationId,
-                OrganizationName = relatedOrganization.SubjectName,
-                OrganizationVAT = relatedOrganization.VAT,
-                TelephoneNumber = relatedOrganizationDetail.TelephoneNumber,
-                MobilePhoneNumber = relatedOrganizationDetail.MobilePhoneNumber,
-                Email = relatedOrganizationDetail.EmailAddress,
-                ERP = relatedOrganizationDetail.ERP,
-                NumberOfInvoicesSent = relatedOrganizationDetail.NumberOfInvoicesSent,
-                NumberOfInvoicesReceived = relatedOrganizationDetail.NumberOfInvoicesReceived,
-                RelatedCampaignId = lead.RelatedCampaignId,
+                Lead = lead,
                 RelatedCampaignName = relatedCampaignName,
-                IsAssigned = lead.IsAssigned,
-                AssignedTo = lead.AssignedTo,
-                LastContactedDate = lead.LastContactDate,
-                LastContactedBy = lead.LastContactedBy,
                 RelatedSalesContacts = relatedSalesContacts,
                 RelatedLeadNotes = relatedLeadNotes,
                 RelatedLeadActivities = relatedLeadActivities,
                 Users = users,
                 SalesNoteTemplates = salesNoteTemplates,
-                RejectReasons = rejectReasonList
+                RejectReasons = rejectReasonList,
+                RelatedQuotes = _db.Quotes.Where(x => x.RelatedLeadId == id)
             };
 
             return View(leadDetails);

@@ -12,12 +12,17 @@ namespace MojCRM.Areas.Sales.Models
     {
         [Key]
         public int LeadId { get; set; }
+
+        [Display(Name = "Naslov leada")]
         public string LeadTitle { get; set; }
+
+        [Display(Name = "Opis leada")]
         public string LeadDescription { get; set; }
         public int? RelatedCampaignId { get; set; }
         [ForeignKey("RelatedOpportunity")]
         public int RelatedOpportunityId { get; set; }
 
+        [Display(Name = "ID povezane tvrtke")]
         public int? RelatedOrganizationId { get; set; }
         public LeadStatusEnum LeadStatus { get; set; }
         public string StatusDescription { get; set; }
@@ -25,17 +30,22 @@ namespace MojCRM.Areas.Sales.Models
         public string RejectReasonDescription { get; set; }
         public QuoteTypeLeadEnum? QuoteType { get; set; }
         public string CreatedBy { get; set; }
+
+        [Display(Name = "Dodijeljeno agentu")]
         public string AssignedTo { get; set; }
 
         [Display(Name = "Zadnje kontaktirao")]
         public string LastContactedBy { get; set; }
 
         public string LastUpdatedBy { get; set; }
+
+        [Display(Name = "Dodijeljeno")]
         public bool IsAssigned { get; set; }
+
         public DateTime InsertDate { get; set; }
         public DateTime? UpdateDate { get; set; }
 
-        [Display(Name = "Datum zadnjeg kontakta")]
+        [Display(Name = "Datum i vrijeme zadnjeg kontakta")]
         public DateTime? LastContactDate { get; set; }
 
         [ForeignKey("RelatedCampaignId")]
@@ -125,6 +135,7 @@ namespace MojCRM.Areas.Sales.Models
 
         }
 
+        [Display(Name = "Status leada")]
         public string LeadStatusString
         {
             get
@@ -143,6 +154,7 @@ namespace MojCRM.Areas.Sales.Models
             }
         }
 
+        [Display(Name = "Razlog odbijanja leada")]
         public string LeadRejectReasonString
         {
             get

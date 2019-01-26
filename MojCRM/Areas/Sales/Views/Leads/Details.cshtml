@@ -7,15 +7,15 @@
 }
 @{
     var leadStatusList = new List<ListItem>
-        {
-            new ListItem{ Value= @"0", Text = @"Kreirano"},
-            new ListItem{ Value= @"1", Text = @"U kontaktu"},
-            new ListItem{ Value= @"6", Text = @"Procesne poteškoće"},
-            new ListItem{ Value= @"2", Text = @"Odbijeno"},
-            new ListItem{ Value= @"3", Text = @"Poslana ponuda"},
-            new ListItem{ Value= @"4", Text = @"Prihvaćena ponuda"},
-            new ListItem{ Value= @"5", Text = @"Dogovoren sastanak"}
-        };
+{
+    new ListItem{ Value= @"0", Text = @"Kreirano"},
+    new ListItem{ Value= @"1", Text = @"U kontaktu"},
+    new ListItem{ Value= @"6", Text = @"Procesne poteškoće"},
+    new ListItem{ Value= @"2", Text = @"Odbijeno"},
+    new ListItem{ Value= @"3", Text = @"Poslana ponuda"},
+    new ListItem{ Value= @"4", Text = @"Prihvaćena ponuda"},
+    new ListItem{ Value= @"5", Text = @"Dogovoren sastanak"}
+};
 }
 
 <!-- Modal - Add Note-->
@@ -61,8 +61,8 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" id="add-note" onclick="javascript: AddNote()" data-lead-id="@Html.Raw(Model.LeadId)">Kreiraj bilješku kao aktivnost</button>
-                <button type="submit" class="btn btn-primary" id="add-note" onclick="javascript: AddNoteNoActivity()" data-lead-id="@Html.Raw(Model.LeadId)">Kreiraj bilješku</button>
+                <button type="submit" class="btn btn-primary" id="add-note" onclick="javascript: AddNote()" data-lead-id="@Html.Raw(Model.Lead.LeadId)">Kreiraj bilješku kao aktivnost</button>
+                <button type="submit" class="btn btn-primary" id="add-note" onclick="javascript: AddNoteNoActivity()" data-lead-id="@Html.Raw(Model.Lead.LeadId)">Kreiraj bilješku</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Prekini</button>
             </div>
         </div>
@@ -97,7 +97,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" id="add-note-info" onclick="javascript: AddNoteInfo()" data-lead-id="@Html.Raw(Model.LeadId)">Kreiraj bilješku</button>
+                <button type="submit" class="btn btn-primary" id="add-note-info" onclick="javascript: AddNoteInfo()" data-lead-id="@Html.Raw(Model.Lead.LeadId)">Kreiraj bilješku</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Prekini</button>
             </div>
         </div>
@@ -119,7 +119,7 @@
                         <div class="row">
                             <div class="hidden">
                                 <div id="opportunity-id">
-                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
+                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Lead.LeadId })
                                 </div>
                             </div>
                             <div class="col-md-12">
@@ -191,7 +191,7 @@
                 </div>
                 <div class="hidden">
                     <div id="opportunity-id">
-                        @Html.TextBox("RelatedOpportunityId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
+                        @Html.TextBox("RelatedOpportunityId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Lead.LeadId })
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -257,13 +257,13 @@
                             </div>
                             <div class="hidden">
                                 <div id="delivery-contact-documentid">
-                                    @Html.TextBox("RelatedEntityId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
+                                    @Html.TextBox("RelatedEntityId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Lead.LeadId })
                                 </div>
                                 <div id="entity-id">
                                     @Html.TextBox("EntityType", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = "Lead" })
                                 </div>
                                 <div id="entity-id">
-                                    @Html.TextBox("OrganizationId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.OrganizationId ?? 0 })
+                                    @Html.TextBox("OrganizationId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Lead.RelatedOrganizationId ?? 0 })
                                 </div>
                             </div>
                         </div>
@@ -340,7 +340,7 @@
                             </div>
                             <div class="hidden">
                                 <div id="entity-id">
-                                    @Html.TextBox("RelatedEntityId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
+                                    @Html.TextBox("RelatedEntityId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Lead.LeadId })
                                 </div>
                             </div>
                         </div>
@@ -376,7 +376,7 @@
                             </div>
                             <div class="hidden">
                                 <div id="ticketid">
-                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
+                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Lead.LeadId })
                                 </div>
                             </div>
                         </div>
@@ -427,7 +427,7 @@
                             </div>
                             <div class="hidden">
                                 <div id="ticketid">
-                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
+                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Lead.LeadId })
                                 </div>
                             </div>
                         </div>
@@ -476,7 +476,7 @@
                             </div>
                             <div class="hidden">
                                 <div id="ticketid">
-                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
+                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Lead.LeadId })
                                 </div>
                             </div>
                         </div>
@@ -518,7 +518,7 @@
                             </div>
                             <div class="hidden">
                                 <div id="ticketid">
-                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.LeadId })
+                                    @Html.TextBox("RelatedLeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Lead.LeadId })
                                 </div>
                             </div>
                         </div>
@@ -549,25 +549,25 @@
                             <div class="col-md-4">
                                 <label for="sales-contact-first-name">ERP program</label>
                                 <div id="sales-contact-first-name">
-                                    @Html.TextBox("ERP", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.ERP })
+                                    @Html.TextBox("ERP", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Lead.RelatedOrganization.OrganizationDetail.ERP })
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <label for="sales-contact-last-name">Broj IRA mjesečno</label>
                                 <div id="sales-contact-last-name">
-                                    @Html.TextBox("NumberOfInvoicesSent", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.NumberOfInvoicesSent })
+                                    @Html.TextBox("NumberOfInvoicesSent", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Lead.RelatedOrganization.OrganizationDetail.NumberOfInvoicesSent })
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <label for="sales-contact-telephone">Broj URA mjesečno</label>
                                 <div id="sales-contact-telephone">
-                                    @Html.TextBox("NumberOfInvoicesReceived", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.NumberOfInvoicesReceived })
+                                    @Html.TextBox("NumberOfInvoicesReceived", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Lead.RelatedOrganization.OrganizationDetail.NumberOfInvoicesReceived })
                                 </div>
                             </div>
                         </div>
                         <div class="hidden">
                             <div id="merid">
-                                @Html.TextBox("MerId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.OrganizationId })
+                                @Html.TextBox("MerId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Lead.RelatedOrganization.MerId })
                             </div>
                         </div>
                     </div>
@@ -607,6 +607,47 @@
                         </tr>
                     }
                 </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Isključi pregled</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal - Related Quotes-->
+<div class="modal fade" id="RelatedQuotes" tabindex="-1" role="dialog" aria-labelledby="RelatedQuotes">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="overflow:hidden">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4>Ponude povezane s ovim leadom</h4>
+            </div>
+            <div class="modal-body">
+                @if (Model.RelatedQuotes.Any())
+                {
+                    <table class="table">
+                        <tr>
+                            <th>Broj ponude</th>
+                            <th>Datum isteka ponude</th>
+                            <th>Ponudu kreirao</th>
+                            <th>Iznos ponude (neto)</th>
+                        </tr>
+                        @foreach (var quote in Model.RelatedQuotes)
+                        {
+                            <tr>
+                                <td>@quote.QuoteNumber</td>
+                                <td>@quote.EndDate</td>
+                                <td>@quote.AssignedTo</td>
+                                <td>@quote.QuoteSum</td>
+                            </tr>
+                        }
+                    </table>
+                }
+                @if (!Model.RelatedQuotes.Any())
+                {
+                    <h5>Za ovaj lead nema kreiranih ponuda</h5>
+                }
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Isključi pregled</button>
@@ -692,13 +733,13 @@
                             <td style="width:15%;">@Contact.ContactFirstName</td>
                             <td style="width:15%;">@Contact.ContactLastName</td>
                             <td style="width:20%;">@Contact.TelephoneNumber;  @Contact.MobilePhoneNumber</td>
-                            <td style="width:20%;"><a data-agent="@User.Identity.Name" data-email="@Contact.Email" data-lead-id="@Html.Raw(Model.LeadId)" name="contact-email" class="opportunity-mail" href="mailto:@Contact.Email">@Contact.Email</a></td>
+                            <td style="width:20%;"><a data-agent="@User.Identity.Name" data-email="@Contact.Email" data-lead-id="@Html.Raw(Model.Lead.LeadId)" name="contact-email" class="opportunity-mail" href="mailto:@Contact.Email">@Contact.Email</a></td>
                             <td style="width:15%;">@Contact.Title</td>
                             <td style="width:10%;">@Contact.User</td>
                             <td style="width:5%;">
                                 <a href="#AddNote" data-toggle="modal" data-dismiss="modal" title="Dodaj bilješku i zabilježi uspješni poziv"><i style="color: forestgreen" class="fa fa-phone-square"></i></a>
                                 <a data-dismiss="modal" href="#AddNoteInfo" data-toggle="modal" title="Dodaj bilješku i zabilježi informativni poziv"><i style="color: lightgreen" class="fa fa-phone-square"></i></a>
-                                <a data-dismiss="modal" data-lead-id="@Html.Raw(Model.LeadId)" data-contact="@Html.Raw(Contact.ContactFirstName + " " + Contact.ContactLastName)" data-detail-template="Nisu se javili" data-detail-note="" data-identifier="3" href="#" class="add-unsuccessfull-call"><i style="color: gold" class="fa fa-phone-square"></i></a>
+                                <a data-dismiss="modal" data-lead-id="@Html.Raw(Model.Lead.LeadId)" data-contact="@Html.Raw(Contact.ContactFirstName + " " + Contact.ContactLastName)" data-detail-template="Nisu se javili" data-detail-note="" data-identifier="3" href="#" class="add-unsuccessfull-call"><i style="color: gold" class="fa fa-phone-square"></i></a>
                             </td>
                         </tr>
                     }
@@ -738,13 +779,13 @@
                 <div class="modal-body" style="overflow-y:auto; max-height:400px">
                     <div class="hidden">
                         <div>
-                            @Html.TextBox("OrganizationId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.OrganizationId })
+                            @Html.TextBox("OrganizationId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.Lead.RelatedOrganizationId })
                         </div>
                         <div>
-                            @Html.TextBox("CampaignId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.RelatedCampaignId })
+                            @Html.TextBox("CampaignId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.Lead.RelatedCampaignId })
                         </div>
                         <div>
-                            @Html.TextBox("LeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.LeadId })
+                            @Html.TextBox("LeadId", ViewBag.CurrentFilter as string, new { @class = "form-control", Value = Model.Lead.LeadId })
                         </div>
                     </div>
                     <div class="row">
@@ -771,16 +812,16 @@
                 </div>
             </div>
         </div>
-     </div>
+    </div>
 }
 
 
 
-<h2 style="text-align:center"><strong>Detalji leada: @Html.DisplayFor(model => model.OrganizationName) (Kampanja : @Html.DisplayFor(model => model.RelatedCampaignName))</strong></h2>
+<h2 style="text-align:center"><strong>Detalji leada: @Html.DisplayFor(model => model.Lead.RelatedOrganization.SubjectName) (Kampanja : @Html.DisplayFor(model => model.RelatedCampaignName))</strong></h2>
 <br />
-@if (Model.IsAssigned)
+@if (Model.Lead.IsAssigned)
 {
-    <h4 style="text-align:center; color:red">Ovaj lead je dodijeljen agentu: <strong>@Model.AssignedTo</strong></h4>
+    <h4 style="text-align:center; color:red">Ovaj lead je dodijeljen agentu: <strong>@Model.Lead.AssignedTo</strong></h4>
 }
 <div>
     <div class="row" style="text-align:center">
@@ -790,20 +831,24 @@
                 <button type="button" title="Pregled bilješki vezanih uz ovaj lead" class="btn btn-sm btn-default" data-toggle="modal" href="#LeadNotes"><i class="fa fa-sticky-note"></i></button>
                 <button type="button" title="Pregled kontakata za prodaju" class="btn btn-sm btn-default" data-toggle="modal" href="#SalesContacts"><i class="fa fa-address-book"></i></button>
                 <button type="button" title="Započni kreiranje ponude" class="btn btn-sm btn-default" data-toggle="modal" href="#CreateQuote"><i class="fa fa-plus"></i> <i class="fa fa-book"></i></button>
-                @if (!Model.IsAssigned && (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
+                @if (Model.RelatedQuotes.Any())
+                {
+                    <button type="button" title="Popis povezanih ponuda" class="btn btn-sm btn-default" data-toggle="modal" href="#RelatedQuotes"><i class="fa fa-bars"></i> <i class="fa fa-book"></i></button>
+                }
+                @if (!Model.Lead.IsAssigned && (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
                 {
                     <button type="button" title="Dodijeli lead" class="btn btn-sm btn-default" data-toggle="modal" data-target="#Assign" href="#Assign"><i class="fa fa-mail-reply-all"></i></button>
                 }
-                @if (Model.IsAssigned && (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
+                @if (Model.Lead.IsAssigned && (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin")))
                 {
                     <button type="button" title="Promijeni dodjelu" class="btn btn-sm btn-default" data-toggle="modal" data-target="#Reassign" href="#Reassign"><i class="fa fa-mail-reply-all"></i></button>
                 }
-                @if (Model.LeadStatus != "Odbijeno" && Model.LeadStatus != "Ponuda prihvaćena")
+                @if (Model.Lead.LeadStatusString != "Odbijeno" && Model.Lead.LeadStatusString != "Ponuda prihvaćena")
                 {
                     <button type="button" title="Promijeni status leada" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangeStatus"><i class="fa fa-refresh"></i></button>
                     <button type="button" title="Označi kao odbijeno" class="btn btn-sm btn-default" data-toggle="modal" href="#MarkRejected"><i class="fa fa-times text-danger"></i></button>
                 }
-                @if ((Model.LeadStatus == "Odbijeno" || Model.LeadStatus == "Ponuda prihvaćena") && User.IsInRole("Superadmin"))
+                @if ((Model.Lead.LeadStatusString == "Odbijeno" || Model.Lead.LeadStatusString == "Ponuda prihvaćena") && User.IsInRole("Superadmin"))
                 {
                     <button type="button" title="Promijeni status leada" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangeStatus"><i class="fa fa-refresh"></i></button>
                     <button type="button" title="Označi kao odbijeno" class="btn btn-sm btn-default" data-toggle="modal" href="#MarkRejected"><i class="fa fa-times text-danger"></i></button>
@@ -822,15 +867,15 @@
     <div class="row">
         <div class="col-md-4" id="organization-name">
             <strong>Naziv (OIB) tvrtke:</strong>
-            <a href="@Url.RouteUrl(new { action = "Details", controller = "Organizations", area = "", Id = Model.OrganizationId })">@Model.OrganizationName (@Model.OrganizationVAT)</a>
+            <a href="@Url.RouteUrl(new { action = "Details", controller = "Organizations", area = "", Id = Model.Lead.RelatedOrganizationId })">@Model.Lead.RelatedOrganization.SubjectName (@Model.Lead.RelatedOrganization.VAT)</a>
         </div>
         <div class="col-md-4">
             <strong>Kontakt brojevi:</strong>
-            @Model.TelephoneNumber;@Model.MobilePhoneNumber
+            @Model.Lead.RelatedOrganization.OrganizationDetail.TelephoneNumber;@Model.Lead.RelatedOrganization.OrganizationDetail.MobilePhoneNumber
         </div>
         <div class="col-md-4">
             <strong>Kontakt e-mail adresa:</strong>
-            @Model.Email
+            @Model.Lead.RelatedOrganization.OrganizationDetail.EmailAddress
         </div>
     </div>
     <hr />
@@ -841,15 +886,15 @@
     <div class="row">
         <div class="col-md-4">
             <strong>ERP program:</strong>
-            @Model.ERP
+            @Model.Lead.RelatedOrganization.OrganizationDetail.ERP
         </div>
         <div class="col-md-4">
             <strong>Broj IRA mjesečno:</strong>
-            @Model.NumberOfInvoicesSent
+            @Model.Lead.RelatedOrganization.OrganizationDetail.NumberOfInvoicesSent
         </div>
         <div class="col-md-4">
             <strong>Broj URA mjesečno:</strong>
-            @Model.NumberOfInvoicesReceived
+            @Model.Lead.RelatedOrganization.OrganizationDetail.NumberOfInvoicesReceived
         </div>
     </div>
     <hr />
@@ -864,11 +909,11 @@
         </div>
         <div class="col-md-4">
             <strong>Datum i vrijeme zadnjeg kontakta:</strong>
-            @Model.LastContactedDate
+            @Model.Lead.LastContactDate
         </div>
         <div class="col-md-4">
             <strong>Zadnje kontaktirao:</strong>
-            @Model.LastContactedBy
+            @Model.Lead.LastContactedBy
         </div>
     </div>
     <br />
@@ -882,13 +927,13 @@
     <div class="row">
         <div class="col-md-4">
             <strong>Status leada:</strong>
-            @Model.LeadStatus
+            @Model.Lead.LeadStatusString
         </div>
-        @if (Model.LeadStatus == "Odbijeno")
+        @if (Model.Lead.LeadStatusString == "Odbijeno")
         {
             <div class="col-md-4">
                 <strong>Razlog odbijanja leada:</strong>
-                @Model.RejectReason
+                @Model.Lead.RejectReasonDescription
             </div>
         }
         <div class="col-md-4">
@@ -899,7 +944,7 @@
     <div class="row">
         <div class="col-md-12" id="lead-description">
             <strong>Detalji leada:</strong>
-            @Model.LeadDescription
+            @Model.Lead.LeadDescription
         </div>
     </div>
 </div>
@@ -1023,7 +1068,7 @@
                 },
                 dataType: 'json'
             });
-        });   
+        });
     }*@
 </script>
 

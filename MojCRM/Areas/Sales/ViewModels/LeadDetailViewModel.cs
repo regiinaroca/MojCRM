@@ -11,61 +11,10 @@ namespace MojCRM.Areas.Sales.ViewModels
 {
     public class LeadDetailViewModel
     {
-        public int LeadId { get; set; }
-
-        [Display(Name = "Detalji leada")]
-        public string LeadDescription { get; set; }
-
-        [Display(Name = "Status leada")]
-        public string LeadStatus { get; set; }
-
-        [Display(Name = "Razlog odbijanja leada")]
-        public string RejectReason { get; set; }
-
-        [Display(Name = "Id tvrtke")]
-        public int? OrganizationId { get; set; }
-
-        [Display(Name = "Naziv tvrtke")]
-        public string OrganizationName { get; set; }
-
-        [Display(Name = "OIB tvrtke")]
-        public string OrganizationVAT { get; set; }
-
-        [Display(Name = "Broj telefona")]
-        public string TelephoneNumber { get; set; }
-
-        [Display(Name = "Broj mobitela")]
-        public string MobilePhoneNumber { get; set; }
-
-        [Display(Name = "E-mail adresa")]
-        public string Email { get; set; }
-
-        [Display(Name = "ERP program")]
-        public string ERP { get; set; }
-
-        [Display(Name = "Broj IRA mjesečno")]
-        public string NumberOfInvoicesSent { get; set; }
-
-        [Display(Name = "Broj URA mjesečno")]
-        public string NumberOfInvoicesReceived { get; set; }
-
-        [Display(Name = "Id kampanje")]
-        public int? RelatedCampaignId { get; set; }
+        public Lead Lead { get; set; }
 
         [Display(Name = "Naziv kampanje")]
         public string RelatedCampaignName { get; set; }
-
-        [Display(Name = "Dodijeljeno")]
-        public bool IsAssigned { get; set; }
-
-        [Display(Name = "Dodijeljeno agentu")]
-        public string AssignedTo { get; set; }
-
-        [Display(Name = "Datum i vrijeme zadnjeg kontakta")]
-        public DateTime? LastContactedDate { get; set; }
-
-        [Display(Name = "Zadnje kontaktirao")]
-        public string LastContactedBy { get; set; }
 
         [Display(Name = "Zadnja bilješka")]
         public string LastLeadNote { get; set; }
@@ -73,6 +22,7 @@ namespace MojCRM.Areas.Sales.ViewModels
         public IQueryable<Contact> RelatedSalesContacts { get; set; }
         public IQueryable<LeadNote> RelatedLeadNotes { get; set; }
         public IQueryable<ActivityLog> RelatedLeadActivities { get; set; }
+        public IQueryable<Quote> RelatedQuotes { get; set; }
 
         public virtual IQueryable<ApplicationUser> Users { get; set; }
 
