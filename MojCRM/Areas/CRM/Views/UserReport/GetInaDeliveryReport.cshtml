@@ -8,13 +8,12 @@
 <hr />
 <div class="alert alert-info">
     <p style="text-align: justify">
-        Ovo sučelje omogućava preuzimanje izvještaja o dokumentima koji su @ViewBag.ExchangeType INA d.d. putem servisa Moj-eRačun. Izvještaj koji sustav vraća sadrži podatke o:
+        Ovo sučelje omogućava preuzimanje izvještaja o nepreuzetim dokumentima koji su poslani iz INA d.d. putem servisa Moj-eRačun. Izvještaj koji sustav vraća sadrži podatke o:
         <ul>
-            <li>OIB-u @ViewBag.Partner</li>
-            <li>Nazivu @ViewBag.Partner</li>
+            <li>OIB-u kupca</li>
+            <li>Nazivu kupca</li>
             <li>Broju dokumenta</li>
             <li>Datumu i vremenu slanja</li>
-            <li>Datumu i vremenu preuzimanja</li>
             <li>MerId-u</li>
             <li>Statusu dokumenta</li>
             <li>Tipu dokumenta</li>
@@ -25,7 +24,7 @@
     </p>
 </div>
 <hr />
-@using (Html.BeginForm("GetInaDailyReport", "UserReport", FormMethod.Post))
+@using (Html.BeginForm("GetInaDeliveryReport", "UserReport", FormMethod.Post))
 {
     <div class="row">
         <div class="col-md-3">
@@ -42,11 +41,6 @@
                 <div id="end-date-search">
                     @Html.TextBox("EndDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Završetak pretrage", @type = "text" })
                 </div>
-            </div>
-        </div>
-        <div class="hidden">
-            <div id="end-date-search">
-                @Html.TextBox("reportType", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = ViewBag.Type })
             </div>
         </div>
     </div>

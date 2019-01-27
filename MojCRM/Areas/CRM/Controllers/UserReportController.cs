@@ -34,12 +34,12 @@ namespace MojCRM.Areas.CRM.Controllers
             {
                 case 1:
                     ViewBag.Partner = "dobavljača";
-                    ViewBag.ExchangeType = "dostavljeni";
+                    ViewBag.ExchangeType = "dostavljeni prema društvu";
                     ViewBag.Type = type;
                     break;
                 case 2:
                     ViewBag.Partner = "kupca";
-                    ViewBag.ExchangeType = "poslani";
+                    ViewBag.ExchangeType = "poslani iz društva";
                     ViewBag.Type = type;
                     break;
                 default:
@@ -53,6 +53,7 @@ namespace MojCRM.Areas.CRM.Controllers
         /// </summary>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
+        /// <param name="reportType">1 - suppliers, 2 - buyers</param>
         /// <returns>Excel file for the report</returns>
         // POST: CRM/UserReport/GetInaDailyReport
         [HttpPost]
@@ -181,6 +182,64 @@ namespace MojCRM.Areas.CRM.Controllers
                 ws.Cells[cell, 6].Value = res.Id;
                 ws.Cells[cell, 7].Value = statusTemp;
                 ws.Cells[cell, 8].Value = typeTemp;
+                cell++;
+            }
+
+            while (cell < 16)
+            {
+                ws.Cells[cell, 1].Value = "";
+                cell++;
+            }
+
+            return File(wb.GetAsByteArray(), "application/vnd.ms-excel", "Izvještaj.xlsx");
+        }
+
+        /// <summary>
+        /// Get View for the report
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetInaDeliveryReport()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Get data for the report
+        /// </summary>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns>Excel file for the report</returns>
+        // POST: CRM/UserReport/GetInaDailyReport
+        [HttpPost]
+        public FileContentResult GetInaDeliveryReport(DateTime? startDate, DateTime? endDate)
+        {
+            int cell = 2;
+            var results = _db.DeliveryTicketModels.Where(x => x.SenderId == 7750 // we look at INA
+            && x.MerDocumentTypeId != 7 // all documents except responses
+            && (x.DocumentStatus == 30 || x.DocumentStatus == 50)); // undelivered documents
+
+            var wb = new ExcelPackage();
+            var ws = wb.Workbook.Worksheets.Add("Izvještaj dostave");
+            ws.Cells[1, 1].Value = "OIB kupca";
+            ws.Cells[1, 2].Value = "Naziv kupca";
+            ws.Cells[1, 3].Value = "Broj računa";
+            ws.Cells[1, 4].Value = "Datum i vrijeme slanja eRačuna";
+            ws.Cells[1, 5].Value = "MerId";
+            ws.Cells[1, 6].Value = "Status dokumenta";
+            ws.Cells[1, 7].Value = "Tip dokumenta";
+            ws.Cells[1, 8].Value = "Zadnja napomena";
+
+            foreach (var res in results)
+            {
+
+                ws.Cells[cell, 1].Value = res.Receiver.VAT;
+                ws.Cells[cell, 2].Value = res.Receiver.SubjectName;
+                ws.Cells[cell, 3].Value = res.InvoiceNumber;
+                ws.Cells[cell, 4].Value = res.SentDate.ToString();
+                ws.Cells[cell, 5].Value = res.Id;
+                ws.Cells[cell, 6].Value = res.DocumentStatusString;
+                ws.Cells[cell, 7].Value = res.MerDocumentTypeIdString;
+                ws.Cells[cell, 8].Value = res.DeliveryDetails.Any() ? res.DeliveryDetails.OrderByDescending(x => x.Id).First().DetailNote : string.Empty;
                 cell++;
             }
 
