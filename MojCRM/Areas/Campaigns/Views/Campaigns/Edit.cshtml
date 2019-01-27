@@ -15,77 +15,35 @@
         <h4 style="text-align:center">Kampanja - @Html.Raw(Model.CampaignName)</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.CampaignId)
+        <div class="hidden">
+            @Html.Hidden("CampaignId", ViewBag.CurrentFilter as string, new { @class = "form-control", @type = "text", @Value = Model.CampaignId })
+        </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.CampaignName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.CampaignName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CampaignName, "", new { @class = "text-danger" })
+                @Html.TextBox("CampaignName", ViewBag.CurrentFilter as string, new { @class = "form-control", @type = "text", @Value = Model.CampaignName })
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.CampaignDescription, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.CampaignDescription, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CampaignDescription, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CampaignInitiatior, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CampaignInitiatior, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CampaignInitiatior, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.RelatedCompanyId, "RelatedCompanyId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("RelatedCompanyId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.RelatedCompanyId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CampaignType, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.CampaignType, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.CampaignType, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CampaignStatus, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.CampaignStatus, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.CampaignStatus, "", new { @class = "text-danger" })
+                @Html.TextBox("CampaignDescription", ViewBag.CurrentFilter as string, new { @class = "form-control", @type = "text", @Value = Model.CampaignDescription })
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.CampaignStartDate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.CampaignStartDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CampaignStartDate, "", new { @class = "text-danger" })
+                @Html.TextBox("StartDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @type = "text", @placeholder = Model.CampaignStartDate })
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.CampaignPlannedEndDate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.CampaignPlannedEndDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CampaignPlannedEndDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CampaignEndDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CampaignEndDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CampaignEndDate, "", new { @class = "text-danger" })
+                @Html.TextBox("PlannedEndDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @type = "text", @placeholder = Model.CampaignPlannedEndDate })
             </div>
         </div>
 

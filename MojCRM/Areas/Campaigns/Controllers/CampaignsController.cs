@@ -231,6 +231,7 @@ namespace MojCRM.Areas.Campaigns.Controllers
                 return HttpNotFound();
             }
             ViewBag.RelatedCompanyId = new SelectList(_db.Organizations.Where(o => o.MerId == 111955), "MerId", "VAT", campaign.RelatedCompanyId);
+
             return View(campaign);
         }
 
@@ -239,17 +240,35 @@ namespace MojCRM.Areas.Campaigns.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "CampaignId,CampaignName,CampaignDescription,CampaignInitiatior,RelatedCompanyId,CampaignType,CampaignStatus,CampaignStartDate,CampaignPlannedEndDate,CampaignEndDate,InsertDate,UpdateDate")] Campaign campaign)
+        public ActionResult Edit(CampaignEditHelper model)
         {
-            if (ModelState.IsValid)
+            var campaignForUpdate = _db.Campaigns.First(c => c.CampaignId == model.CampaignId);
+
+            if (!String.IsNullOrEmpty(model.CampaignName))
             {
-                _db.Entry(campaign).State = EntityState.Modified;
-                _db.Entry(campaign).Entity.UpdateDate = DateTime.Now;
-                _db.SaveChanges();
-                return RedirectToAction("Index");
+                campaignForUpdate.CampaignName = model.CampaignName;
             }
-            ViewBag.RelatedCompanyId = new SelectList(_db.Organizations, "MerId", "VAT", campaign.RelatedCompanyId);
-            return View(campaign);
+
+            if (!String.IsNullOrEmpty(model.CampaignDescription))
+            {
+                campaignForUpdate.CampaignDescription = model.CampaignDescription;
+            }
+
+            if (!String.IsNullOrEmpty(model.StartDate))
+            {
+                var startDate = Convert.ToDateTime(model.StartDate);
+                campaignForUpdate.CampaignStartDate = startDate;
+            }
+
+            if (!String.IsNullOrEmpty(model.PlannedEndDate))
+            {
+                var plannedDate = Convert.ToDateTime(model.PlannedEndDate);
+                campaignForUpdate.CampaignPlannedEndDate = plannedDate;
+            }
+
+            campaignForUpdate.UpdateDate = DateTime.Now;
+            _db.SaveChanges();
+            return Redirect(Request.UrlReferrer?.ToString());
         }
 
         // GET: Campaigns/Campaigns/Delete/5

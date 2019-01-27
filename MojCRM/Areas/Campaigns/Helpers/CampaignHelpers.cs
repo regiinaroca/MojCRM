@@ -16,6 +16,15 @@ namespace MojCRM.Areas.Campaigns.Helpers
         public int? CampaignType { get; set; }
     }
 
+    public class CampaignEditHelper
+    {
+        public int CampaignId { get; set; }
+        public string CampaignName { get; set; }
+        public string CampaignDescription { get; set; }
+        public string StartDate { get; set; }
+        public string PlannedEndDate { get; set; }
+    }
+
     public class CampaignAssignedAgents
     {
         public string Agent { get; set; }
