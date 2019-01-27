@@ -157,8 +157,8 @@ namespace MojCRM.Helpers
 
     public class MerGetInaReportResponse
     {
-        public string PosiljateljOib { get; set; }
-        public string PosiljateljNaziv { get; set; }
+        public string PartnerOib { get; set; }
+        public string PartnerNaziv { get; set; }
         public string InterniBroj { get; set; }
         public DateTime? DatumOtpreme { get; set; }
         public DateTime? DatumDostave { get; set; }

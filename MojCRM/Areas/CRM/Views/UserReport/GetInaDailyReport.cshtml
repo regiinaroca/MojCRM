@@ -8,10 +8,10 @@
 <hr />
 <div class="alert alert-info">
     <p style="text-align: justify">
-        Ovo sučelje omogućava preuzimanje izvještaja o dokumentima koji su dostavljeni prema društvu INA d.d. putem servisa Moj-eRačun. Izvještaj koji sustav vraća sadrži podatke o:
+        Ovo sučelje omogućava preuzimanje izvještaja o dokumentima koji su @ViewBag.ExchangeType prema društvu INA d.d. putem servisa Moj-eRačun. Izvještaj koji sustav vraća sadrži podatke o:
         <ul>
-            <li>OIB-u dobavljača</li>
-            <li>Nazivu dobavljača</li>
+            <li>OIB-u @ViewBag.Partner</li>
+            <li>Nazivu @ViewBag.Partner</li>
             <li>Broju dokumenta</li>
             <li>Datumu i vremenu slanja</li>
             <li>Datumu i vremenu preuzimanja</li>
@@ -20,7 +20,7 @@
             <li>Tipu dokumenta</li>
         </ul>
         <br />
-        Sučelje omogućava i dodjelu nekih kriterija za kreiranje izvještaja. Kriteriji po kojima je moguće kreirati izvještaj su: Datum početka pretrage te Datum završetka pretrage. Oba kriterija su opcionalna, odnosno nisu obavezni za unos.<br/>
+        Sučelje omogućava i dodjelu nekih kriterija za kreiranje izvještaja. Kriteriji po kojima je moguće kreirati izvještaj su: Datum početka pretrage te Datum završetka pretrage. Oba kriterija su opcionalna, odnosno nisu obavezni za unos.<br />
         Ako korisnik ne želi unijeti niti jedan kriterij može samo pokrenuti preuzimanje izvještaja.
     </p>
 </div>
@@ -42,6 +42,11 @@
                 <div id="end-date-search">
                     @Html.TextBox("EndDate", ViewBag.CurrentFilter as string, new { @class = "date-picker form-control", @placeholder = "Završetak pretrage", @type = "text" })
                 </div>
+            </div>
+        </div>
+        <div class="hidden">
+            <div id="end-date-search">
+                @Html.TextBox("reportType", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = ViewBag.Type })
             </div>
         </div>
     </div>

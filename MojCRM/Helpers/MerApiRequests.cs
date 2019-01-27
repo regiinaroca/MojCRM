@@ -58,5 +58,6 @@ namespace MojCRM.Helpers
         [JsonProperty]
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public int? ReportType { get; set; }
     }
 }

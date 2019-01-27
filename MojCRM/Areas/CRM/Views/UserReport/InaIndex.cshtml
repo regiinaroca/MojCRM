@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewBag.Title = "INA d.d. - Izbornik izvještaja";
+    Layout = "~/Views/Shared/_UserLayoutNewUser.cshtml";
+}
+
+<h2 style="text-align:center"><strong>Izvještaji</strong></h2>
+
+<hr />
+<h4>Izvještaji - dobavljači</h4>
+<div class="row">
+    <div class="col-md-3">
+        <a href="@Url.RouteUrl(new { action = "GetInaDailyReport", controller = "UserReport", area = "CRM", type = 1 })" class="btn btn-default btn-sm" title="Izvještaj o zaprimljenim dokumentima">
+            <i class="fa fa-book"></i>
+            Zaprimljeni dokumenti
+        </a>
+    </div>
+</div>
+<hr />
+<h4>Izvještaji - kupci</h4>
+<div class="row">
+    <div class="col-md-3">
+        <a href="@Url.RouteUrl(new { action = "GetInaDailyReport", controller = "UserReport", area = "CRM", type = 2 })" class="btn btn-default btn-sm" title="Izvještaj o poslanim dokumentima">
+            <i class="fa fa-book"></i>
+            Poslani dokumenti
+        </a>
+    </div>
+    @*<div class="col-md-3">
+        <a href="@Url.RouteUrl(new { action = "AcquireEmailPaymentStat", controller = "Stats", area = "Stats" })" class="btn btn-default btn-sm" title="Statistika prihoda od obrada baza korisnika">
+            <i class="fa fa-book"></i>
+            Statistika prihoda od obrada baza korisnika
+        </a>
+    </div>*@
+</div>
+<hr />
+

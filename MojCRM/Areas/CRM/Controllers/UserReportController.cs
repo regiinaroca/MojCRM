@@ -15,12 +15,36 @@ namespace MojCRM.Areas.CRM.Controllers
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
         /// <summary>
+        /// INA Index View with menu
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult InaIndex()
+        {
+            return View();
+        }
+
+        /// <summary>
         /// Get View for the report
         /// </summary>
         /// <returns></returns>
         // GET: CRM/UserReport/GetInaDailyReport
-        public ActionResult GetInaDailyReport()
+        public ActionResult GetInaDailyReport(int? type)
         {
+            switch (type)
+            {
+                case 1:
+                    ViewBag.Partner = "dobavljača";
+                    ViewBag.ExchangeType = "dostavljeni";
+                    ViewBag.Type = type;
+                    break;
+                case 2:
+                    ViewBag.Partner = "kupca";
+                    ViewBag.ExchangeType = "poslani";
+                    ViewBag.Type = type;
+                    break;
+                default:
+                    break;
+            }
             return View();
         }
 
@@ -32,7 +56,7 @@ namespace MojCRM.Areas.CRM.Controllers
         /// <returns>Excel file for the report</returns>
         // POST: CRM/UserReport/GetInaDailyReport
         [HttpPost]
-        public FileContentResult GetInaDailyReport(DateTime? startDate, DateTime? endDate)
+        public FileContentResult GetInaDailyReport(DateTime? startDate, DateTime? endDate, int reportType)
         {
             var credentials = (from u in _db.Users
                 where u.UserName == "Alen David Jeđud"
@@ -46,7 +70,8 @@ namespace MojCRM.Areas.CRM.Controllers
                 PJ = string.Empty,
                 SoftwareId = "MojCRM-001",
                 StartDate = startDate,
-                EndDate = endDate
+                EndDate = endDate,
+                ReportType = reportType 
             };
 
             string merRequest = JsonConvert.SerializeObject(request);
@@ -65,8 +90,8 @@ namespace MojCRM.Areas.CRM.Controllers
 
             var wb = new ExcelPackage();
             var ws = wb.Workbook.Worksheets.Add("Dnevni izvještaj");
-            ws.Cells[1, 1].Value = "OIB dobavljača";
-            ws.Cells[1, 2].Value = "Naziv dobavljača";
+            ws.Cells[1, 1].Value = reportType == 1 ? "OIB dobavljača" : "OIB kupca";
+            ws.Cells[1, 2].Value = reportType == 1 ? "Naziv dobavljača" : "Naziv kupca";
             ws.Cells[1, 3].Value = "Broj računa";
             ws.Cells[1, 4].Value = "Datum i vrijeme slanja eRačuna";
             ws.Cells[1, 5].Value = "Datum i vrijeme preuzimanja eRačuna";
@@ -148,8 +173,8 @@ namespace MojCRM.Areas.CRM.Controllers
                         break;
                 }
 
-                ws.Cells[cell, 1].Value = res.PosiljateljOib;
-                ws.Cells[cell, 2].Value = res.PosiljateljNaziv;
+                ws.Cells[cell, 1].Value = res.PartnerOib;
+                ws.Cells[cell, 2].Value = res.PartnerNaziv;
                 ws.Cells[cell, 3].Value = res.InterniBroj;
                 ws.Cells[cell, 4].Value = res.DatumOtpreme.ToString();
                 ws.Cells[cell, 5].Value = res.DatumDostave.ToString();
