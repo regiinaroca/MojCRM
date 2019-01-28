@@ -42,9 +42,9 @@ namespace MojCRM.Areas.HelpDesk.Controllers
             }
 
             //Search Engine
-            if (!String.IsNullOrEmpty(model.CampaignName))
+            if (!String.IsNullOrEmpty(model.CampaignDescription))
             {
-                list = list.Where(x => x.Campaign.CampaignName.Contains(model.CampaignName));
+                list = list.Where(x => x.Campaign.CampaignDescription.Contains(model.CampaignDescription));
             }
             if (!String.IsNullOrEmpty(model.OrganizationName))
             {
@@ -83,9 +83,9 @@ namespace MojCRM.Areas.HelpDesk.Controllers
                            && x.AcquireEmailStatus == AcquireEmailStatusEnum.Created);
 
             //Search Engine
-            if (!String.IsNullOrEmpty(model.CampaignName))
+            if (!String.IsNullOrEmpty(model.CampaignDescription))
             {
-                list = list.Where(x => x.Campaign.CampaignName.Contains(model.CampaignName));
+                list = list.Where(x => x.Campaign.CampaignName.Contains(model.CampaignDescription));
             }
             if (!String.IsNullOrEmpty(model.OrganizationName))
             {

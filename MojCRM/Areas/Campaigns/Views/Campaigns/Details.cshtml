@@ -358,7 +358,7 @@
                             <a href="@Url.RouteUrl(new {action = "ExportEntitiesCsv", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId })" class="btn btn-sm btn-default" title="Preuzmi rezultate u csv formatu">.csv</a>
                             <a href="@Url.RouteUrl(new {action = "ExportEntitiesForEmailNotification", controller = "AcquireEmail", area = "HelpDesk", Model.Campaign.CampaignId })" class="btn btn-sm btn-default" title="Preuzmi rezultate formirane za tipsku obavijest"><i class="fa fa-file-excel-o" style="color: yellow"></i></a>
                             <button type="button" title="Promijeni status predmeta u kampanji" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangeStatusAcquireEmail"><i class="fa fa-refresh" style="color:yellow"></i></button>
-                            <a href="@Url.RouteUrl(new {action = "Index", controller = "AcquireEmail", area = "HelpDesk", CampaignName = Model.Campaign.CampaignName ,returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Pregled predmeta za ovu kampanju"><i class="fa fa-bars"></i> <i class="fa fa-arrow-right"></i></a>
+                            <a href="@Url.RouteUrl(new {action = "Index", controller = "AcquireEmail", area = "HelpDesk", CampaignDescription = Model.Campaign.CampaignDescription, returnUrl = Request.Url})" class="btn btn-sm btn-default" title="Pregled predmeta za ovu kampanju"><i class="fa fa-bars"></i> <i class="fa fa-arrow-right"></i></a>
                         }
                         if (Model.Campaign.CampaignType == Campaign.CampaignTypeEnum.Education)
                         {

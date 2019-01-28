@@ -43,7 +43,7 @@ namespace MojCRM.Areas.HelpDesk.Helpers
 
     public class AcquireEmailSearchModel
     {
-        public string CampaignName { get; set; }
+        public string CampaignDescription { get; set; }
         public string OrganizationName { get; set; }
         public string TelephoneMobile { get; set; }
         public string Mail { get; set; }
