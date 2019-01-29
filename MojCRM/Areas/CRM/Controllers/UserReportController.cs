@@ -99,6 +99,7 @@ namespace MojCRM.Areas.CRM.Controllers
             ws.Cells[1, 6].Value = "MerId";
             ws.Cells[1, 7].Value = "Status dokumenta";
             ws.Cells[1, 8].Value = "Tip dokumenta";
+            ws.Cells[1, 9].Value = "E-mail partnera";
 
             foreach (var res in results)
             {
@@ -182,6 +183,7 @@ namespace MojCRM.Areas.CRM.Controllers
                 ws.Cells[cell, 6].Value = res.Id;
                 ws.Cells[cell, 7].Value = statusTemp;
                 ws.Cells[cell, 8].Value = typeTemp;
+                ws.Cells[cell, 9].Value = !string.IsNullOrEmpty(res.PartnerEmail) ? res.PartnerEmail : string.Empty;
                 cell++;
             }
 
