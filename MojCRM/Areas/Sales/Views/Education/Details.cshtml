@@ -911,7 +911,7 @@
             method: 'POST',
             url: '@Url.RouteUrl(new { action = "AddNote", controller = "Education", area = "Sales" })',
             data: {
-                RelatedOpportunityId: $(this).data("opportunity-id"),
+                RelatedEducationId: $(this).data("opportunity-id"),
                 Contact: $("#contact-for-note").val(),
                 Note: $("#info-note").val(),
                 IsActivity: true,
