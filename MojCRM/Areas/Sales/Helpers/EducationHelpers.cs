@@ -1,7 +1,6 @@
-﻿using System;
+﻿using MojCRM.Helpers;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using static MojCRM.Areas.Sales.Models.Education;
 
 namespace MojCRM.Areas.Sales.Helpers
@@ -14,7 +13,9 @@ namespace MojCRM.Areas.Sales.Helpers
         public string LastContactDate { get; set; }
         public EducationEntityStatusEnum? EducationStatus { get; set; }
         public EducationRejectReasonEnum? RejectReason { get; set; }
+        public PriorityEnum? Priority { get; set; }
         public string Assigned { get; set; }
+        public string AssignedTo { get; set; }
     }
 
     public class EducationNoteHelper

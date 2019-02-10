@@ -142,10 +142,34 @@ namespace MojCRM.Helpers
         Siemens
     }
 
+    public enum PriorityEnum
+    {
+        [Description("Nizak prioritet")]
+        Low,
+
+        [Description("Normalan prioritet")]
+        Normal,
+        
+        [Description("Visok prioritet")]
+        High
+    }
+
     public class DailyUpdateReturnModel
     {
         public int NumberOfOrganizationCountriesUpdated { get; set; }
         public int NumberOfTotalSentAndReceivedUpdated { get; set; }
+    }
+
+    public class PageHelper
+    {
+        public static string ReturnUrl
+        {
+            get
+            {
+                var request = System.Web.HttpContext.Current.Request;
+                return !String.IsNullOrEmpty(request["returnUrl"]) ? request["returnUrl"] : request.UrlReferrer != null ? request.UrlReferrer.ToString() : "/";
+            }
+        }
     }
 
     public class AdminHelperMethods

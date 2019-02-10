@@ -1,33 +1,10 @@
 ﻿@using GridMvc.Html
 @using System.Web.UI.WebControls
-@model IQueryable<MojCRM.Areas.Sales.Models.Education>
+@model MojCRM.Areas.Sales.ViewModels.EducationIndexViewModel
 
 @{
     ViewBag.Title = "Pregled prodajnih prilika - edukacije";
     Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
-}
-
-@{ 
-    var opportunityStatusList = new List<ListItem>
-        {
-            new ListItem{ Value= @"0", Text = @"Kreirano"},
-            new ListItem{ Value= @"1", Text = @"U kontaktu"},
-            new ListItem{ Value= @"2", Text = @"Poslan poziv"},
-            new ListItem{ Value= @"3", Text = @"Odbijeno"},
-            new ListItem{ Value= @"4", Text = @"Prihvaćeno"}
-        };
-    var opportunityRejectReasonList = new List<ListItem>
-        {
-            new ListItem{ Value= @"3", Text = @"Ne želi navesti"},
-            new ListItem{ Value= @"0", Text = @"Neodgovarajući termin"},
-            new ListItem{ Value= @"1", Text = @"Nezainteresiranost"},
-            new ListItem{ Value= @"2", Text = @"Usluga nije potrebna"}
-        };
-    var assigned = new List<ListItem>
-        {
-            new ListItem{ Value = @"1", Text = @"Nedodijeljene"},
-            new ListItem{ Value = @"2", Text = @"Dodijeljene"}
-        };
 }
 
 <h2 style="text-align:center"><strong>Pregled prodajnih prilika - edukacije</strong></h2>
@@ -73,7 +50,7 @@
         <div class="form-group">
             <label for="opportunity-status-search">Status prilike</label>
             <div id="opportunity-status-search">
-                @Html.DropDownList("EducationStatus", new SelectList(opportunityStatusList, "Value", "Text"), "-- Odaberi status prilike --", new { @class = "form-control" })
+                @Html.DropDownList("EducationStatus", new SelectList(Model.OpportunityStatusList, "Value", "Text"), "-- Odaberi status prilike --", new { @class = "form-control" })
             </div>
         </div>
     </div>
@@ -81,7 +58,15 @@
         <div class="form-group">
             <label for="reject-reason-search">Razlog odbijanja</label>
             <div id="reject-reason-search">
-                @Html.DropDownList("RejectReason", new SelectList(opportunityRejectReasonList, "Value", "Text"), "-- Odaberi razlog odbijanja --", new { @class = "form-control" })
+                @Html.DropDownList("RejectReason", new SelectList(Model.OpportunityRejectReasonList, "Value", "Text"), "-- Odaberi razlog odbijanja --", new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <label for="priority">Prioritet</label>
+            <div id="priority">
+                @Html.DropDownList("Priority", new SelectList(Model.Priority, "Value", "Text"), "-- Odaberi prioritet --", new { @class = "form-control" })
             </div>
         </div>
     </div>
@@ -91,7 +76,15 @@
             <div class="form-group">
                 <label for="assigned-search">Dodijeljeno</label>
                 <div id="assigned-search">
-                    @Html.DropDownList("Assigned", new SelectList(assigned, "Value", "Text"), "-- Odaberi --", new { @class = "form-control" })
+                    @Html.DropDownList("Assigned", new SelectList(Model.Assigned, "Value", "Text"), "-- Odaberi tip dodjele --", new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="assigned-to-search">Dodijeljeno agentu</label>
+                <div id="assigned-to-search">
+                    @Html.DropDownList("AssignedTo", new SelectList(Model.SalesAgents, "Value", "Text"), "-- Odaberi agenta--", new { @class = "form-control" })
                 </div>
             </div>
         </div>
@@ -113,7 +106,7 @@
 
 <hr />
 
-@Html.Grid(Model).Named("PopisProdajnihPrilika").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
+@Html.Grid(Model.Educations).Named("PopisProdajnihPrilika").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
 {
 columns.Add(m => m.RelatedCampaign.CampaignName).Encoded(false).Sanitized(false).Titled("Naziv kampanje").Sortable(true);
 //columns.Add(m => m.EducationEntityTitle).Encoded(false).Sanitized(false).Titled("Naziv prilike").Sortable(true);
@@ -139,6 +132,10 @@ columns.Add(m => m.EducationEntityStatus).Encoded(false).Sanitized(false).Titled
         }
 
     return @<div><span class="label label-danger">@Html.Raw(m.EducationEntityStatusString)</span><br /><span style="color:red">@Html.Raw(m.EducationRejectReasonString)</span></div>;
+    });
+    columns.Add(m => m.Priority).Encoded(false).Sanitized(false).Titled("Prioritet").Sortable(true).RenderValueAs(m =>
+    {
+        return @<div><span>@Html.Raw(m.PriorityString)</span></div>;
     });
     columns.Add(m => m.LastContactDate).Encoded(false).Sanitized(false).Titled("Datum zadnjeg kontakta").Sortable(true).RenderValueAs(m =>
     {

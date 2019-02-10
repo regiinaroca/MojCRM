@@ -1,4 +1,5 @@
 ﻿using MojCRM.Areas.Campaigns.Models;
+using MojCRM.Helpers;
 using MojCRM.Models;
 using System;
 using System.ComponentModel;
@@ -45,6 +46,9 @@ namespace MojCRM.Areas.Sales.Models
 
         [Display(Name = "Dodijeljeno")]
         public bool IsAssigned { get; set; }
+
+        [DefaultValue(1)]
+        public PriorityEnum Priority { get; set; }
 
         [Display(Name = "Datum kreiranja")]
         public DateTime InsertDate { get; set; }

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using MojCRM.Areas.Campaigns.Models;
 using MojCRM.Areas.CRM.Models;
+using MojCRM.Helpers;
 using MojCRM.Models;
 
 namespace MojCRM.Areas.Sales.Models
@@ -58,6 +59,9 @@ namespace MojCRM.Areas.Sales.Models
         public int? ContractDuration { get; set; }
         [DisplayName("Opcija plaćanja obrade baza")]
         public bool? AcquireEmailPayment { get; set; }
+
+        [DefaultValue(1)]
+        public PriorityEnum Priority { get; set; }
 
         [DisplayName("Datum i vrijeme kreiranja")]
         public DateTime InsertDate { get; set; }

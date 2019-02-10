@@ -1,5 +1,6 @@
 ﻿@using System.Web.UI.WebControls
 @using MojCRM.Areas.Sales.Models
+@using MojCRM.Helpers
 @model MojCRM.Areas.Sales.ViewModels.EducationDetailViewModel
 
 @{
@@ -9,11 +10,17 @@
 @{
     var opportunityStatusList = new List<ListItem>
 {
-    new ListItem{ Value= @"0", Text = @"Kreirano"},
-    new ListItem{ Value= @"1", Text = @"U kontaktu"},
-    new ListItem{ Value= @"2", Text = @"Poslan poziv"},
-    new ListItem{ Value= @"3", Text = @"Odbijeno"},
-    new ListItem{ Value= @"4", Text = @"Prihvaćeno"}
+new ListItem{ Value= @"0", Text = @"Kreirano"},
+new ListItem{ Value= @"1", Text = @"U kontaktu"},
+new ListItem{ Value= @"2", Text = @"Poslan poziv"},
+new ListItem{ Value= @"3", Text = @"Odbijeno"},
+new ListItem{ Value= @"4", Text = @"Prihvaćeno"}
+};
+    var priority = new List<ListItem>
+{
+    new ListItem{ Value = @"0", Text = @"Nizak"},
+    new ListItem{ Value = @"1", Text = @"Normalan"},
+    new ListItem{ Value = @"2", Text = @"Visok"}
 };
 }
 
@@ -449,7 +456,7 @@
                             <div class="col-md-12">
                                 <label for="status-ons">Status</label>
                                 <div id="status-ons">
-                                    @Html.DropDownList("NewStatus", new SelectList(opportunityStatusList, "Value", "Text"), "Odaberi novi status prilike", new { @class = "form-control", @id = "ons" })
+                                    @Html.DropDownList("NewStatus", new SelectList(opportunityStatusList, "Value", "Text"), "-- Odaberi novi status prilike --", new { @class = "form-control", @id = "ons" })
                                 </div>
                             </div>
                             <br />
@@ -462,6 +469,49 @@
                             <div class="hidden">
                                 <div id="ticketid">
                                     @Html.TextBox("RelatedEducationId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Education.Id })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Predaj promjenu</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Prekini</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!--Modal - Change Priority-->
+@using (Html.BeginForm("ChangePriority", "Education", FormMethod.Post))
+{
+    <div class="modal fade" id="ChangePriority" tabindex="-1" role="dialog" aria-labelledby="ChangePriority">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content" style="overflow:hidden">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4>Promijeni status prodajne prilike</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-12">
+                                Molimo odaberite prioritet u koji želite staviti prodajnu priliku.
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="priority">Prioritet</label>
+                                <div id="priority">
+                                    @Html.DropDownList("newPriority", new SelectList(priority, "Value", "Text"), "-- Odaberi novi prioritet --", new { @class = "form-control", @id = "ons" })
+                                </div>
+                            </div>
+                            <br />
+                            <div class="hidden">
+                                <div id="ticketid">
+                                    @Html.TextBox("relatedEducationId", ViewBag.CurrentFilter as string, new { @class = "form-control", @Value = Model.Education.Id })
                                 </div>
                             </div>
                         </div>
@@ -729,6 +779,7 @@
                             <button type="button" title="Promijeni dodjelu" class="btn btn-sm btn-default" data-toggle="modal" data-target="#Reassign" href="#Reassign"><i class="fa fa-mail-reply-all"></i></button>
                         }
                         <button type="button" title="Promijeni status prodajne prilike" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangeStatus"><i class="fa fa-refresh"></i></button>
+                        <button type="button" title="Promijeni prioritet prodajne prilike" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangePriority"><i class="fa fa-exclamation"></i></button>
                         <button type="button" title="Označi kao odbijeno" class="btn btn-sm btn-default" data-toggle="modal" href="#MarkRejected"><i class="fa fa-times text-danger"></i></button>
                     }
                     @if ((Model.Education.EducationEntityStatus == MojCRM.Areas.Sales.Models.Education.EducationEntityStatusEnum.Rejected) && User.IsInRole("Superadmin"))
@@ -737,7 +788,7 @@
                         <button type="button" title="Promijeni status prodajne prilike" class="btn btn-sm btn-default" data-toggle="modal" href="#ChangeStatus"><i class="fa fa-refresh"></i></button>
                         <button type="button" title="Označi kao odbijeno" class="btn btn-sm btn-default" data-toggle="modal" href="#MarkRejected"><i class="fa fa-times text-danger"></i></button>
                     }
-                    <a href="@Url.RouteUrl(new { action = "Index", controller = "Education", area = "Sales" })" class="btn btn-sm btn-default" title="Povratak na inicijalni popis prodajnih prilika"><i class="fa fa-arrow-left"></i></a>
+                    <a href="@PageHelper.ReturnUrl" class="btn btn-sm btn-default" title="Povratak na inicijalni popis prodajnih prilika"><i class="fa fa-arrow-left"></i></a>
                 </div>
             </div>
         </div>

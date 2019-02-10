@@ -1,4 +1,5 @@
 ﻿using MojCRM.Areas.Campaigns.Models;
+using MojCRM.Helpers;
 using MojCRM.Models;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,10 @@ namespace MojCRM.Areas.Sales.Models
         public string AssignedTo { get; set; }
         public string LastUpdatedBy { get; set; }
         public string LastContactedBy { get; set; }
+
+        [DefaultValue(1)]
+        public PriorityEnum Priority { get; set; }
+
         public DateTime InsertDate { get; set; }
         public DateTime? UpdateDate { get; set; }
         public DateTime? LastContactDate { get; set; }
@@ -99,6 +104,20 @@ namespace MojCRM.Areas.Sales.Models
                 }
 
                 return "Razlog odbijanja";
+            }
+        }
+
+        public string PriorityString
+        {
+            get
+            {
+                switch (Priority)
+                {
+                    case PriorityEnum.Low: return "Nizak";
+                    case PriorityEnum.Normal: return "Normalan";
+                    case PriorityEnum.High: return "Visok";
+                }
+                return "Prioritet";
             }
         }
     }

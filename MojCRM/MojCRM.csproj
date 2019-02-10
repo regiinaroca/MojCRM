@@ -383,7 +383,7 @@
     <Compile Include="Areas\Sales\Models\QuoteMember.cs" />
     <Compile Include="Areas\Sales\Models\Service.cs" />
     <Compile Include="Areas\Sales\SalesAreaRegistration.cs" />
-    <Compile Include="Areas\Sales\ViewModels\EducationDetailViewModel.cs" />
+    <Compile Include="Areas\Sales\ViewModels\EducationViewModels.cs" />
     <Compile Include="Areas\Sales\ViewModels\LeadDetailViewModel.cs" />
     <Compile Include="Areas\Sales\ViewModels\OpportunityDetailViewModel.cs" />
     <Compile Include="Areas\Sales\ViewModels\QuoteViewModels.cs" />
@@ -639,6 +639,10 @@
     <Compile Include="Migrations\201901132224023_Jan132019Update.cs" />
     <Compile Include="Migrations\201901132224023_Jan132019Update.Designer.cs">
       <DependentUpon>201901132224023_Jan132019Update.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902100853187_Feb102019Update.cs" />
+    <Compile Include="Migrations\201902100853187_Feb102019Update.Designer.cs">
+      <DependentUpon>201902100853187_Feb102019Update.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -1192,6 +1196,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201901132224023_Jan132019Update.resx">
       <DependentUpon>201901132224023_Jan132019Update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902100853187_Feb102019Update.resx">
+      <DependentUpon>201902100853187_Feb102019Update.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

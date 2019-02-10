@@ -53,6 +53,10 @@ namespace MojCRM.Areas.Sales.Controllers
                 {
                     educations = educations.Where(op => op.EducationRejectReason == model.RejectReason);
                 }
+                if (!String.IsNullOrEmpty(model.Priority.ToString()))
+                {
+                    educations = educations.Where(op => op.Priority == model.Priority);
+                }
                 if (!String.IsNullOrEmpty(model.Assigned))
                 {
                     if (model.Assigned == "1")
@@ -63,6 +67,10 @@ namespace MojCRM.Areas.Sales.Controllers
                     {
                         educations = educations.Where(op => op.IsAssigned);
                     }
+                }
+                if (!String.IsNullOrEmpty(model.AssignedTo))
+                {
+                    educations = educations.Where(op => op.AssignedTo == model.AssignedTo);
                 }
             }
             else
@@ -95,13 +103,28 @@ namespace MojCRM.Areas.Sales.Controllers
                 {
                     educations = educations.Where(op => op.EducationRejectReason == model.RejectReason);
                 }
+                if (!String.IsNullOrEmpty(model.Priority.ToString()))
+                {
+                    educations = educations.Where(op => op.Priority == model.Priority);
+                }
             }
+
+            ViewBag.SearchResults = educations.Count();
+            ViewBag.SearchResultsAssigned = educations.Count(l => l.IsAssigned);
+
+            var returnModel = new EducationIndexViewModel()
+            {
+                Users = _db.Users
+            };
 
             if (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Board") || User.IsInRole("Superadmin"))
             {
-                return View(educations.OrderByDescending(op => op.InsertDate));
+                returnModel.Educations = educations.OrderByDescending(op => op.Priority);
+                return View(returnModel);
             }
-            return View(educations.Where(op => op.EducationEntityStatus != Models.Education.EducationEntityStatusEnum.Rejected).OrderByDescending(op => op.InsertDate));
+
+            returnModel.Educations = educations.Where(op => op.EducationEntityStatus != Models.Education.EducationEntityStatusEnum.Rejected).OrderByDescending(op => op.Priority);
+            return View(returnModel);
         }
 
         // GET: Sales/Education/Details/5
@@ -246,6 +269,17 @@ namespace MojCRM.Areas.Sales.Controllers
         {
             var education = _db.Educations.First(o => o.Id == model.RelatedEducationId);
             education.EducationEntityStatus = model.NewStatus;
+            education.UpdateDate = DateTime.Now;
+            education.LastUpdatedBy = User.Identity.Name;
+            _db.SaveChanges();
+
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
+        public ActionResult ChangePriority(PriorityEnum newPriority, int relatedEducationId)
+        {
+            var education = _db.Educations.First(o => o.Id == relatedEducationId);
+            education.Priority = newPriority;
             education.UpdateDate = DateTime.Now;
             education.LastUpdatedBy = User.Identity.Name;
             _db.SaveChanges();
