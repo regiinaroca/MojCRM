@@ -164,6 +164,7 @@ namespace MojCRM.Helpers
         public DateTime? DatumDostave { get; set; }
         public int Id { get; set; }
         public int DokumentStatusId { get; set; }
+        public int? DokumentProcessStatusId { get; set; }
         public int? DokumentTypeId { get; set; }
         public string PartnerEmail { get; set; }
     }
