@@ -51,7 +51,7 @@ namespace MojCRM.Areas.Campaigns.Models
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
         public IQueryable<CampaignMember> GetCamapigns(string agent)
         {
-            var model = _db.CampaignMembers.Where(cm => cm.MemberName == agent);
+            var model = _db.CampaignMembers.Where(cm => cm.MemberName == agent && cm.Campaign.CampaignStatus == Campaign.CampaignStatusEnum.InProgress);
             return model;
         }
     }
