@@ -136,22 +136,22 @@ namespace MojCRM.Areas.CRM.Controllers
                 switch (res.DokumentProcessStatusId)
                 {
                     case 0:
-                        statusTemp = "Odobren (prihvaćen)";
+                        processStatusTemp = "Odobren (prihvaćen)";
                         break;
                     case 1:
-                        statusTemp = "Odbijen";
+                        processStatusTemp = "Odbijen";
                         break;
                     case 2:
-                        statusTemp = "Plaćen u potpunosti";
+                        processStatusTemp = "Plaćen u potpunosti";
                         break;
                     case 3:
-                        statusTemp = "Plaćen djelomično";
+                        processStatusTemp = "Plaćen djelomično";
                         break;
                     case 4:
-                        statusTemp = "Potvrda zaprimanja";
+                        processStatusTemp = "Potvrda zaprimanja";
                         break;
                     case 99:
-                        statusTemp = "Zaprimljen";
+                        processStatusTemp = "Zaprimljen";
                         break;
                 }
 
