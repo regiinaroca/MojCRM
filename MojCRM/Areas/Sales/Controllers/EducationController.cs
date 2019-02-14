@@ -75,7 +75,7 @@ namespace MojCRM.Areas.Sales.Controllers
             }
             else
             {
-                educations = educations.Where(op => op.AssignedTo == User.Identity.Name);
+                educations = educations.Where(op => op.AssignedTo == User.Identity.Name && op.RelatedCampaign.CampaignStatus == Campaigns.Models.Campaign.CampaignStatusEnum.InProgress);
                 //Search Engine -- User
                 if (!String.IsNullOrEmpty(model.Campaign))
                 {
