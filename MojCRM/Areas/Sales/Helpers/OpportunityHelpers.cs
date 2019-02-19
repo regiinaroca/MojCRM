@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using MojCRM.Areas.Campaigns.Models;
 using MojCRM.Areas.Sales.Models;
+using MojCRM.Helpers;
 using MojCRM.Models;
 using static MojCRM.Areas.Sales.Models.Opportunity;
 
@@ -49,6 +50,7 @@ namespace MojCRM.Areas.Sales.Helpers
         public string Organization { get; set; }
         public OpportunityStatusEnum? OpportunityStatus { get; set; }
         public OpportunityRejectReasonEnum? RejectReason { get; set; }
+        public PriorityEnum? Priority { get; set; }
         public string Assigned { get; set; }
         public string AssignedTo { get; set; }
     }

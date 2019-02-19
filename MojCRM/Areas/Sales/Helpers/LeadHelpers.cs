@@ -1,4 +1,5 @@
-﻿using static MojCRM.Areas.Sales.Models.Lead;
+﻿using MojCRM.Helpers;
+using static MojCRM.Areas.Sales.Models.Lead;
 
 namespace MojCRM.Areas.Sales.Helpers
 {
@@ -42,6 +43,7 @@ namespace MojCRM.Areas.Sales.Helpers
         public string Organization { get; set; }
         public LeadStatusEnum? LeadStatus { get; set; }
         public LeadRejectReasonEnum? RejectReason { get; set; }
+        public PriorityEnum? Priority { get; set; }
         public string Assigned { get; set; }
         public string AssignedTo { get; set; }
     }

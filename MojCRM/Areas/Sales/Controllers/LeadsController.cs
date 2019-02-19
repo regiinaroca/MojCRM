@@ -47,6 +47,10 @@ namespace MojCRM.Areas.Sales.Controllers
                 {
                     leads = leads.Where(l => l.RejectReason == model.RejectReason);
                 }
+                if (!String.IsNullOrEmpty(model.Priority.ToString()))
+                {
+                    leads = leads.Where(l => l.Priority == model.Priority);
+                }
                 if (!String.IsNullOrEmpty(model.Assigned))
                 {
                     if (model.Assigned == "1")
@@ -87,6 +91,10 @@ namespace MojCRM.Areas.Sales.Controllers
                 {
                     leads = leads.Where(l => l.RejectReason == model.RejectReason);
                 }
+                if (!String.IsNullOrEmpty(model.Priority.ToString()))
+                {
+                    leads = leads.Where(l => l.Priority == model.Priority);
+                }
             }
 
             ViewBag.SearchResults = leads.Count();
@@ -99,11 +107,19 @@ namespace MojCRM.Areas.Sales.Controllers
             ViewBag.QuoteSent = leads.Count(l => l.AssignedTo == User.Identity.Name && l.LeadStatus == Lead.LeadStatusEnum.Quotesent);
             ViewBag.QuoteAccepted = leads.Count(l => l.AssignedTo == User.Identity.Name && l.LeadStatus == Lead.LeadStatusEnum.Accepted);
 
+            var returnModel = new LeadIndexViewModel()
+            {
+                Users = _db.Users
+            };
+
             if (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Board") || User.IsInRole("Superadmin"))
             {
-                return View(leads.OrderByDescending(l => l.InsertDate));
+                returnModel.Leads = leads.OrderByDescending(l => l.Priority);
+                return View(returnModel);
             }
-            return View(leads.Where(l => l.LeadStatus != Lead.LeadStatusEnum.Rejected || l.LeadStatus != Lead.LeadStatusEnum.Accepted).OrderByDescending(l => l.InsertDate));
+
+            returnModel.Leads = leads.Where(l => l.LeadStatus != Models.Lead.LeadStatusEnum.Rejected).OrderByDescending(op => op.Priority);
+            return View(returnModel);
         }
 
         // GET: Sales/Leads/Details/5
@@ -350,6 +366,17 @@ namespace MojCRM.Areas.Sales.Controllers
             var lead = _db.Leads.First(l => l.LeadId == model.RelatedLeadId);
             lead.LeadStatus = model.NewStatus;
             lead.StatusDescription = model.StatusDescription;
+            lead.UpdateDate = DateTime.Now;
+            lead.LastUpdatedBy = User.Identity.Name;
+            _db.SaveChanges();
+
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
+        public ActionResult ChangePriority(PriorityEnum newPriority, int relatedLeadId)
+        {
+            var lead = _db.Leads.First(l => l.LeadId == relatedLeadId);
+            lead.Priority = newPriority;
             lead.UpdateDate = DateTime.Now;
             lead.LastUpdatedBy = User.Identity.Name;
             _db.SaveChanges();

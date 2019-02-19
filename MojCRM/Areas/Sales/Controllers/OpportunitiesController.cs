@@ -50,6 +50,10 @@ namespace MojCRM.Areas.Sales.Controllers
                 {
                     opportunities = opportunities.Where(op => op.RejectReason == model.RejectReason);
                 }
+                if (!String.IsNullOrEmpty(model.Priority.ToString()))
+                {
+                    opportunities = opportunities.Where(op => op.Priority == model.Priority);
+                }
                 if (!String.IsNullOrEmpty(model.Assigned))
                 {
                     if (model.Assigned == "1")
@@ -90,6 +94,10 @@ namespace MojCRM.Areas.Sales.Controllers
                 {
                     opportunities = opportunities.Where(op => op.RejectReason == model.RejectReason);
                 }
+                if (!String.IsNullOrEmpty(model.Priority.ToString()))
+                {
+                    opportunities = opportunities.Where(op => op.Priority == model.Priority);
+                }
             }
 
             ViewBag.SearchResults = opportunities.Count();
@@ -101,11 +109,19 @@ namespace MojCRM.Areas.Sales.Controllers
             ViewBag.UsersLead = opportunities.Count(op => op.AssignedTo == User.Identity.Name && op.OpportunityStatus == Opportunity.OpportunityStatusEnum.Lead);
             ViewBag.UsersRejected = opportunities.Count(op => op.AssignedTo == User.Identity.Name && op.OpportunityStatus == Opportunity.OpportunityStatusEnum.Rejected);
 
+            var returnModel = new OpportunityIndexViewModel()
+            {
+                Users = _db.Users
+            };
+
             if (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Board") || User.IsInRole("Superadmin"))
             {
-                return View(opportunities.OrderByDescending(op => op.InsertDate));
+                returnModel.Opportunities = opportunities.OrderByDescending(op => op.Priority);
+                return View(returnModel);
             }
-            return View(opportunities.Where(op => op.OpportunityStatus != Opportunity.OpportunityStatusEnum.Lead || op.OpportunityStatus != Opportunity.OpportunityStatusEnum.Rejected).OrderByDescending(op => op.InsertDate));
+
+            returnModel.Opportunities = opportunities.Where(op => op.OpportunityStatus != Models.Opportunity.OpportunityStatusEnum.Rejected).OrderByDescending(op => op.Priority);
+            return View(returnModel);
         }
 
         // GET: Sales/Opportunities/Details/5
@@ -488,6 +504,17 @@ namespace MojCRM.Areas.Sales.Controllers
             opportunity.UpdateDate = DateTime.Now;
             opportunity.LastUpdatedBy = User.Identity.Name;
             _opportunityHelper.ApplyOpportunityStatusToRelatedOpportunities(opportunity.RelatedOrganizationId, model.NewStatus);
+            _db.SaveChanges();
+
+            return Redirect(Request.UrlReferrer?.ToString());
+        }
+
+        public ActionResult ChangePriority(PriorityEnum newPriority, int relatedOpportunityId)
+        {
+            var opportunity = _db.Educations.First(o => o.Id == relatedOpportunityId);
+            opportunity.Priority = newPriority;
+            opportunity.UpdateDate = DateTime.Now;
+            opportunity.LastUpdatedBy = User.Identity.Name;
             _db.SaveChanges();
 
             return Redirect(Request.UrlReferrer?.ToString());

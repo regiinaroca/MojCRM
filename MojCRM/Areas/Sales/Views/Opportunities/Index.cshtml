@@ -1,51 +1,10 @@
 ﻿@using GridMvc.Html
 @using System.Web.UI.WebControls
-@model IQueryable<MojCRM.Areas.Sales.Models.Opportunity>
+@model MojCRM.Areas.Sales.ViewModels.OpportunityIndexViewModel
 
 @{
     ViewBag.Title = "Pregled prodajnih prilika - servis";
     Layout = "~/Views/Shared/_UserLayoutNew.cshtml";
-}
-
-@{ 
-    var opportunityStatusList = new List<ListItem>
-        {
-            new ListItem{ Value= @"0", Text = @"Kreirano"},
-            new ListItem{ Value= @"6", Text = @"Postojeći Moj-eRačun korisnik"},
-            new ListItem{ Value= @"1", Text = @"U kontaktu"},
-            new ListItem{ Value= @"4", Text = @"Potrebno dogovoriti sastanak"},
-            new ListItem{ Value= @"5", Text = @"Procesne poteškoće"},
-            new ListItem{ Value= @"2", Text = @"Kreiran lead"},
-            new ListItem{ Value= @"7", Text = @"FINA korisnik"},
-            new ListItem{ Value= @"8", Text = @"eFaktura korisnik"},
-            new ListItem{ Value= @"3", Text = @"Odbijeno"},
-            new ListItem{ Value= @"9", Text = @"Zatvorena tvrtka"}
-        };
-    var opportunityRejectReasonList = new List<ListItem>
-        {
-            new ListItem{ Value= @"0", Text = @"Ne želi navesti"},
-            new ListItem{ Value= @"1", Text = @"Nema interesa za uslugu"},
-            new ListItem{ Value= @"2", Text = @"Previsoka cijena"},
-            new ListItem{ Value= @"3", Text = @"Neadekvatna ponuda"},
-            new ListItem{ Value= @"4", Text = @"Koristi drugog posrednika"}
-        };
-    var assigned = new List<ListItem>
-        {
-            new ListItem{ Value = @"1", Text = @"Nedodijeljene"},
-            new ListItem{ Value = @"2", Text = @"Dodijeljene"}
-        };
-    var salesAgents = new List<ListItem>
-        {
-            new ListItem{ Value = @"Josip Kovačec", Text = @"Josip Kovačec"},
-            new ListItem{ Value = @"Dominik Antonio Turudić", Text = @"Dominik Antonio Turudić"},
-            new ListItem{ Value = @"Ivan Tomljenović", Text = @"Ivan Tomljenović"},
-            new ListItem{ Value = @"Marin Štimac", Text = @"Marin Štimac"},
-            new ListItem{ Value = @"Karlo Vuljanko", Text = @"Karlo Vuljanko"},
-            new ListItem{ Value = @"Davor Hruban", Text = @"Davor Hruban"},
-            new ListItem{ Value = @"Diana Dragija", Text = @"Diana Dragija"},
-            new ListItem{ Value = @"Sonja Franjčić", Text = @"Sonja Franjčić"},
-            new ListItem{ Value = @"Vedran Horvatinec", Text = @"Vedran Horvatinec"}
-        };
 }
 
 <h2 style="text-align:center"><strong>Pregled prodajnih prilika - servis</strong></h2>
@@ -71,7 +30,7 @@
 @using (Html.BeginForm("Index", "Opportunities", new { area = "Sales" }, FormMethod.Get))
     {
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="form-group">
             <label for="campaign-search">Naziv kampanje</label>
             <div id="campaign-search">
@@ -79,7 +38,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="form-group">
             <label for="opportunity-search">Naziv prilike</label>
             <div id="opportunity-search">
@@ -87,7 +46,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="form-group">
             <label for="organization-search">Naziv ili OIB tvrtke</label>
             <div id="organization-search">
@@ -95,42 +54,50 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="form-group">
             <label for="opportunity-status-search">Status prilike</label>
             <div id="opportunity-status-search">
-                @Html.DropDownList("OpportunityStatus", new SelectList(opportunityStatusList, "Value", "Text"), "-- Odaberi status prilike --", new { @class = "form-control" })
+                @Html.DropDownList("OpportunityStatus", new SelectList(Model.OpportunityStatusList, "Value", "Text"), "-- Odaberi status prilike --", new { @class = "form-control" })
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="form-group">
             <label for="reject-reason-search">Razlog odbijanja</label>
             <div id="reject-reason-search">
-                @Html.DropDownList("RejectReason", new SelectList(opportunityRejectReasonList, "Value", "Text"), "-- Odaberi razlog odbijanja --", new { @class = "form-control" })
+                @Html.DropDownList("RejectReason", new SelectList(Model.OpportunityRejectReasonList, "Value", "Text"), "-- Odaberi razlog odbijanja --", new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <label for="priority">Prioritet</label>
+            <div id="priority">
+                @Html.DropDownList("Priority", new SelectList(Model.Priority, "Value", "Text"), "-- Odaberi prioritet --", new { @class = "form-control" })
             </div>
         </div>
     </div>
     @if (User.IsInRole("Management") || User.IsInRole("Administrator") || User.IsInRole("Superadmin"))
     {
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="form-group">
                 <label for="assigned-search">Dodijeljeno</label>
                 <div id="assigned-search">
-                    @Html.DropDownList("Assigned", new SelectList(assigned, "Value", "Text"), "-- Odaberi --", new { @class = "form-control" })
+                    @Html.DropDownList("Assigned", new SelectList(Model.Assigned, "Value", "Text"), "-- Odaberi tip dodjele --", new { @class = "form-control" })
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="form-group">
                 <label for="assigned-to-search">Dodijeljeno agentu</label>
                 <div id="assigned-to-search">
-                    @Html.DropDownList("AssignedTo", new SelectList(salesAgents, "Value", "Text"), "-- Dodijeljeno agentu --", new { @class = "form-control" })
+                    @Html.DropDownList("AssignedTo", new SelectList(Model.SalesAgents, "Value", "Text"), "-- Dodijeljeno agentu --", new { @class = "form-control" })
                 </div>
             </div>
         </div>
     }
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="alert alert-info">
             Broj rezultata pretrage: <strong title="Ukupan broj rezultata pretrage">@ViewBag.SearchResults</strong> <strong style="color:green" title="Broj rezultata pretrage koji su dodijeljeni">(@ViewBag.SearchResultsAssigned)</strong>
         </div>
@@ -157,7 +124,7 @@
 
 <hr />
 
-@Html.Grid(Model).Named("PopisProdajnihPrilika").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
+@Html.Grid(Model.Opportunities).Named("PopisProdajnihPrilika").SetLanguage("hr").EmptyText("Nema rezultata").Columns(columns =>
 {
 columns.Add(m => m.RelatedCampaign.CampaignName).Encoded(false).Sanitized(false).Titled("Naziv kampanje").Sortable(true).RenderValueAs(m =>
 {
@@ -167,7 +134,7 @@ columns.Add(m => m.RelatedCampaign.CampaignName).Encoded(false).Sanitized(false)
     return @<div><span>@m.RelatedCampaign.CampaignName</span>
            </div>;
 });
-columns.Add(m => m.OpportunityTitle).Encoded(false).Sanitized(false).Titled("Naziv prilike").Sortable(false);
+//columns.Add(m => m.OpportunityTitle).Encoded(false).Sanitized(false).Titled("Naziv prilike").Sortable(false);
 columns.Add(m => m.RelatedOrganization.SubjectName).Encoded(false).Sanitized(false).Titled("Naziv tvrtke").Sortable(false).RenderValueAs(m =>
 Html.RouteLink(m.RelatedOrganization.SubjectName, new { action = "Details", controller = "Organizations", area = "", id = m.RelatedOrganizationId}));
 columns.Add(m => m.OpportunityStatus).Encoded(false).Sanitized(false).Titled("Status prilike").Sortable(true).RenderValueAs(m =>
@@ -207,6 +174,10 @@ columns.Add(m => m.OpportunityStatus).Encoded(false).Sanitized(false).Titled("St
         }
 
     return @<div><span class="label label-danger">@Html.Raw(m.OpportunityStatusString)</span><br /><span style="color:red">@Html.Raw(m.OpportunityRejectReasonString)</span></div>;
+    });
+    columns.Add(m => m.Priority).Encoded(false).Sanitized(false).Titled("Prioritet").Sortable(true).RenderValueAs(m =>
+    {
+        return @<div><span>@Html.Raw(m.PriorityString)</span></div>;
     });
     columns.Add(m => m.OpportunityDescription).Encoded(false).Sanitized(false).Sortable(false).RenderValueAs(m =>
     {

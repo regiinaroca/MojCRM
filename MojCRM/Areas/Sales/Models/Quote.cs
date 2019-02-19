@@ -159,5 +159,19 @@ namespace MojCRM.Areas.Sales.Models
                 return "Nije specificirano";
             }
         }
+
+        public string PriorityString
+        {
+            get
+            {
+                switch (Priority)
+                {
+                    case PriorityEnum.Low: return "Nizak";
+                    case PriorityEnum.Normal: return "Normalan";
+                    case PriorityEnum.High: return "Visok";
+                }
+                return "Prioritet";
+            }
+        }
     }
 }

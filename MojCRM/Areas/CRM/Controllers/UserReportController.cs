@@ -246,6 +246,16 @@ namespace MojCRM.Areas.CRM.Controllers
             && x.MerDocumentTypeId != 7 // all documents except responses
             && (x.DocumentStatus == 30 || x.DocumentStatus == 50)); // undelivered documents
 
+            //search engine
+            if (startDate != null)
+            {
+                results = results.Where(x => x.InsertDate >= startDate);
+            }
+            if (endDate != null)
+            {
+                results = results.Where(x => x.InsertDate >= endDate);
+            }
+
             var wb = new ExcelPackage();
             var ws = wb.Workbook.Worksheets.Add("Izvještaj dostave");
             ws.Cells[1, 1].Value = "OIB kupca";

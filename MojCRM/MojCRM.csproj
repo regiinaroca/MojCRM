@@ -384,8 +384,8 @@
     <Compile Include="Areas\Sales\Models\Service.cs" />
     <Compile Include="Areas\Sales\SalesAreaRegistration.cs" />
     <Compile Include="Areas\Sales\ViewModels\EducationViewModels.cs" />
-    <Compile Include="Areas\Sales\ViewModels\LeadDetailViewModel.cs" />
-    <Compile Include="Areas\Sales\ViewModels\OpportunityDetailViewModel.cs" />
+    <Compile Include="Areas\Sales\ViewModels\LeadViewModels.cs" />
+    <Compile Include="Areas\Sales\ViewModels\OpportunityViewModels.cs" />
     <Compile Include="Areas\Sales\ViewModels\QuoteViewModels.cs" />
     <Compile Include="Areas\Stats\Models\MerDocumentExchangeHistory.cs" />
     <Compile Include="Areas\Stats\StatsAreaRegistration.cs" />
